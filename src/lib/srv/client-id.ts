@@ -1,0 +1,24 @@
+let clientId: string
+let clientIdExpiry: number
+
+export async function getClientId() {
+  if (clientId && Date.now() < clientIdExpiry)
+    return clientId
+
+  const html = await fetch('https://soundcloud.com').then(r => r.text())
+  const scriptUrl = html.match(/<script crossorigin src="(https:\/\/a-v2\.sndcdn\.com\/assets\/0-[^"]+\.js)"><\/script>/)?.[1]
+
+  if (!scriptUrl)
+    throw new Error('script not found')
+
+  const script = await fetch(scriptUrl).then(r => r.text())
+  const id = script.match(/client_id:"([A-Za-z0-9]{32})"/)?.[1]
+
+  if (!id)
+    throw new Error('client id not found')
+
+  clientId = id
+  clientIdExpiry = Date.now() + 30 * 60 * 1000
+
+  return clientId
+}
