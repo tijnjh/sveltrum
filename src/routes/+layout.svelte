@@ -22,7 +22,6 @@
     })
   }
 
-  let audioEl: HTMLAudioElement | null = $state(null)
   let isPaused = $state(true)
 
   $effect(() => {
@@ -60,40 +59,25 @@
 
     <div class='bottom-0 fixed inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
       {#if global.nowPlaying}
-        <div class='p-4 border-b border-zinc-100/10'>
+        <div class='p-4 border-zinc-100/10 border-b'>
           <div class='items-center gap-4 grid grid-cols-[auto_1fr_auto]'>
-            <img src={global.nowPlaying?.artwork_url} alt="" class=' rounded-md size-12 aspect-square'>
+            <img src={global.nowPlaying?.artwork_url} alt="" class='rounded-md size-12 aspect-square'>
 
             <div class='flex flex-col w-full min-w-0' onclick={() => { showNowPlayingView = true }}>
               <h3 class='truncate'>{global.nowPlaying?.title}</h3>
-              <p class='truncate opacity-50'>{global.nowPlaying?.user.username}</p>
+              <p class='opacity-50 truncate'>{global.nowPlaying?.user.username}</p>
             </div>
 
-            {#if audioEl}
-              <button
-                class='flex justify-center items-center active:opacity-50 bg-zinc-100/10 rounded-full size-10 active:scale-90 transition-transform'
-                onclick={() => {
-                  if (!audioEl) {
-                    return
-                  }
-
-                  if (audioEl.paused) {
-                    audioEl?.play()
-                    isPaused = false
-                  }
-                  else {
-                    audioEl?.pause()
-                    isPaused = true
-                  }
-                }}
-              >
-                {#if isPaused}
-                  <PlayIcon fill='currentColor' class='opacity-59' size={16} />
-                {:else}
-                  <PauseIcon fill='currentColor' class='opacity-59' size={16} />
-                {/if}
-              </button>
-            {/if}
+            <button
+              class='flex justify-center items-center bg-zinc-100/10 active:opacity-50 rounded-full size-10 active:scale-90 transition-transform'
+              onclick={() => { isPaused = !isPaused }}
+            >
+              {#if isPaused}
+                <PlayIcon fill='currentColor' class='opacity-59' size={16} />
+              {:else}
+                <PauseIcon fill='currentColor' class='opacity-59' size={16} />
+              {/if}
+            </button>
           </div>
         </div>
       {/if}
@@ -108,25 +92,25 @@
     {#if global.nowPlaying}
       <div
         class={cn(
-          'fixed inset-x-0 bg-zinc-800 flex flex-col gap-4 z-50 p-4 h-full transition-[top] duration-300',
+          'z-50 fixed inset-x-0 flex flex-col gap-4 bg-zinc-800 p-4 h-full transition-[top] duration-300',
           showNowPlayingView ? 'top-0' : 'top-[100%]',
         )}
       >
         <button
           onclick={() => { showNowPlayingView = false }}
-          class='flex justify-center ml-auto items-center active:opacity-50 bg-zinc-100/10 rounded-full size-10 active:scale-90 transition-transform'
+          class='flex justify-center items-center bg-zinc-100/10 active:opacity-50 ml-auto rounded-full size-10 active:scale-90 transition-transform'
         >
           <ChevronDown size={16} strokeWidth={3} />
         </button>
 
-        <img src={global.nowPlaying.artwork_url} class='w-full mt-12 rounded-xl' alt="">
+        <img src={global.nowPlaying.artwork_url} class='mt-12 rounded-xl w-full md:max-w-md' alt="">
 
-        <h1 class='text-2xl font-medium'>{global.nowPlaying.title}</h1>
-        <h3 class='text-xl text-white/50'>{global.nowPlaying.user.username}</h3>
+        <h1 class='font-medium text-2xl'>{global.nowPlaying.title}</h1>
+        <h3 class='text-white/50 text-xl'>{global.nowPlaying.user.username}</h3>
 
         {#key global.nowPlaying}
           <audio
-            bind:this={audioEl}
+            bind:paused={isPaused}
             controls={showNowPlayingView}
           {@attach global.nowPlaying && applySource(global.nowPlaying)}>
           </audio>
@@ -149,7 +133,7 @@
   <a
     {href}
     class={cn(
-      'bg-zinc-700 px-4 rounded-full h-9 flex items-center justify-center',
+      'flex justify-center items-center bg-zinc-700 px-4 rounded-full h-9',
       isCurrent && 'bg-white text-zinc-800',
     )}>
     {label ?? href}
