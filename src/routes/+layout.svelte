@@ -26,6 +26,21 @@
   $effect(() => {
     if (global.nowPlaying) {
       isPaused = true
+
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: global.nowPlaying.title,
+          artist: global.nowPlaying.user.username,
+          album: 'Sveltrum',
+          artwork: [
+            {
+              src: global.nowPlaying.artwork_url ?? '',
+              sizes: '500x500',
+              type: 'image/jpeg',
+            },
+          ],
+        })
+      }
     }
   })
 
