@@ -13,6 +13,7 @@
   "dependencies": {
     "arktype": "^2.1.20",
     "hls.js": "^1.6.9",
+    "nuqs-svelte": "^1.2.1",
     "ofetch": "^1.4.1"
   },
   "devDependencies": {
@@ -22,16 +23,12 @@
     "@sveltejs/kit": "^2.22.0",
     "@sveltejs/vite-plugin-svelte": "^6.0.0",
     "@tailwindcss/vite": "^4.0.0",
-    "clsx": "^2.1.1",
     "eslint": "^9.32.0",
     "eslint-plugin-svelte": "^3.11.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "svelte-eslint-parser": "^1.3.1",
-    "tailwind-merge": "^3.3.1",
-    "tailwind-variants": "^1.0.0",
     "tailwindcss": "^4.0.0",
-    "tw-animate-css": "^1.3.6",
     "typescript": "^5.0.0",
     "vite": "^7.0.4"
   }
