@@ -14,8 +14,5 @@ export default {
     experimental: {
       remoteFunctions: true,
     },
-    alias: {
-      '@/*': './path/to/lib/*',
-    },
   },
 }
