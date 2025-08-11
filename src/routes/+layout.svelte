@@ -1,12 +1,15 @@
 <script lang='ts'>
   import type { Track } from '$lib/types'
   import { page } from '$app/state'
+  import Button from '$lib/components/Button.svelte'
   import { global } from '$lib/global.svelte'
   import { getTrackSource } from '$lib/srv/hsl.remote'
-  import { ChevronDown, PauseIcon, PlayIcon } from '@lucide/svelte'
+  import { ChevronDown, HouseIcon, LibraryIcon, PauseIcon, PlayIcon, SearchIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
   import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
+  import { slide } from 'svelte/transition'
+
   import '../app.css'
 
   const { children } = $props()
@@ -60,32 +63,42 @@
     <div class='bottom-0 fixed inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
       {#if global.nowPlaying}
         <div class='p-4 border-zinc-100/10 border-b'>
-          <div class='items-center gap-4 grid grid-cols-[auto_1fr_auto]'>
-            <img src={global.nowPlaying?.artwork_url} alt="" class='rounded-md size-12 aspect-square'>
+          <div class='items-center gap-4 grid grid-cols-[1fr_auto]'>
 
-            <div class='flex flex-col w-full min-w-0' onclick={() => { showNowPlayingView = true }}>
-              <h3 class='truncate'>{global.nowPlaying?.title}</h3>
-              <p class='opacity-50 truncate'>{global.nowPlaying?.user.username}</p>
-            </div>
+            <button onclick={() => { showNowPlayingView = true }} class='flex text-left gap-4 truncate'>
+              <img src={global.nowPlaying?.artwork_url} alt="" class='rounded-md size-12 aspect-square'>
 
-            <button
-              class='flex justify-center items-center bg-zinc-100/10 active:opacity-50 rounded-full size-10 active:scale-90 transition-transform'
+              <div class='flex flex-col w-full min-w-0'>
+                <h3 class='truncate'>{global.nowPlaying?.title}</h3>
+                <p class='opacity-50 truncate'>{global.nowPlaying?.user.username}</p>
+              </div>
+            </button>
+
+            <Button
+              size='icon'
+              variant='secondary'
               onclick={() => { isPaused = !isPaused }}
             >
               {#if isPaused}
-                <PlayIcon fill='currentColor' class='opacity-59' size={16} />
+                <PlayIcon fill='currentColor' class='opacity-50' size={16} />
               {:else}
-                <PauseIcon fill='currentColor' class='opacity-59' size={16} />
+                <PauseIcon fill='currentColor' class='opacity-50' size={16} />
               {/if}
-            </button>
+            </Button>
           </div>
         </div>
       {/if}
 
       <nav class='flex justify-center items-center gap-2 p-4'>
-        {@render tab('/', 'home')}
-        {@render tab('library')}
-        {@render tab('search')}
+        {#each [['/', 'Home', HouseIcon], ['/library', 'Library', LibraryIcon], ['/search', 'Search', SearchIcon]] as const as [href, label, Icon]}
+          {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
+          <Button {href} variant={isCurrent ? 'primary' : 'secondary'} class='gap-0'>
+            <Icon size={16} strokeWidth={3} class={!isCurrent ? 'opacity-50' : ''} />
+            {#if isCurrent}
+              <span transition:slide={{ axis: 'x' }} class='ml-2'>{label}</span>
+            {/if}
+          </Button>
+        {/each}
       </nav>
     </div>
 
@@ -117,7 +130,6 @@
         {/key}
       </div>
     {/if}
-
   </NuqsAdapter>
 
   {#snippet pending()}
@@ -127,15 +139,3 @@
     {error}
   {/snippet}
 </svelte:boundary>
-
-{#snippet tab(href: string, label?: string)}
-  {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
-  <a
-    {href}
-    class={cn(
-      'flex justify-center items-center bg-zinc-700 px-4 rounded-full h-9',
-      isCurrent && 'bg-white text-zinc-800',
-    )}>
-    {label ?? href}
-  </a>
-{/snippet}

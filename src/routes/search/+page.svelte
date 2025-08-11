@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { Track } from '$lib/types'
+  import Button from '$lib/components/Button.svelte'
   import { global } from '$lib/global.svelte'
   import { getResults } from '$lib/srv/soundcloud.remote'
   import { SearchIcon } from '@lucide/svelte'
@@ -29,13 +30,13 @@
   <input
     type='text'
     bind:value={query.current}
-    class='bg-zinc-700 px-4 grow rounded-full'
+    class='bg-zinc-700 h-9 px-4 grow rounded-full'
     placeholder='Search'
   />
 
-  <button type='submit' class='bg-white text-zinc-700 size-10 rounded-full active:scale-90 transition-transform active:opacity-50 flex items-center justify-center'>
+  <Button type='submit' size='icon'>
     <SearchIcon size={16} strokeWidth={3} />
-  </button>
+  </Button>
 </form>
 
 <main class='p-4'>

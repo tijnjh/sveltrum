@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import Button from '$lib/components/Button.svelte'
   import { SearchIcon } from '@lucide/svelte'
 </script>
 
@@ -8,24 +9,17 @@
     <input
       type='text'
       name='q'
-      class='bg-zinc-700 px-4 grow rounded-full'
+      class='bg-zinc-700 px-4 h-10 grow rounded-full'
       placeholder='Search'
     />
 
-    <button type='submit' class='bg-white text-zinc-700 size-10 rounded-full active:scale-90 transition-transform active:opacity-50 flex items-center justify-center'>
+    <Button type='submit' size='icon'>
       <SearchIcon size={16} strokeWidth={3} />
-    </button>
-
+    </Button>
   </form>
   <div class='flex gap-4 justify-center'>
-    {@render link('library', 'Liked songs')}
-    {@render link('https://tijn.dev/sveltrum', 'Source')}
+    <Button href='/library'>Liked songs</Button>
+    <Button href='https://tijn.dev/sveltrum'>Source</Button>
   </div>
 
 </div>
-
-{#snippet link(href: string, label: string)}
-  <a {href} class='bg-white text-zinc-700 h-10 w-fit px-4 rounded-full active:scale-90 transition-transform active:opacity-50 flex items-center justify-center'>
-    {label}
-  </a>
-{/snippet}
