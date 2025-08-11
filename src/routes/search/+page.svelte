@@ -30,7 +30,7 @@
   <input
     type='text'
     bind:value={query.current}
-    class='bg-zinc-700 h-9 px-4 grow rounded-full'
+    class='bg-zinc-700 h-10 px-4 grow rounded-full'
     placeholder='Search'
   />
 

@@ -4,12 +4,12 @@
   import Button from '$lib/components/Button.svelte'
   import { global } from '$lib/global.svelte'
   import { getTrackSource } from '$lib/srv/hsl.remote'
-  import { ChevronDown, HouseIcon, LibraryIcon, PauseIcon, PlayIcon, SearchIcon } from '@lucide/svelte'
+  import { ChevronDown, PauseIcon, PlayIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
-  import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
-  import { slide } from 'svelte/transition'
+  import { haptic } from 'ios-haptics'
 
+  import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
   import '../app.css'
 
   const { children } = $props()
@@ -90,13 +90,10 @@
       {/if}
 
       <nav class='flex justify-center items-center gap-2 p-4'>
-        {#each [['/', 'Home', HouseIcon], ['/library', 'Library', LibraryIcon], ['/search', 'Search', SearchIcon]] as const as [href, label, Icon]}
+        {#each [['/', 'Home'], ['/library', 'Library'], ['/search', 'Search']] as const as [href, label]}
           {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
-          <Button {href} variant={isCurrent ? 'primary' : 'secondary'} class='gap-0'>
-            <Icon size={16} strokeWidth={3} class={!isCurrent ? 'opacity-50' : ''} />
-            {#if isCurrent}
-              <span transition:slide={{ axis: 'x' }} class='ml-2'>{label}</span>
-            {/if}
+          <Button {href} variant={isCurrent ? 'primary' : 'secondary'} onclick={haptic}>
+            {label}
           </Button>
         {/each}
       </nav>

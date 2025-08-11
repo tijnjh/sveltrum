@@ -7,6 +7,7 @@
         "arktype": "^2.1.20",
         "cnfn": "^0.0.2",
         "hls.js": "^1.6.9",
+        "ios-haptics": "^0.1.0",
         "nuqs-svelte": "^1.2.1",
         "ofetch": "^1.4.1",
       },
@@ -536,6 +537,8 @@
     "imurmurhash": ["imurmurhash@0.1.4", "", {}, "sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA=="],
 
     "indent-string": ["indent-string@5.0.0", "", {}, "sha512-m6FAo/spmsW2Ab2fU35JTYwtOKa2yAwXSwgjSv1TJzh4Mh7mC3lzAOVLBprb72XsTrgkEIsl7YrFNAiDiRhIGg=="],
+
+    "ios-haptics": ["ios-haptics@0.1.0", "", {}, "sha512-Fk0RApBYJeZNZ9pW3Wx3WcunhdLlpEnVNy/BOn85tx39eZDOHLGhXEb7medoIURGBUjXatOZf5Ozy0+OG466YA=="],
 
     "is-builtin-module": ["is-builtin-module@5.0.0", "", { "dependencies": { "builtin-modules": "^5.0.0" } }, "sha512-f4RqJKBUe5rQkJ2eJEJBXSticB3hGbN9j0yxxMQFqIW89Jp9WYFtzfTcRlstDKVUTRzSOTLKRfO9vIztenwtxA=="],
 

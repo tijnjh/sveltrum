@@ -14,6 +14,7 @@
     "arktype": "^2.1.20",
     "cnfn": "^0.0.2",
     "hls.js": "^1.6.9",
+    "ios-haptics": "^0.1.0",
     "nuqs-svelte": "^1.2.1",
     "ofetch": "^1.4.1"
   },
