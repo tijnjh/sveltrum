@@ -42,15 +42,6 @@
   {#if results}
     <div class='flex flex-col gap-4'>
       {#each results as track}
-        <!-- <button
-          class='grid grid-cols-[max-content_1fr] text-left grid-rows-2 h-fit justify-start'
-          onclick={() => { global.nowPlaying = track }}
-        >
-          <img src={track.artwork_url} alt="" class='size-9 row-span-2' />
-          <h3>{global.nowPlaying?.id === track.id ? 'Currently playing: ' : ''}{track.title}</h3>
-          {track.user.username}
-        </button> -->
-
         <button
           onclick={() => { global.nowPlaying = track }}
           class='items-center text-left gap-4 grid grid-cols-[auto_1fr] active:scale-95 transition-transform active:opacity-50'
