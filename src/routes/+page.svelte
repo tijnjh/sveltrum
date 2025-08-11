@@ -18,7 +18,6 @@
 
   </form>
   <div class='flex gap-4 justify-center'>
-
     {@render link('library', 'Liked songs')}
     {@render link('https://tijn.dev/sveltrum', 'Source')}
   </div>

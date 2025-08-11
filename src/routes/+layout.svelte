@@ -3,7 +3,7 @@
   import { page } from '$app/state'
   import { global } from '$lib/global.svelte'
   import { getTrackSource } from '$lib/srv/hsl.remote'
-  import { PauseIcon, PlayIcon } from '@lucide/svelte'
+  import { ChevronDown, PauseIcon, PlayIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
   import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
@@ -46,6 +46,8 @@
     }
   })
 
+  let showNowPlayingView = $state(false)
+
 </script>
 
 <svelte:boundary>
@@ -61,7 +63,8 @@
         <div class='p-4 border-b border-zinc-100/10'>
           <div class='items-center gap-4 grid grid-cols-[auto_1fr_auto]'>
             <img src={global.nowPlaying?.artwork_url} alt="" class=' rounded-md size-12 aspect-square'>
-            <div class='flex flex-col w-full min-w-0'>
+
+            <div class='flex flex-col w-full min-w-0' onclick={() => { showNowPlayingView = true }}>
               <h3 class='truncate'>{global.nowPlaying?.title}</h3>
               <p class='truncate opacity-50'>{global.nowPlaying?.user.username}</p>
             </div>
@@ -102,13 +105,35 @@
       </nav>
     </div>
 
-    {#key global.nowPlaying}
-      <audio
-        bind:this={audioEl}
-        class='max-md:w-12'
-      {@attach global.nowPlaying && applySource(global.nowPlaying)}>
-      </audio>
-    {/key}
+    {#if global.nowPlaying}
+      <div
+        class={cn(
+          'fixed inset-x-0 bg-zinc-800 flex flex-col gap-4 z-50 p-4 h-full transition-[top] duration-300',
+          showNowPlayingView ? 'top-0' : 'top-[100%]',
+        )}
+      >
+        <button
+          onclick={() => { showNowPlayingView = false }}
+          class='flex justify-center ml-auto items-center active:opacity-50 bg-zinc-100/10 rounded-full size-10 active:scale-90 transition-transform'
+        >
+          <ChevronDown size={16} strokeWidth={3} />
+        </button>
+
+        <img src={global.nowPlaying.artwork_url} class='w-full mt-12 rounded-xl' alt="">
+
+        <h1 class='text-2xl font-medium'>{global.nowPlaying.title}</h1>
+        <h3 class='text-xl text-white/50'>{global.nowPlaying.user.username}</h3>
+
+        {#key global.nowPlaying}
+          <audio
+            bind:this={audioEl}
+            controls={showNowPlayingView}
+          {@attach global.nowPlaying && applySource(global.nowPlaying)}>
+          </audio>
+        {/key}
+      </div>
+    {/if}
+
   </NuqsAdapter>
 
   {#snippet pending()}
