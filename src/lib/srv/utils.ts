@@ -1,3 +1,27 @@
+import { ofetch } from 'ofetch/node'
+import { z } from 'zod'
+
+export async function scApi<S extends z.ZodTypeAny | undefined, T = S extends z.ZodTypeAny ? z.infer<S> : any>({ path, params, schema }: { path: string, params?: Record<string, any>, schema?: S }): Promise<T | null> {
+  const response = await ofetch(`https://api-v2.soundcloud.com${path}`, {
+    params: {
+      ...params,
+      client_id: await getClientId(),
+    },
+  })
+
+  if (!schema)
+    return response as T
+
+  const { success, error, data } = schema.safeParse(response)
+
+  if (!success) {
+    console.error(z.prettifyError(error))
+    return null
+  }
+
+  return data as T
+}
+
 let clientId: string
 let clientIdExpiry: number
 

@@ -1,15 +1,15 @@
 import { query } from '$app/server'
-import { type } from 'arktype'
 import { ofetch } from 'ofetch/node'
-import { getClientId } from './client-id'
-import { getTrackById } from './soundcloud.remote'
+import { z } from 'zod'
+import { getTrackById } from './api.remote'
+import { getClientId } from './utils'
 
-export const getTrackSource = query(type('number'), async (trackId) => {
+export const getTrackSource = query(z.number(), async (trackId) => {
   const track = await getTrackById(trackId)
   const clientId = await getClientId()
 
   if (!track)
-    throw new Error('Failed to find track')
+    throw new Error('failed to find track')
 
   const hlsTranscodings = track.media.transcodings.filter(({ format }) => format.protocol === 'hls')
 
@@ -17,7 +17,7 @@ export const getTrackSource = query(type('number'), async (trackId) => {
     ?? hlsTranscodings.find(({ format }) => format.mime_type === 'audio/mpeg')
 
   if (!transcoding)
-    throw new Error('Failed to find HLS transcoding')
+    throw new Error('failed to find hls transcoding')
 
   const { url } = await ofetch(transcoding.url, {
     params: {

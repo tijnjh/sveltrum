@@ -1,13 +1,12 @@
 <script lang='ts'>
-  import type { Track } from '$lib/types'
-  import { page } from '$app/state'
+  import type { Track } from '$lib/schemas/track'
   import Button from '$lib/components/Button.svelte'
+  import Spinner from '$lib/components/Spinner.svelte'
   import { global } from '$lib/global.svelte'
   import { getTrackSource } from '$lib/srv/hsl.remote'
   import { ChevronDown, PauseIcon, PlayIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
-  import { haptic } from 'ios-haptics'
 
   import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
   import '../app.css'
@@ -56,17 +55,17 @@
 
   <NuqsAdapter>
 
-    <div class='mb-96'>
+    <div class='mb-32'>
       {@render children?.()}
     </div>
 
     <div class='bottom-0 fixed inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
       {#if global.nowPlaying}
-        <div class='p-4 border-zinc-100/10 border-b'>
+        <div class='p-4 border-zinc-100/10'>
           <div class='items-center gap-4 grid grid-cols-[1fr_auto]'>
 
             <button onclick={() => { showNowPlayingView = true }} class='flex text-left gap-4 truncate'>
-              <img src={global.nowPlaying?.artwork_url} alt="" class='rounded-md size-12 aspect-square'>
+              <img src={global.nowPlaying?.artwork_url} alt="" class='rounded size-12 aspect-square'>
 
               <div class='flex flex-col w-full min-w-0'>
                 <h3 class='truncate'>{global.nowPlaying?.title}</h3>
@@ -89,14 +88,14 @@
         </div>
       {/if}
 
-      <nav class='flex justify-center items-center gap-2 p-4'>
+      <!-- <nav class='flex justify-center items-center gap-2 p-4'>
         {#each [['/', 'Home'], ['/library', 'Library'], ['/search', 'Search']] as const as [href, label]}
           {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
           <Button {href} variant={isCurrent ? 'primary' : 'secondary'} onclick={haptic}>
             {label}
           </Button>
         {/each}
-      </nav>
+      </nav> -->
     </div>
 
     {#if global.nowPlaying}
@@ -130,7 +129,7 @@
   </NuqsAdapter>
 
   {#snippet pending()}
-    loading
+    <Spinner />
   {/snippet}
   {#snippet failed(error)}
     {error}
