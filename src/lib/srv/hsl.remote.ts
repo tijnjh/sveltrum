@@ -1,12 +1,19 @@
 import { query } from '$app/server'
-import { type } from 'arktype'
+import { FetchError } from '$lib/errors'
+import { Data, Effect, Schema as s } from 'effect'
+import { standardSchemaV1 as ss } from 'effect/Schema'
 import { ofetch } from 'ofetch/node'
 import { getClientId } from './client-id'
 import { getTrackById } from './soundcloud.remote'
 
-export const getTrackSource = query(type('number'), async (trackId) => {
-  const track = await getTrackById(trackId)
-  const clientId = await getClientId()
+class HlsTranscodingNotFoundError extends Data.TaggedError('HlsTranscodingNotFoundError')<{ message: string }> { }
+
+export const getTrackSource = query(ss(s.Number), Effect.fn(function* (trackId) {
+  const track = yield* yield* Effect.tryPromise({
+    try: () => getTrackById(trackId),
+    catch: () => new Error('failed'),
+  })
+  const clientId = yield* getClientId
 
   if (!track)
     throw new Error('Failed to find track')
@@ -17,14 +24,21 @@ export const getTrackSource = query(type('number'), async (trackId) => {
     ?? hlsTranscodings.find(({ format }) => format.mime_type === 'audio/mpeg')
 
   if (!transcoding)
-    throw new Error('Failed to find HLS transcoding')
+    return yield* new HlsTranscodingNotFoundError({ message: 'Failed to find HLS transcoding' })
 
-  const { url } = await ofetch(transcoding.url, {
-    params: {
-      track_authorization: track.track_authorization,
-      client_id: clientId,
-    },
+  const { url } = yield* Effect.tryPromise({
+    try: () => ofetch(transcoding.url.toString(), {
+      params: {
+        track_authorization: track.track_authorization,
+        client_id: clientId,
+      },
+    }),
+    catch: () => new FetchError({ message: 'failed to fetch' }),
   })
 
   return (Array.isArray(url) ? url[0] : url) as string
-})
+}))
+
+// export const getTrackSource = query(type('number'), async (trackId) => {
+
+// })

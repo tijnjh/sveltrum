@@ -1,14 +1,15 @@
 <script lang='ts'>
   import type { Snippet } from 'svelte'
-  import type { HTMLButtonAttributes } from 'svelte/elements'
+  import type { HTMLAnchorAttributes } from 'svelte/elements'
   import { cn } from 'cnfn'
 
-  const { variant = 'primary', size, class: className, children, href, ...props }: Partial<HTMLButtonAttributes & {
-    variant: 'primary' | 'secondary'
-    size?: 'icon'
-    children: Snippet
-    href: string
-  }> = $props()
+  const { variant = 'primary', size, children, href, ...props }:
+    Partial<HTMLAnchorAttributes & {
+      variant: 'primary' | 'secondary'
+      size?: 'icon'
+      children: Snippet
+      href: string
+    }> = $props()
 
 </script>
 
@@ -21,7 +22,7 @@
     variant === 'primary' && 'bg-white text-zinc-800',
     variant === 'secondary' && 'bg-zinc-100/10',
     size === 'icon' ? 'size-10' : 'h-10 px-4',
-    className,
+    props.class,
   )}
 >
   {@render children?.()}

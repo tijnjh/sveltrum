@@ -1,42 +1,35 @@
 import { query } from '$app/server'
-import { type } from 'arktype'
+import { FetchError } from '$lib/errors'
+import { Effect, Schema as s } from 'effect'
+import { standardSchemaV1 as ss } from 'effect/Schema'
 import { ofetch } from 'ofetch'
 import { track } from '../types'
 import { getClientId } from './client-id'
 
-async function scApi(path: string, params?: Record<string, any>) {
-  return ofetch(`https://api-v2.soundcloud.com${path}`, {
-    params: {
-      client_id: await getClientId(),
-      ...params,
-    },
+const scApi = Effect.fn(function* (path: string, params?: Record<string, any>) {
+  return yield* Effect.tryPromise({
+    try: () => ofetch(`https://api-v2.soundcloud.com${path}`, {
+      params: {
+        client_id: Effect.runSync(getClientId),
+        ...params,
+      },
+    }),
+    catch: () => new FetchError({ message: 'failed to fetch' }),
   })
-}
-
-export const getResults = query(type({ 'query': 'string', 'limit?': 'number' }), async ({ query, limit = 20 }) => {
-  const res = await scApi('/search/tracks', { q: query, limit })
-
-  const out = track.array()(res.collection)
-
-  if (out instanceof type.errors) {
-    console.error(out.summary)
-    return null
-  }
-
-  return out
 })
 
-export const getTrackById = query(type('number | string'), async (trackId) => {
-  const res = await scApi(`/tracks/${trackId}`)
-
-  const out = track(res)
-
-  if (out instanceof type.errors) {
-    console.error(out.summary)
-    return null
-  }
-
+export const getResults = query(ss(s.Struct({ query: s.String, limit: s.UndefinedOr(s.Number) })), Effect.fn(function* ({ query, limit = 20 }) {
+  const res = yield* scApi('/search/tracks', { q: query, limit })
+  const out = yield* s.decode(s.Array(track))(res)
   return out
-})
+}))
 
-export const getScClientId = query(async () => await getClientId())
+export const getTrackById = query(ss(s.Union(s.String, s.Number)), Effect.fn(function* (trackId) {
+  const res = yield* scApi(`/tracks/${trackId}`)
+  const out = yield* s.decode(track)(res)
+  return out
+}))
+
+// export const getScClientId = query(Effect.gen(function* () {
+//   return yield* getClientId
+// }))

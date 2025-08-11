@@ -6,6 +6,7 @@
   import { SearchIcon } from '@lucide/svelte'
   import { useQueryState } from 'nuqs-svelte'
   import { onMount } from 'svelte'
+    import { Micro } from 'effect';
 
   const query = useQueryState('q')
 
@@ -21,7 +22,8 @@
     e && e.preventDefault()
 
     if (query.current) {
-      results = await getResults({ query: query.current, limit: 50 })
+      results = await Micro.runPromise( getResults({ query: query.current, limit: 50 }))
+      results = await
     }
   }
 </script>

@@ -11,8 +11,8 @@
     "start": "node ./build"
   },
   "dependencies": {
-    "arktype": "^2.1.20",
     "cnfn": "^0.0.2",
+    "effect": "^3.17.7",
     "hls.js": "^1.6.9",
     "nuqs-svelte": "^1.2.1",
     "ofetch": "^1.4.1"
