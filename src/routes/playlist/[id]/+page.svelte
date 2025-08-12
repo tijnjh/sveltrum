@@ -31,7 +31,6 @@
           <TrackListing {track} inAlbum />
         {/each}
       {/if}
-
     {/await}
   {/if}
 </main>

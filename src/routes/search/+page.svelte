@@ -19,7 +19,7 @@
 
   let results = $state<(Track | Playlist | User)[]>([])
 
-  let query = $state('')
+  let query = $state($params.q)
 
   onMount(() => {
     $params.q && doFetch()
@@ -27,10 +27,9 @@
 
   function searchFor(kind: string) {
     switch (kind) {
-      case 'tracks': return searchTracks
       case 'playlists': return searchPlaylists
       case 'users': return searchUsers
-      default: throw new Error(`unknown kind: ${kind}`)
+      default: return searchTracks
     }
   }
 

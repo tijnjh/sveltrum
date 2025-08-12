@@ -23,9 +23,8 @@
 
   function getUser(kind: string) {
     switch (kind) {
-      case 'tracks': return getUserTracks
       case 'playlists': return getUserPlaylists
-      default: throw new Error(`unknown kind: ${kind}`)
+      default: return getUserTracks
     }
   }
 

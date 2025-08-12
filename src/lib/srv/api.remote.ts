@@ -65,7 +65,7 @@ export const searchTracks = query(searchSchema, async (opts) => {
 
 export const searchPlaylists = query(searchSchema, async (opts) => {
   return baseSearch({
-    kind: 'playlist',
+    kind: 'playlists',
     schema: playlist,
     ...opts,
   })
