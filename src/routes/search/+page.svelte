@@ -9,18 +9,20 @@
   import Spinner from '$lib/components/Spinner.svelte'
   import { searchPlaylists, searchTracks, searchUsers } from '$lib/srv/api.remote'
   import { SearchIcon } from '@lucide/svelte'
-  import { parseAsStringEnum, useQueryState } from 'nuqs-svelte'
+
   import { onMount } from 'svelte'
+  import { queryParameters } from 'sveltekit-search-params'
 
   let isLoading = $state(false)
 
-  const qSearch = useQueryState('q')
-  const qKind = useQueryState('kind', parseAsStringEnum(['tracks', 'playlists', 'users']).withDefault('tracks'))
+  const params = queryParameters({ q: true, kind: true })
 
   let results = $state<(Track | Playlist | User)[]>([])
 
+  let query = $state('')
+
   onMount(() => {
-    qSearch && doFetch()
+    $params.q && doFetch()
   })
 
   function searchFor(kind: string) {
@@ -35,11 +37,11 @@
   let currentOffset = $state(0)
 
   async function doFetch() {
-    if (qSearch.current) {
+    if ($params.q) {
       isLoading = true
 
-      const newResults = await searchFor(qKind.current)({
-        query: qSearch.current,
+      const newResults = await searchFor($params.kind ?? 'tracks')({
+        query: $params.q,
         limit: 16,
         offset: currentOffset,
       })
@@ -51,12 +53,13 @@
 </script>
 
 <svelte:head>
-  <title>results for '{qSearch.current}' &bull; sveltrum</title>
+  <title>results for '{$params.q}' &bull; sveltrum</title>
 </svelte:head>
 
 <div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
   <form
     onsubmit={(e) => {
+      $params.q = query
       e.preventDefault()
       results = []
       currentOffset = 0
@@ -66,7 +69,7 @@
   >
     <input
       type='text'
-      bind:value={qSearch.current}
+      bind:value={query}
       class='bg-zinc-700 h-10 px-4 grow rounded-full'
       placeholder='Search'
     />
@@ -78,10 +81,10 @@
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists', 'users'] as kind}
       <Button
-        variant={qKind.current === kind ? 'primary' : 'secondary'}
+        variant={$params.kind === kind ? 'primary' : 'secondary'}
         class='capitalize'
         onclick={() => {
-          qKind.current = kind as typeof qKind.current
+          $params.kind = kind
           results = []
           currentOffset = 0
           doFetch()
@@ -96,11 +99,11 @@
 <main class='p-4'>
   <div class='flex flex-col gap-4'>
     {#each results as result}
-      {#if qKind.current === 'tracks'}
+      {#if $params.kind === 'tracks'}
         <TrackListing track={result as Track} />
-      {:else if qKind.current === 'playlists'}
+      {:else if $params.kind === 'playlists'}
         <PlaylistListing playlist={result as Playlist} />
-      {:else if qKind.current === 'users'}
+      {:else if $params.kind === 'users'}
         <UserListing user={result as User} />
       {/if}
     {/each}

@@ -9,15 +9,15 @@
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { getUserById, getUserPlaylists, getUserTracks } from '$lib/srv/api.remote'
-  import { parseAsStringEnum, useQueryState } from 'nuqs-svelte'
+  import { queryParameters } from 'sveltekit-search-params'
 
   const id = Number(page.params!.id)
   //  @ts-expect-error
   const user = await getUserById(id)
 
-  let isLoading = $state(false)
+  const params = queryParameters({ kind: true })
 
-  const qKind = useQueryState('kind', parseAsStringEnum(['tracks', 'playlists', 'users']).withDefault('tracks'))
+  let isLoading = $state(false)
 
   let results = $state<(Track | Playlist | User)[]>([])
 
@@ -34,7 +34,7 @@
   async function doFetch() {
     isLoading = true
 
-    const newResults = await getUser(qKind.current)({
+    const newResults = await getUser($params.kind ?? 'tracks')({
       id,
       limit: 16,
       offset: currentOffset,
@@ -67,10 +67,10 @@
     <div class='flex gap-2'>
       {#each ['tracks', 'playlists'] as kind}
         <Button
-          variant={qKind.current === kind ? 'primary' : 'secondary'}
+          variant={$params.kind === kind ? 'primary' : 'secondary'}
           class='capitalize'
           onclick={() => {
-            qKind.current = kind as typeof qKind.current
+            $params.kind = kind
             results = []
             currentOffset = 0
             doFetch()
@@ -83,11 +83,11 @@
 
     <div class='flex flex-col gap-4'>
       {#each results as result}
-        {#if qKind.current === 'tracks'}
+        {#if $params.kind === 'tracks'}
           <TrackListing track={result as Track} />
-        {:else if qKind.current === 'playlists'}
+        {:else if $params.kind === 'playlists'}
           <PlaylistListing playlist={result as Playlist} />
-        {:else if qKind.current === 'users'}
+        {:else if $params.kind === 'users'}
           <UserListing user={result as User} />
         {/if}
       {/each}
