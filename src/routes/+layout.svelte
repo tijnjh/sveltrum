@@ -115,7 +115,9 @@
         <img src={global.nowPlaying.artwork_url} class='mt-12 rounded-xl w-full md:max-w-md' alt="">
 
         <h1 class='font-medium text-2xl'>{global.nowPlaying.title}</h1>
-        <h3 class='text-white/50 text-xl'>{global.nowPlaying.user.username}</h3>
+        <a href='/user/{global.nowPlaying.user.id}' class='text-white/50 text-xl' onclick={() => showNowPlayingView = false}>
+          {global.nowPlaying.user.username}
+        </a>
 
         {#key global.nowPlaying}
           <audio

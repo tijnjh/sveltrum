@@ -4,7 +4,7 @@
   import { getPlaylistById, getTracksByIds } from '$lib/srv/api.remote'
 
   const id = Number(page.params!.id)
-  // @ts-expect-error stfu vro
+  //  @ts-expect-error
   const playlist = await getPlaylistById(id)
 </script>
 

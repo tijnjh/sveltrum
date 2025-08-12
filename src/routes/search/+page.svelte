@@ -17,10 +17,10 @@
   const qSearch = useQueryState('q')
   const qKind = useQueryState('kind', parseAsStringEnum(['tracks', 'playlists', 'users']).withDefault('tracks'))
 
-  let results: any[] | null | undefined = $state(null)
+  let results = $state<(Track | Playlist | User)[]>([])
 
   onMount(() => {
-    qSearch && doSearch()
+    qSearch && doFetch()
   })
 
   function searchFor(kind: string) {
@@ -32,10 +32,19 @@
     }
   }
 
-  async function doSearch() {
+  let currentOffset = $state(0)
+
+  async function doFetch() {
     if (qSearch.current) {
       isLoading = true
-      results = await searchFor(qKind.current)({ query: qSearch.current, limit: 10 })
+
+      const newResults = await searchFor(qKind.current)({
+        query: qSearch.current,
+        limit: 16,
+        offset: currentOffset,
+      })
+
+      results = [...results, ...newResults]
       isLoading = false
     }
   }
@@ -49,7 +58,9 @@
   <form
     onsubmit={(e) => {
       e.preventDefault()
-      doSearch()
+      results = []
+      currentOffset = 0
+      doFetch()
     }}
     class='flex gap-2'
   >
@@ -71,7 +82,9 @@
         class='capitalize'
         onclick={() => {
           qKind.current = kind as typeof qKind.current
-          doSearch()
+          results = []
+          currentOffset = 0
+          doFetch()
         }}
       >
         {kind}
@@ -81,21 +94,29 @@
 </div>
 
 <main class='p-4'>
+  <div class='flex flex-col gap-4'>
+    {#each results as result}
+      {#if qKind.current === 'tracks'}
+        <TrackListing track={result as Track} />
+      {:else if qKind.current === 'playlists'}
+        <PlaylistListing playlist={result as Playlist} />
+      {:else if qKind.current === 'users'}
+        <UserListing user={result as User} />
+      {/if}
+    {/each}
+  </div>
+
   {#if isLoading}
     <Spinner />
   {:else}
-    {#if results}
-      <div class='flex flex-col gap-4'>
-        {#each results as result}
-          {#if qKind.current === 'tracks'}
-            <TrackListing track={result as Track} />
-          {:else if qKind.current === 'playlists'}
-            <PlaylistListing playlist={result as Playlist} />
-          {:else if qKind.current === 'users'}
-            <UserListing user={result as User} />
-          {/if}
-        {/each}
-      </div>
-    {/if}
+    <Button
+      class='w-full mt-8'
+      onclick={() => {
+        currentOffset += 16
+        doFetch()
+      }}
+    >
+      Load more
+    </Button>
   {/if}
 </main>
