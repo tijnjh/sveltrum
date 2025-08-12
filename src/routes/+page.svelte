@@ -18,8 +18,8 @@
     </Button>
   </form>
   <div class='flex gap-4 justify-center'>
-    <Button href='/library'>Liked songs</Button>
-    <Button href='https://tijn.dev/sveltrum'>Source</Button>
+    <!-- <Button href='/library'>Liked songs</Button> -->
+    <Button href='https://tijn.dev/sveltrum'>View on GitHub</Button>
   </div>
 
 </div>
