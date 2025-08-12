@@ -15,7 +15,14 @@
 
   let isLoading = $state(false)
 
-  const params = queryParameters({ q: true, kind: true })
+  const params = queryParameters({
+    q: true,
+    kind: {
+      encode: v => v,
+      decode: v => v,
+      defaultValue: 'tracks',
+    },
+  })
 
   let results = $state<(Track | Playlist | User)[]>([])
 

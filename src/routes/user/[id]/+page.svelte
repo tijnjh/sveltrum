@@ -15,7 +15,13 @@
   //  @ts-expect-error
   const user = await getUserById(id)
 
-  const params = queryParameters({ kind: true })
+  const params = queryParameters({
+    kind: {
+      encode: v => v,
+      decode: v => v,
+      defaultValue: 'tracks',
+    },
+  })
 
   let isLoading = $state(false)
 
