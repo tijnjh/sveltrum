@@ -3,12 +3,13 @@
   import type { Track } from '$lib/schemas/track'
   import type { User } from '$lib/schemas/user'
   import { page } from '$app/state'
+  import { getUserById } from '$lib/api/get-by-id.remote'
+  import { getUserPlaylists, getUserTracks } from '$lib/api/user.remote'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
-  import { getUserById, getUserPlaylists, getUserTracks } from '$lib/srv/api.remote'
   import { queryParameters } from 'sveltekit-search-params'
 
   const id = Number(page.params!.id)
@@ -34,16 +35,18 @@
     }
   }
 
-  let currentOffset = $state(0)
+  let currentIndex = $state(0)
+  let hasMoreResults = $state(true)
 
   async function doFetch() {
     isLoading = true
 
-    const newResults = await getUser($params.kind ?? 'tracks')({
+    const { results: newResults, hasMore } = await getUser($params.kind ?? 'tracks')({
       id,
-      limit: 32,
-      offset: currentOffset,
+      index: currentIndex,
     })
+
+    hasMoreResults = hasMore
 
     results = [...results, ...newResults]
     isLoading = false
@@ -77,7 +80,7 @@
           onclick={() => {
             $params.kind = kind
             results = []
-            currentOffset = 0
+            currentIndex = 0
             doFetch()
           }}
         >
@@ -100,11 +103,11 @@
 
     {#if isLoading}
       <Spinner />
-    {:else}
+    {:else if hasMoreResults}
       <Button
         class='w-full mt-8'
         onclick={() => {
-          currentOffset += 32
+          currentIndex++
           doFetch()
         }}
       >

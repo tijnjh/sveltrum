@@ -2,14 +2,13 @@
   import type { Playlist } from '$lib/schemas/playlist'
   import type { Track } from '$lib/schemas/track'
   import type { User } from '$lib/schemas/user'
+  import { searchPlaylists, searchTracks, searchUsers } from '$lib/api/search.remote'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
-  import { searchPlaylists, searchTracks, searchUsers } from '$lib/srv/api.remote'
   import { SearchIcon } from '@lucide/svelte'
-
   import { onMount } from 'svelte'
   import { queryParameters } from 'sveltekit-search-params'
 
@@ -40,17 +39,21 @@
     }
   }
 
-  let currentOffset = $state(0)
+  let currentIndex = $state(0)
+
+  let hasMoreResults = $state(false)
 
   async function doFetch() {
     if ($params.q) {
       isLoading = true
 
-      const newResults = await searchFor($params.kind ?? 'tracks')({
+      const { results: newResults, hasMore } = await searchFor($params.kind ?? 'tracks')({
         query: $params.q,
         limit: 32,
-        offset: currentOffset,
+        index: currentIndex,
       })
+
+      hasMoreResults = hasMore
 
       results = [...results, ...newResults]
       isLoading = false
@@ -68,7 +71,7 @@
       $params.q = query
       e.preventDefault()
       results = []
-      currentOffset = 0
+      currentIndex = 0
       doFetch()
     }}
     class='flex gap-2'
@@ -92,7 +95,7 @@
         onclick={() => {
           $params.kind = kind
           results = []
-          currentOffset = 0
+          currentIndex = 0
           doFetch()
         }}
       >
@@ -118,11 +121,11 @@
   {#if isLoading}
     <Spinner />
   {:else}
-    {#if $params.q}
+    {#if $params.q && hasMoreResults}
       <Button
         class='w-full mt-8'
         onclick={() => {
-          currentOffset += 32
+          currentIndex++
           doFetch()
         }}
       >

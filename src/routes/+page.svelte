@@ -1,7 +1,7 @@
 <script lang='ts'>
+  import { getSelections } from '$lib/api/discovery.remote'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
-  import { getSelections } from '$lib/srv/api.remote'
 
   // @ts-expect-error tla
   const selections = await getSelections()

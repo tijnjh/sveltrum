@@ -1,10 +1,10 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
   import { page } from '$app/state'
+  import { getTrackSource } from '$lib/api/hsl.remote'
   import Button from '$lib/components/Button.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { global } from '$lib/global.svelte'
-  import { getTrackSource } from '$lib/srv/hsl.remote'
   import { ChevronDown, PauseIcon, PlayIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'

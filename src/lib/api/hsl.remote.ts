@@ -1,7 +1,7 @@
 import { query } from '$app/server'
 import { ofetch } from 'ofetch/node'
 import { z } from 'zod'
-import { getTrackById } from './api.remote'
+import { getTrackById } from './get-by-id.remote'
 import { getClientId } from './utils'
 
 export const getTrackSource = query(z.number(), async (trackId) => {

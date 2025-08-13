@@ -1,10 +1,10 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
   import { page } from '$app/state'
+  import { getPlaylistById, getTracksByIds } from '$lib/api/get-by-id.remote'
   import Button from '$lib/components/Button.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
-  import { getPlaylistById, getTracksByIds } from '$lib/srv/api.remote'
 
   const id = Number(page.params!.id)
   //  @ts-expect-error tla
@@ -62,18 +62,16 @@
 
     {#if isLoading}
       <Spinner />
-    {:else}
-      {#if hasMoreTracks}
-        <Button
-          class='w-full mt-8'
-          onclick={() => {
-            currentIndex++
-            doFetch()
-          }}
-        >
-          Load more
-        </Button>
-      {/if}
+    {:else if hasMoreTracks}
+      <Button
+        class='w-full mt-8'
+        onclick={() => {
+          currentIndex++
+          doFetch()
+        }}
+      >
+        Load more
+      </Button>
     {/if}
   {/if}
 </main>
