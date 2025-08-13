@@ -118,14 +118,16 @@
   {#if isLoading}
     <Spinner />
   {:else}
-    <Button
-      class='w-full mt-8'
-      onclick={() => {
-        currentOffset += 16
-        doFetch()
-      }}
-    >
-      Load more
-    </Button>
+    {#if $params.q}
+      <Button
+        class='w-full mt-8'
+        onclick={() => {
+          currentOffset += 16
+          doFetch()
+        }}
+      >
+        Load more
+      </Button>
+    {/if}
   {/if}
 </main>

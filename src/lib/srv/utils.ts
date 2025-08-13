@@ -1,7 +1,7 @@
 import { ofetch } from 'ofetch/node'
 import { z } from 'zod'
 
-export async function scApi<S extends z.ZodTypeAny | undefined, T = S extends z.ZodTypeAny ? z.infer<S> : any>({ path, params, schema }: { path: string, params?: Record<string, any>, schema?: S }): Promise<T | null> {
+export async function $api<S extends z.ZodTypeAny | undefined, T = S extends z.ZodTypeAny ? z.infer<S> : any>({ path, params, schema }: { path: string, params?: Record<string, any>, schema?: S }): Promise<T> {
   const response = await ofetch(`https://api-v2.soundcloud.com${path}`, {
     params: {
       ...params,
@@ -16,8 +16,11 @@ export async function scApi<S extends z.ZodTypeAny | undefined, T = S extends z.
 
   if (!success) {
     console.error(z.prettifyError(error))
-    return null
+    throw new Error('failed to pass validation')
   }
+
+  if (!data)
+    throw new Error('response is nullish')
 
   return data as T
 }

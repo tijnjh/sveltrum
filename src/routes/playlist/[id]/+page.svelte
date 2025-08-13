@@ -4,7 +4,7 @@
   import { getPlaylistById, getTracksByIds } from '$lib/srv/api.remote'
 
   const id = Number(page.params!.id)
-  //  @ts-expect-error
+  //  @ts-expect-error tla
   const playlist = await getPlaylistById(id)
 </script>
 
@@ -24,13 +24,15 @@
         <p>{new Date(playlist.release_date!).getFullYear()}</p>
       </hgroup>
     </div>
-    {@const ids = playlist.tracks.map(({ id }) => id)}
-    {#await getTracksByIds(ids) then tracks}
-      {#if tracks}
-        {#each tracks as track}
-          <TrackListing {track} inAlbum />
-        {/each}
-      {/if}
-    {/await}
+    {#if playlist.tracks}
+      {@const ids = playlist.tracks.map(({ id }) => id)}
+      {#await getTracksByIds(ids) then tracks}
+        {#if tracks}
+          {#each tracks as track}
+            <TrackListing {track} inAlbum />
+          {/each}
+        {/if}
+      {/await}
+    {/if}
   {/if}
 </main>

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { user } from './user'
 
-export const track = z.strictObject({
+export const track = z.object({
   artwork_url: z.url().nullable(),
   caption: z.string().nullable(),
   commentable: z.boolean(),
@@ -25,7 +25,7 @@ export const track = z.strictObject({
   permalink_url: z.url(),
   playback_count: z.number().nullable(),
   public: z.boolean(),
-  publisher_metadata: z.strictObject({
+  publisher_metadata: z.object({
     id: z.number(),
     urn: z.string(),
     artist: z.string().optional(),
@@ -56,10 +56,10 @@ export const track = z.strictObject({
   uri: z.url(),
   urn: z.string(),
   user_id: z.number(),
-  visuals: z.strictObject({
+  visuals: z.object({
     urn: z.string(),
     enabled: z.boolean(),
-    visuals: z.strictObject({
+    visuals: z.object({
       urn: z.string(),
       entry_time: z.number(),
       visual_url: z.url(),
@@ -69,10 +69,10 @@ export const track = z.strictObject({
   }).nullable(),
   waveform_url: z.url(),
   display_date: z.iso.datetime(),
-  media: z.strictObject({
+  media: z.object({
     transcodings: z
       .array(
-        z.strictObject({
+        z.object({
           url: z.url(),
           preset: z.enum(['opus_0_0', 'aac_160k', 'mp3_0_0', 'abr_sq', 'mp3_1_0', 'mp3_0_1', 'mp3_standard']),
           duration: z.number(),

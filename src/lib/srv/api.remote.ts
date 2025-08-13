@@ -3,37 +3,37 @@ import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
 import { z } from 'zod'
-import { scApi } from './utils'
+import { $api } from './utils'
 
-export const getTrackById = query(z.number(), async id => await scApi({
+export const getTrackById = query(z.number(), async id => await $api({
   path: `/tracks/${id}`,
   schema: track,
 }))
 
-export const getPlaylistById = query(z.number(), async id => await scApi({
+export const getPlaylistById = query(z.number(), async id => await $api({
   path: `/playlists/${id}`,
   schema: playlist,
 }))
 
-export const getUserById = query(z.number(), async id => await scApi({
+export const getUserById = query(z.number(), async id => await $api({
   path: `/users/${id}`,
   schema: user,
 }))
 
 //
 
-export const getTracksByIds = query(z.number().array(), async ids => await scApi({
+export const getTracksByIds = query(z.number().array(), async ids => await $api({
   path: `/tracks`,
   params: { ids: ids.join(',') },
   schema: track.array(),
 }))
 
 //
-//
+// search
 //
 
 async function baseSearch<T extends z.ZodType>({ kind, schema, query, limit, offset }: { kind: string, schema: T, query: string, limit?: number, offset?: number }) {
-  const response = await scApi({
+  const res = await $api({
     path: `/search/${kind}`,
     params: { q: query, limit, offset },
     schema: z.object({
@@ -41,10 +41,7 @@ async function baseSearch<T extends z.ZodType>({ kind, schema, query, limit, off
     }),
   })
 
-  if (!response)
-    throw new Error('response is nullish')
-
-  return response.collection
+  return res.collection
 }
 
 const searchSchema = z.object({
@@ -80,11 +77,11 @@ export const searchUsers = query(searchSchema, async (opts) => {
 })
 
 //
-//
+// user
 //
 
 async function baseGetUser<T extends z.ZodType>({ id, kind, schema, limit, offset }: { id: number, kind: string, schema: T, limit?: number, offset?: number }) {
-  const response = await scApi({
+  const res = await $api({
     path: `/users/${id}/${kind}`,
     params: { limit, offset },
     schema: z.object({
@@ -92,10 +89,7 @@ async function baseGetUser<T extends z.ZodType>({ id, kind, schema, limit, offse
     }),
   })
 
-  if (!response)
-    throw new Error('response is nullish')
-
-  return response.collection
+  return res.collection
 }
 
 const getUserSchema = z.object({
@@ -120,4 +114,23 @@ export const getUserPlaylists = query(getUserSchema, async (opts) => {
     schema: playlist,
     ...opts,
   })
+})
+
+//
+// discovery
+//
+
+export const getSelections = query(async () => {
+  const res = await $api({
+    path: '/mixed-selections',
+    schema: z.object({
+      collection: z.object({
+        items: z.object({
+          collection: playlist.array(),
+        }),
+      }).array(),
+    }),
+  })
+
+  return res.collection
 })

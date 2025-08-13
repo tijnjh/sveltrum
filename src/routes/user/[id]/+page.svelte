@@ -12,7 +12,7 @@
   import { queryParameters } from 'sveltekit-search-params'
 
   const id = Number(page.params!.id)
-  //  @ts-expect-error
+  //  @ts-expect-error tla
   const user = await getUserById(id)
 
   const params = queryParameters({

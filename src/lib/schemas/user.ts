@@ -1,18 +1,18 @@
 import { z } from 'zod'
 
-export const user = z.strictObject({
+export const user = z.object({
   avatar_url: z.url(),
   city: z.string().nullable(),
   comments_count: z.number().optional(),
   country_code: z.string().nullable(),
   created_at: z.iso.datetime().optional(),
-  creator_subscriptions: z.strictObject({
-    product: z.strictObject({
+  creator_subscriptions: z.object({
+    product: z.object({
       id: z.string(),
     }),
   }).array().optional(),
-  creator_subscription: z.strictObject({
-    product: z.strictObject({
+  creator_subscription: z.object({
+    product: z.object({
       id: z.string(),
     }),
   }).optional(),
@@ -37,10 +37,10 @@ export const user = z.strictObject({
   urn: z.string(),
   username: z.string(),
   verified: z.boolean(),
-  visuals: z.strictObject({
+  visuals: z.object({
     urn: z.string(),
     enabled: z.boolean(),
-    visuals: z.strictObject({
+    visuals: z.object({
       urn: z.string(),
       entry_time: z.number(),
       visual_url: z.url(),
@@ -48,14 +48,14 @@ export const user = z.strictObject({
     }).array(),
     tracking: z.null(),
   }).nullish(),
-  badges: z.strictObject({
+  badges: z.object({
     pro: z.boolean(),
     creator_mid_tier: z.boolean(),
     pro_unlimited: z.boolean(),
     verified: z.boolean(),
   }),
-  station_urn: z.string(),
-  station_permalink: z.string(),
+  station_urn: z.string().optional(),
+  station_permalink: z.string().optional(),
   date_of_birth: z.string().nullish(),
 })
 

@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
+  import { page } from '$app/state'
   import Button from '$lib/components/Button.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { global } from '$lib/global.svelte'
@@ -7,7 +8,7 @@
   import { ChevronDown, PauseIcon, PlayIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
-
+  import { haptic } from 'ios-haptics'
   import '../app.css'
 
   const { children } = $props()
@@ -84,14 +85,14 @@
       </div>
     {/if}
 
-    <!-- <nav class='flex justify-center items-center gap-2 p-4'>
-        {#each [['/', 'Home'], ['/library', 'Library'], ['/search', 'Search']] as const as [href, label]}
-          {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
-          <Button {href} variant={isCurrent ? 'primary' : 'secondary'} onclick={haptic}>
-            {label}
-          </Button>
-        {/each}
-      </nav> -->
+    <nav class='flex justify-center items-center gap-2 p-4'>
+      {#each [['/', 'Home'], ['/search', 'Search']] as const as [href, label]}
+        {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
+        <Button {href} variant={isCurrent ? 'primary' : 'secondary'} onclick={haptic}>
+          {label}
+        </Button>
+      {/each}
+    </nav>
   </div>
 
   {#if global.nowPlaying}
