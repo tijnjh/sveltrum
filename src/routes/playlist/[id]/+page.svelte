@@ -44,34 +44,31 @@
   <link rel='icon' href={playlist?.artwork_url} />
 </svelte:head>
 
+{#if playlist.artwork_url}
+  <img src={playlist.artwork_url} class='w-full md:max-w-md' alt="">
+{/if}
+
+<div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
+  <h1 class='font-medium text-2xl'>{playlist.title}</h1>
+</div>
+
 <main class='p-4 flex flex-col gap-4'>
-  {#if playlist}
-    <div class='flex items-center mb-8 gap-4 justify-start'>
-      {#if playlist.artwork_url}
-        <img src={playlist.artwork_url} class='rounded' alt='Album cover for {playlist.title}'>
-      {/if}
-      <hgroup>
-        <h1 class='font-medium text-2xl'>{playlist.title}</h1>
-        <p>{new Date(playlist.release_date!).getFullYear()}</p>
-      </hgroup>
-    </div>
 
-    {#each tracks as track}
-      <TrackListing {track} inAlbum={playlist.is_album} />
-    {/each}
+  {#each tracks as track}
+    <TrackListing {track} inAlbum={playlist.is_album} />
+  {/each}
 
-    {#if isLoading}
-      <Spinner />
-    {:else if hasMoreTracks}
-      <Button
-        class='w-full mt-8'
-        onclick={() => {
-          currentIndex++
-          doFetch()
-        }}
-      >
-        Load more
-      </Button>
-    {/if}
+  {#if isLoading}
+    <Spinner />
+  {:else if hasMoreTracks}
+    <Button
+      class='w-full mt-8'
+      onclick={() => {
+        currentIndex++
+        doFetch()
+      }}
+    >
+      Load more
+    </Button>
   {/if}
 </main>

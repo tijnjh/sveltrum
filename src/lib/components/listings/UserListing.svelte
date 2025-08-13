@@ -9,9 +9,11 @@
   href='/user/{user.id}'
   class='items-center text-left gap-4 grid grid-cols-[auto_1fr] active:scale-95 transition-transform active:opacity-50'
 >
-  <ListingThumbnail src={user.avatar_url} alt='Profile picture of {user.username}' />
+  <ListingThumbnail src={user.avatar_url} alt='Profile picture of {user.username}' class='rounded-full' />
   <div class='flex flex-col w-full min-w-0'>
     <h3 class='truncate'>{user.username}</h3>
-    <p class='truncate opacity-50'>{user.followers_count?.toLocaleString()} followers</p>
+    {#if user.full_name !== user.username}
+      <p class='truncate opacity-50'>{user.full_name}</p>
+    {/if}
   </div>
 </a>

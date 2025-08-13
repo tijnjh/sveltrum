@@ -60,59 +60,54 @@
   <link rel='icon' href={user?.avatar_url} />
 </svelte:head>
 
+<img src={user.avatar_url} class='w-full md:max-w-md' alt="">
+
+<div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
+  <h1 class='font-medium text-2xl'>{user.username}</h1>
+</div>
+
 <main class='p-4 flex flex-col gap-4'>
-  {#if user}
-    <div class='flex items-center gap-4 justify-start'>
-      {#if user.avatar_url}
-        <img src={user.avatar_url} class='rounded' alt='Album cover for {user.username}'>
-      {/if}
-      <hgroup>
-        <h1 class='font-medium text-2xl'>{user.username}</h1>
-        <p>{user.followers_count.toLocaleString()} followers</p>
-      </hgroup>
-    </div>
 
-    <div class='flex gap-2'>
-      {#each ['tracks', 'playlists'] as kind}
-        <Button
-          variant={$params.kind === kind ? 'primary' : 'secondary'}
-          class='capitalize'
-          onclick={() => {
-            $params.kind = kind
-            results = []
-            currentIndex = 0
-            doFetch()
-          }}
-        >
-          {kind}
-        </Button>
-      {/each}
-    </div>
-
-    <div class='flex flex-col gap-4'>
-      {#each results as result}
-        {#if $params.kind === 'tracks'}
-          <TrackListing track={result as Track} />
-        {:else if $params.kind === 'playlists'}
-          <PlaylistListing playlist={result as Playlist} />
-        {:else if $params.kind === 'users'}
-          <UserListing user={result as User} />
-        {/if}
-      {/each}
-    </div>
-
-    {#if isLoading}
-      <Spinner />
-    {:else if hasMoreResults}
+  <div class='flex gap-2'>
+    {#each ['tracks', 'playlists'] as kind}
       <Button
-        class='w-full mt-8'
+        variant={$params.kind === kind ? 'primary' : 'secondary'}
+        class='capitalize'
         onclick={() => {
-          currentIndex++
+          $params.kind = kind
+          results = []
+          currentIndex = 0
           doFetch()
         }}
       >
-        Load more
+        {kind}
       </Button>
-    {/if}
+    {/each}
+  </div>
+
+  <div class='flex flex-col gap-4'>
+    {#each results as result}
+      {#if $params.kind === 'tracks'}
+        <TrackListing track={result as Track} />
+      {:else if $params.kind === 'playlists'}
+        <PlaylistListing playlist={result as Playlist} />
+      {:else if $params.kind === 'users'}
+        <UserListing user={result as User} />
+      {/if}
+    {/each}
+  </div>
+
+  {#if isLoading}
+    <Spinner />
+  {:else if hasMoreResults}
+    <Button
+      class='w-full mt-8'
+      onclick={() => {
+        currentIndex++
+        doFetch()
+      }}
+    >
+      Load more
+    </Button>
   {/if}
 </main>
