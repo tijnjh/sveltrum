@@ -22,11 +22,33 @@ export const getUserById = query(z.number(), async id => await $api({
 
 //
 
-export const getTracksByIds = query(z.number().array(), async ids => await $api({
-  path: `/tracks`,
-  params: { ids: ids.join(',') },
-  schema: track.array(),
-}))
+export const getTracksByIds = query(
+  z.object({
+    ids: z.number().array(),
+    limit: z.number().optional(),
+    offset: z.number().optional(),
+  }),
+  async ({ ids, limit = 32, offset }) => {
+    const start = offset ?? 0
+    const end = limit != null ? start + limit : undefined
+    const pagedIds = ids.slice(start, end)
+
+    if (!pagedIds.length) {
+      return { tracks: [], hasMore: false }
+    }
+
+    const tracks = await $api({
+      path: `/tracks`,
+      params: { ids: pagedIds.join(',') },
+      schema: track.array(),
+    })
+
+    return {
+      tracks,
+      hasMore: end != null && end < ids.length,
+    }
+  },
+)
 
 //
 // search

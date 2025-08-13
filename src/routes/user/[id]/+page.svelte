@@ -41,7 +41,7 @@
 
     const newResults = await getUser($params.kind ?? 'tracks')({
       id,
-      limit: 16,
+      limit: 32,
       offset: currentOffset,
     })
 
@@ -104,7 +104,7 @@
       <Button
         class='w-full mt-8'
         onclick={() => {
-          currentOffset += 16
+          currentOffset += 32
           doFetch()
         }}
       >

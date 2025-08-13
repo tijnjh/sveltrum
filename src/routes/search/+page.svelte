@@ -48,7 +48,7 @@
 
       const newResults = await searchFor($params.kind ?? 'tracks')({
         query: $params.q,
-        limit: 16,
+        limit: 32,
         offset: currentOffset,
       })
 
@@ -122,7 +122,7 @@
       <Button
         class='w-full mt-8'
         onclick={() => {
-          currentOffset += 16
+          currentOffset += 32
           doFetch()
         }}
       >
