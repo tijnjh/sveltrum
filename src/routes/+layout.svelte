@@ -52,7 +52,7 @@
 </script>
 
 <svelte:boundary>
-  <div class='mb-32'>
+  <div class='mb-64'>
     {@render children?.()}
   </div>
 
