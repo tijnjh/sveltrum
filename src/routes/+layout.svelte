@@ -73,7 +73,10 @@
           <Button
             size='icon'
             variant='secondary'
-            onclick={() => { isPaused = !isPaused }}
+            onclick={() => {
+              haptic()
+              isPaused = !isPaused
+            }}
           >
             {#if isPaused}
               <PlayIcon fill='currentColor' class='opacity-50' size={16} />
@@ -88,7 +91,7 @@
     <nav class='flex justify-center items-center gap-2 p-4'>
       {#each [['/', 'Home'], ['/search', 'Search']] as const as [href, label]}
         {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
-        <Button {href} variant={isCurrent ? 'primary' : 'secondary'} onclick={haptic}>
+        <Button {href} variant={isCurrent ? 'primary' : 'secondary'}>
           {label}
         </Button>
       {/each}
