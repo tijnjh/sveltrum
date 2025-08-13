@@ -29,7 +29,7 @@
       {#await getTracksByIds(ids) then tracks}
         {#if tracks}
           {#each tracks as track}
-            <TrackListing {track} inAlbum />
+            <TrackListing {track} inAlbum={playlist.is_album} />
           {/each}
         {/if}
       {/await}
