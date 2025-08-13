@@ -5,7 +5,6 @@
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { getPlaylistById, getTracksByIds } from '$lib/srv/api.remote'
-  import { onMount } from 'svelte'
 
   const id = Number(page.params!.id)
   //  @ts-expect-error tla
@@ -15,10 +14,7 @@
 
   let tracks = $state<Track[]>([])
 
-  onMount(() => {
-  })
-
-  let currentOffset = $state(0)
+  let currentIndex = $state(0)
 
   let hasMoreTracks = $state(true)
 
@@ -30,8 +26,7 @@
 
     const { tracks: newTracks, hasMore } = await getTracksByIds({
       ids: playlist.tracks.map(({ id }) => id),
-      limit: 32,
-      offset: currentOffset,
+      index: currentIndex,
     })
 
     hasMoreTracks = hasMore
@@ -42,7 +37,6 @@
   }
 
   doFetch()
-
 </script>
 
 <svelte:head>
@@ -73,7 +67,7 @@
         <Button
           class='w-full mt-8'
           onclick={() => {
-            currentOffset += 32
+            currentIndex++
             doFetch()
           }}
         >

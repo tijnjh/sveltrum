@@ -3,7 +3,7 @@ import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
 import { z } from 'zod'
-import { $api } from './utils'
+import { $api, chunked } from './utils'
 
 export const getTrackById = query(z.number(), async id => await $api({
   path: `/tracks/${id}`,
@@ -25,13 +25,11 @@ export const getUserById = query(z.number(), async id => await $api({
 export const getTracksByIds = query(
   z.object({
     ids: z.number().array(),
-    limit: z.number().optional(),
-    offset: z.number().optional(),
+    size: z.number().optional(),
+    index: z.number().optional(),
   }),
-  async ({ ids, limit = 32, offset }) => {
-    const start = offset ?? 0
-    const end = limit != null ? start + limit : undefined
-    const pagedIds = ids.slice(start, end)
+  async ({ ids, size = 32, index = 0 }) => {
+    const chunkedIds = chunked(ids, { size, index })
 
     if (!pagedIds.length) {
       return { tracks: [], hasMore: false }
@@ -39,13 +37,13 @@ export const getTracksByIds = query(
 
     const tracks = await $api({
       path: `/tracks`,
-      params: { ids: pagedIds.join(',') },
+      params: { ids: chunkedIds.join(',') },
       schema: track.array(),
     })
 
     return {
       tracks,
-      hasMore: end != null && end < ids.length,
+      hasMore: (index + 1) * size < ids.length,
     }
   },
 )

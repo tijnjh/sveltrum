@@ -49,3 +49,9 @@ export async function getClientId() {
 
   return clientId
 }
+
+export function chunked<T>(arr: T[], { size = 32, index = 0 }: { size?: number, index?: number }) {
+  const start = index * size
+  const end = start + size
+  return arr.slice(start, end)
+}
