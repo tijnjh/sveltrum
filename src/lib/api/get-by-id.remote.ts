@@ -5,17 +5,17 @@ import { user } from '$lib/schemas/user'
 import { z } from 'zod'
 import { $api, chunked } from './utils'
 
-export const getTrackById = query(z.number(), async id => await $api({
+export const getTrackById = query(z.number(), id => $api({
   path: `/tracks/${id}`,
   schema: track,
 }))
 
-export const getPlaylistById = query(z.number(), async id => await $api({
+export const getPlaylistById = query(z.number(), id => $api({
   path: `/playlists/${id}`,
   schema: playlist,
 }))
 
-export const getUserById = query(z.number(), async id => await $api({
+export const getUserById = query(z.number(), id => $api({
   path: `/users/${id}`,
   schema: user,
 }))

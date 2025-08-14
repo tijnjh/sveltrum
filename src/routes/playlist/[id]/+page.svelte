@@ -7,7 +7,7 @@
   import Spinner from '$lib/components/Spinner.svelte'
 
   const id = Number(page.params!.id)
-  //  @ts-expect-error tla
+
   const playlist = await getPlaylistById(id)
 
   let isLoading = $state(false)
@@ -45,7 +45,7 @@
 </svelte:head>
 
 {#if playlist.artwork_url}
-  <img src={playlist.artwork_url} class='w-full md:max-w-md' alt="">
+  <img src={playlist.artwork_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
 {/if}
 
 <div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>

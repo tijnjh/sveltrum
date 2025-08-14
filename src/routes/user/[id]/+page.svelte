@@ -13,7 +13,7 @@
   import { queryParameters } from 'sveltekit-search-params'
 
   const id = Number(page.params!.id)
-  //  @ts-expect-error tla
+
   const user = await getUserById(id)
 
   const params = queryParameters({
@@ -60,13 +60,13 @@
   <link rel='icon' href={user?.avatar_url} />
 </svelte:head>
 
-<img src={user.avatar_url} class='w-full md:max-w-md' alt="">
+<img src={user.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
 
-<div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
+<div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
   <h1 class='font-medium text-2xl'>{user.username}</h1>
 </div>
 
-<main class='p-4 flex flex-col gap-4'>
+<main class='flex flex-col gap-4 p-4'>
 
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists'] as kind}
@@ -101,7 +101,7 @@
     <Spinner />
   {:else if hasMoreResults}
     <Button
-      class='w-full mt-8'
+      class='mt-8 w-full'
       onclick={() => {
         currentIndex++
         doFetch()

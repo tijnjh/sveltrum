@@ -17,3 +17,11 @@ export const getSelections = query(async () => {
 
   return res.collection
 })
+
+export const getRelatedTracks = query(z.number(), async (id) => {
+  const res = await $api({
+    path: `/tracks/${id}/related`,
+  })
+
+  return res
+})

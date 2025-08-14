@@ -49,7 +49,6 @@
 
       const { results: newResults, hasMore } = await searchFor($params.kind ?? 'tracks')({
         query: $params.q,
-        limit: 32,
         index: currentIndex,
       })
 
@@ -65,7 +64,7 @@
   <title>results for '{$params.q}' &bull; sveltrum</title>
 </svelte:head>
 
-<div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
+<div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
   <form
     onsubmit={(e) => {
       $params.q = query
@@ -79,7 +78,7 @@
     <input
       type='text'
       bind:value={query}
-      class='bg-zinc-700 h-10 px-4 grow rounded-full'
+      class='bg-zinc-700 px-4 rounded-full h-10 grow'
       placeholder='Search'
     />
 
@@ -123,7 +122,7 @@
   {:else}
     {#if $params.q && hasMoreResults}
       <Button
-        class='w-full mt-8'
+        class='mt-8 w-full'
         onclick={() => {
           currentIndex++
           doFetch()

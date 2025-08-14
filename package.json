@@ -1,7 +1,7 @@
 {
+  "type": "module",
   "private": true,
   "license": "AGPL-3.0",
-  "type": "module",
   "scripts": {
     "build": "vite build",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
