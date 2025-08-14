@@ -2,7 +2,7 @@
   import type { ClassValue } from 'cnfn'
   import { cn } from 'cnfn'
 
-  const { src, alt, ...props }: { src: string | null, alt: string, class?: ClassValue } = $props()
+  const { src, alt, ...props }: { src?: string | null, alt?: string, class?: ClassValue } = $props()
 
   let hasFailed = $state(false)
 </script>

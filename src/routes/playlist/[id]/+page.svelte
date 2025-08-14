@@ -44,31 +44,34 @@
   <link rel='icon' href={playlist?.artwork_url} />
 </svelte:head>
 
-{#if playlist.artwork_url}
-  <img src={playlist.artwork_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
-{/if}
+<div class='grid md:grid-cols-2 gap-x-8 items-center'>
+  <div class='md:max-w-md self-start mx-auto md:mt-10'>
+    {#if playlist.artwork_url}
+      <img src={playlist.artwork_url.replace('large', 't500x500')} class='w-full md:rounded-lg aspect-square md:max-w-md' alt="">
+    {/if}
 
-<div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
-  <h1 class='font-medium text-2xl'>{playlist.title}</h1>
+    <div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0 md:bg-transparent bg-zinc-700/75 backdrop-blur-lg'>
+      <h1 class='font-medium text-2xl'>{playlist.title}</h1>
+    </div>
+  </div>
+
+  <div class='p-4 flex flex-col gap-4 max-w-xl overflow-y-scroll'>
+    {#each tracks as track}
+      <TrackListing {track} inAlbum={playlist.is_album} />
+    {/each}
+
+    {#if isLoading}
+      <Spinner />
+    {:else if hasMoreTracks}
+      <Button
+        class='w-full mt-8'
+        onclick={() => {
+          currentIndex++
+          doFetch()
+        }}
+      >
+        Load more
+      </Button>
+    {/if}
+  </div>
 </div>
-
-<main class='p-4 flex flex-col gap-4'>
-
-  {#each tracks as track}
-    <TrackListing {track} inAlbum={playlist.is_album} />
-  {/each}
-
-  {#if isLoading}
-    <Spinner />
-  {:else if hasMoreTracks}
-    <Button
-      class='w-full mt-8'
-      onclick={() => {
-        currentIndex++
-        doFetch()
-      }}
-    >
-      Load more
-    </Button>
-  {/if}
-</main>

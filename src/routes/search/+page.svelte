@@ -69,8 +69,8 @@
   <title>results for '{query.current}' &bull; sveltrum</title>
 </svelte:head>
 
-<div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <form {onsubmit} class='flex gap-2'>
+<div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg py-4 w-full'>
+  <form {onsubmit} class='flex gap-2 max-w-xl mx-auto px-4 w-full'>
     <input
       type='text'
       bind:value={query.current}
@@ -82,7 +82,7 @@
       <SearchIcon size={16} strokeWidth={3} />
     </Button>
   </form>
-  <div class='flex gap-2'>
+  <div class='flex gap-2 max-w-xl px-4 mx-auto w-full'>
     {#each ['tracks', 'playlists', 'users'] as kind}
       {#key selectedKind.current}
         <Button
@@ -98,12 +98,11 @@
           {kind}
         </Button>
       {/key}
-
     {/each}
   </div>
 </div>
 
-<main class='p-4'>
+<main class='p-4 mx-auto w-full max-w-xl'>
   <div class='flex flex-col gap-4'>
     {#each results as result}
       {#if selectedKind.current === 'tracks'}
