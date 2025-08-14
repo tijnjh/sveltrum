@@ -9,26 +9,22 @@
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { SearchIcon } from '@lucide/svelte'
+  import { parseAsString, useQueryState } from 'nuqs-svelte'
   import { onMount } from 'svelte'
-  import { queryParameters } from 'sveltekit-search-params'
 
   let isLoading = $state(false)
 
-  const params = queryParameters({
-    q: true,
-    kind: {
-      encode: v => v,
-      decode: v => v,
-      defaultValue: 'tracks',
-    },
-  })
-
   let results = $state<(Track | Playlist | User)[]>([])
 
-  let query = $state($params.q)
+  const query = useQueryState('q', { shallow: false, history: 'push' })
+
+  const selectedKind = useQueryState('kind', parseAsString.withDefault('tracks').withOptions({
+    shallow: false,
+    history: 'push',
+  }))
 
   onMount(() => {
-    $params.q && doFetch()
+    query && doFetch()
   })
 
   function searchFor(kind: string) {
@@ -44,40 +40,40 @@
   let hasMoreResults = $state(false)
 
   async function doFetch() {
-    if ($params.q) {
-      isLoading = true
-
-      const { results: newResults, hasMore } = await searchFor($params.kind ?? 'tracks')({
-        query: $params.q,
-        index: currentIndex,
-      })
-
-      hasMoreResults = hasMore
-
-      results = [...results, ...newResults]
-      isLoading = false
+    if (!query.current) {
+      return
     }
+
+    isLoading = true
+
+    const { results: newResults, hasMore } = await searchFor(selectedKind.current ?? 'tracks')({
+      query: query.current,
+      index: currentIndex,
+    })
+
+    hasMoreResults = hasMore
+
+    results = [...results, ...newResults]
+    isLoading = false
+  }
+
+  function onsubmit(e: Event) {
+    e.preventDefault()
+    results = []
+    currentIndex = 0
+    doFetch()
   }
 </script>
 
 <svelte:head>
-  <title>results for '{$params.q}' &bull; sveltrum</title>
+  <title>results for '{query}' &bull; sveltrum</title>
 </svelte:head>
 
 <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <form
-    onsubmit={(e) => {
-      $params.q = query
-      e.preventDefault()
-      results = []
-      currentIndex = 0
-      doFetch()
-    }}
-    class='flex gap-2'
-  >
+  <form {onsubmit} class='flex gap-2'>
     <input
       type='text'
-      bind:value={query}
+      bind:value={query.current}
       class='bg-zinc-700 px-4 rounded-full h-10 grow'
       placeholder='Search'
     />
@@ -88,12 +84,12 @@
   </form>
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists', 'users'] as kind}
-      {#key $params.kind}
+      {#key selectedKind}
         <Button
-          variant={$params.kind === kind ? 'primary' : 'secondary'}
+          variant={selectedKind.current === kind ? 'primary' : 'secondary'}
           class='capitalize'
           onclick={() => {
-            $params.kind = kind
+            selectedKind.current = kind
             results = []
             currentIndex = 0
             doFetch()
@@ -102,6 +98,7 @@
           {kind}
         </Button>
       {/key}
+
     {/each}
   </div>
 </div>
@@ -109,11 +106,11 @@
 <main class='p-4'>
   <div class='flex flex-col gap-4'>
     {#each results as result}
-      {#if $params.kind === 'tracks'}
+      {#if selectedKind.current === 'tracks'}
         <TrackListing track={result as Track} />
-      {:else if $params.kind === 'playlists'}
+      {:else if selectedKind.current === 'playlists'}
         <PlaylistListing playlist={result as Playlist} />
-      {:else if $params.kind === 'users'}
+      {:else if selectedKind.current === 'users'}
         <UserListing user={result as User} />
       {/if}
     {/each}
@@ -122,7 +119,7 @@
   {#if isLoading}
     <Spinner />
   {:else}
-    {#if $params.q && hasMoreResults}
+    {#if query && hasMoreResults}
       <Button
         class='mt-8 w-full'
         onclick={() => {

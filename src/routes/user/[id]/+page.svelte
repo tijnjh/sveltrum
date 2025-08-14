@@ -10,19 +10,16 @@
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
-  import { queryParameters } from 'sveltekit-search-params'
+  import { useQueryState } from 'nuqs-svelte'
 
   const id = Number(page.params!.id)
 
   const user = await getUserById(id)
 
-  const params = queryParameters({
-    kind: {
-      encode: v => v,
-      decode: v => v,
-      defaultValue: 'tracks',
-    },
-  })
+  const selectedKind = useQueryState('kind', parseAsString.withDefault('tracks').withOptions({
+    shallow: false,
+    history: 'push',
+  }))
 
   let isLoading = $state(false)
 
@@ -41,7 +38,7 @@
   async function doFetch() {
     isLoading = true
 
-    const { results: newResults, hasMore } = await getUser($params.kind ?? 'tracks')({
+    const { results: newResults, hasMore } = await getUser(selectedKind.current ?? 'tracks')({
       id,
       index: currentIndex,
     })
@@ -71,10 +68,10 @@
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists'] as kind}
       <Button
-        variant={$params.kind === kind ? 'primary' : 'secondary'}
+        variant={selectedKind.current === kind ? 'primary' : 'secondary'}
         class='capitalize'
         onclick={() => {
-          $params.kind = kind
+          selectedKind.current = kind
           results = []
           currentIndex = 0
           doFetch()
@@ -87,11 +84,11 @@
 
   <div class='flex flex-col gap-4'>
     {#each results as result}
-      {#if $params.kind === 'tracks'}
+      {#if selectedKind.current === 'tracks'}
         <TrackListing track={result as Track} />
-      {:else if $params.kind === 'playlists'}
+      {:else if selectedKind.current === 'playlists'}
         <PlaylistListing playlist={result as Playlist} />
-      {:else if $params.kind === 'users'}
+      {:else if selectedKind.current === 'users'}
         <UserListing user={result as User} />
       {/if}
     {/each}
