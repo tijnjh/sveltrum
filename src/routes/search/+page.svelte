@@ -88,18 +88,20 @@
   </form>
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists', 'users'] as kind}
-      <Button
-        variant={$params.kind === kind ? 'primary' : 'secondary'}
-        class='capitalize'
-        onclick={() => {
-          $params.kind = kind
-          results = []
-          currentIndex = 0
-          doFetch()
-        }}
-      >
-        {kind}
-      </Button>
+      {#key $params.kind}
+        <Button
+          variant={$params.kind === kind ? 'primary' : 'secondary'}
+          class='capitalize'
+          onclick={() => {
+            $params.kind = kind
+            results = []
+            currentIndex = 0
+            doFetch()
+          }}
+        >
+          {kind}
+        </Button>
+      {/key}
     {/each}
   </div>
 </div>
