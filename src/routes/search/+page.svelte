@@ -84,7 +84,7 @@
   </form>
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists', 'users'] as kind}
-      {#key selectedKind}
+      {#key selectedKind.current}
         <Button
           variant={selectedKind.current === kind ? 'primary' : 'secondary'}
           class='capitalize'
