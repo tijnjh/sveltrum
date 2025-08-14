@@ -10,7 +10,7 @@
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
-  import { useQueryState } from 'nuqs-svelte'
+  import { parseAsString, useQueryState } from 'nuqs-svelte'
 
   const id = Number(page.params!.id)
 

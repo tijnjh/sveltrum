@@ -66,7 +66,7 @@
 </script>
 
 <svelte:head>
-  <title>results for '{query}' &bull; sveltrum</title>
+  <title>results for '{query.current}' &bull; sveltrum</title>
 </svelte:head>
 
 <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
