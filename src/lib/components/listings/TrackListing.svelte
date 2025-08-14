@@ -14,7 +14,14 @@
     <ListingThumbnail src={track.artwork_url} alt='Album cover of {track.title}' />
   {/if}
   <div class='flex flex-col w-full min-w-0'>
-    <h3 class='truncate'>{track.title}</h3>
+
+    <div class='flex gap-2'>
+      <h3 class='truncate'>{track.title}</h3>
+
+      {#if track.policy === 'SNIP'}
+        <div class='px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 text-sm'>30s only</div>
+      {/if}
+    </div>
     <p class='truncate opacity-50'>{track.user?.username}</p>
   </div>
 </button>
