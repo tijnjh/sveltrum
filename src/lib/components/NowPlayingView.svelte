@@ -81,7 +81,7 @@
       <ChevronDownIcon size={16} strokeWidth={3} />
     </button>
 
-    <div class='flex flex-col max-md:mt-16 gap-4 max-w-sm'>
+    <div class='flex flex-col max-md:mt-16 gap-4 w-full md:max-w-sm'>
       {#if track.artwork_url}
         <img src={track.artwork_url.replace('large', 't500x500')} class='mt-12 aspect-square rounded-xl w-full' alt="">
       {:else}
@@ -106,7 +106,7 @@
       {/key}
     </div>
 
-    <div class='flex flex-col gap-4 max-w-sm'>
+    <div class='flex flex-col w-full gap-4 md:max-w-sm'>
       <h2 class='text-2xl mt-8 font-medium'>Related tracks</h2>
 
       {#await getRelatedTracks(track.id)}
