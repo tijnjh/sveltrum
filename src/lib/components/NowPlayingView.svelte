@@ -1,10 +1,13 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
+  import { getRelatedTracks } from '$lib/api/discovery.remote'
   import { getTrackSource } from '$lib/api/hsl.remote'
   import { global } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
+  import TrackListing from './listings/TrackListing.svelte'
+  import Spinner from './Spinner.svelte'
 
   let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
 
@@ -63,37 +66,56 @@
 </script>
 
 {#if global.nowPlaying}
+  {@const track = global.nowPlaying}
+
   <div
     class={cn(
-      'z-50 fixed inset-x-0 flex flex-col gap-4 bg-zinc-800 p-4 h-full transition-[top] duration-300',
+      'z-50 fixed inset-x-0 overflow-y-scroll place-items-center md:grid-cols-2 grid grid-cols-1 gap-x-8 bg-zinc-700/75 backdrop-blur-lg p-4 h-full transition-[top] duration-300',
       show ? 'top-0' : 'top-[100%]',
     )}
   >
     <button
       onclick={() => show = false}
-      class='flex justify-center items-center bg-zinc-100/10 active:opacity-50 ml-auto rounded-full size-10 active:scale-90 transition-transform'
+      class='flex absolute justify-center items-center bg-zinc-100/10 active:opacity-50 top-4 right-4 rounded-full size-10 active:scale-90 transition-transform'
     >
       <ChevronDownIcon size={16} strokeWidth={3} />
     </button>
 
-    {#if global.nowPlaying.artwork_url}
-      <img src={global.nowPlaying.artwork_url.replace('large', 't500x500')} class='mt-12 aspect-square rounded-xl w-full md:max-w-md' alt="">
-    {:else}
-      <div class='mt-12 rounded-xl aspect-square bg-zinc-700 w-full md:max-w-md'></div>
-    {/if}
+    <div class='flex flex-col max-md:mt-16 gap-4 max-w-sm'>
+      {#if track.artwork_url}
+        <img src={track.artwork_url.replace('large', 't500x500')} class='mt-12 aspect-square rounded-xl w-full' alt="">
+      {:else}
+        <div class='mt-12 rounded-xl aspect-square bg-zinc-700 w-full md:max-w-md'></div>
+      {/if}
 
-    <h1 class='font-medium text-2xl'>{global.nowPlaying.title}</h1>
+      <hgroup>
+        <h1 class='font-medium text-2xl'>{track.title}</h1>
 
-    <a href='/user/{global.nowPlaying.user.id}' class='text-white/50 text-xl' onclick={() => show = false}>
-      {global.nowPlaying.user.username}
-    </a>
+        <a href='/user/{track.user.id}' class='text-white/50 text-xl' onclick={() => show = false}>
+          {track.user.username}
+        </a>
+      </hgroup>
 
-    {#key global.nowPlaying}
-      <audio
-        bind:paused={isPaused}
-        controls={show}
-          {@attach global.nowPlaying && applySource(global.nowPlaying)}>
-      </audio>
-    {/key}
+      {#key track}
+        <audio
+          class='h-10'
+          bind:paused={isPaused}
+          controls
+        {@attach track && applySource(track)}>
+        </audio>
+      {/key}
+    </div>
+
+    <div class='flex flex-col gap-4 max-w-sm'>
+      <h2 class='text-2xl mt-8 font-medium'>Related tracks</h2>
+
+      {#await getRelatedTracks(track.id)}
+        <Spinner />
+      {:then relatedTracks}
+        {#each relatedTracks.collection as track}
+          <TrackListing {track} />
+        {/each}
+      {/await}
+    </div>
   </div>
 {/if}
