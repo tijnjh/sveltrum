@@ -13,8 +13,8 @@
   {#if !inAlbum}
     <ListingThumbnail src={track.artwork_url} alt='Album cover of {track.title}' />
   {/if}
-  <div class='flex flex-col w-full min-w-0'>
 
+  <div class='flex flex-col w-full min-w-0'>
     <div class='flex gap-2'>
       <h3 class='truncate'>{track.title}</h3>
 
