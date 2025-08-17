@@ -5,8 +5,10 @@
   import { global } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
+  import { err, isErr, newErr } from 'dethrow'
   import Hls from 'hls.js'
   import TrackListing from './listings/TrackListing.svelte'
+  import SafeRender from './SafeRender.svelte'
   import Spinner from './Spinner.svelte'
 
   let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
@@ -34,11 +36,14 @@
 
   const applySource = (track: Track) => (element: HTMLAudioElement) => {
     getTrackSource(track.id).then((url) => {
+      if (isErr(url))
+        return err(url.err)
+
       if (!Hls.isSupported())
-        throw new Error('hls is not supported')
+        return newErr('hls is not supported')
 
       const hls = new Hls()
-      hls.loadSource(url)
+      hls.loadSource(url.val)
       hls.attachMedia(element)
     })
   }
@@ -111,10 +116,14 @@
 
       {#await getRelatedTracks(track.id)}
         <Spinner />
-      {:then relatedTracks}
-        {#each relatedTracks.collection as track}
-          <TrackListing {track} />
-        {/each}
+      {:then res}
+        <SafeRender {res}>
+          {#snippet ok(relatedTracks)}
+            {#each relatedTracks.val.collection as track}
+              <TrackListing {track} />
+            {/each}
+          {/snippet}
+        </SafeRender>
       {/await}
     </div>
   </div>

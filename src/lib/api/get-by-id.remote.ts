@@ -2,6 +2,7 @@ import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
+import { err, isErr, ok } from 'dethrow'
 import { z } from 'zod'
 import { $api, chunked } from './utils'
 
@@ -29,9 +30,8 @@ export const getTracksByIds = query(
   async ({ ids, size = 32, index = 0 }) => {
     const chunkedIds = chunked(ids, { size, index })
 
-    if (!chunkedIds.length) {
-      return { tracks: [], hasMore: false }
-    }
+    if (!chunkedIds.length)
+      return ok({ tracks: [], hasMore: false })
 
     const tracks = await $api({
       path: `/tracks`,
@@ -39,9 +39,12 @@ export const getTracksByIds = query(
       schema: track.array(),
     })
 
-    return {
-      tracks,
+    if (isErr(tracks))
+      return err(tracks.err)
+
+    return ok({
+      tracks: tracks.val,
       hasMore: (index + 1) * size < ids.length,
-    }
+    })
   },
 )

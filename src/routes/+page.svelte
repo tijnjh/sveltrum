@@ -2,6 +2,7 @@
   import { getSelections } from '$lib/api/discovery.remote'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
+  import SafeRender from '$lib/components/SafeRender.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
 </script>
 
@@ -17,11 +18,16 @@
 
   {#await getSelections()}
     <Spinner />
-  {:then selections}
-    {#each selections as selection}
-      {#each selection.items.collection as playlist}
-        <PlaylistListing playlist={playlist} />
-      {/each}
-    {/each}
+  {:then res}
+    <SafeRender {res}>
+      {#snippet ok(selections)}
+        {#each selections as selection}
+          {#each selection.items.collection as playlist}
+            <PlaylistListing playlist={playlist} />
+          {/each}
+        {/each}
+      {/snippet}
+    </SafeRender>
+
   {/await}
 </div>

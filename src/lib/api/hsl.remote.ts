@@ -1,4 +1,5 @@
 import { query } from '$app/server'
+import { err, isErr, newErr, ok } from 'dethrow'
 import { ofetch } from 'ofetch/node'
 import { z } from 'zod'
 import { getTrackById } from './get-by-id.remote'
@@ -6,25 +7,32 @@ import { getClientId } from './utils'
 
 export const getTrackSource = query(z.number(), async (trackId) => {
   const track = await getTrackById(trackId)
-  const clientId = await getClientId()
+
+  if (isErr(track))
+    return err(track.err)
 
   if (!track)
-    throw new Error('failed to find track')
+    return newErr('failed to find track')
 
-  const hlsTranscodings = track.media.transcodings.filter(({ format }) => format.protocol === 'hls')
+  const clientId = await getClientId()
+
+  if (isErr(clientId))
+    return err(clientId.err)
+
+  const hlsTranscodings = track.val.media.transcodings.filter(({ format }) => format.protocol === 'hls')
 
   const transcoding = hlsTranscodings.find(({ preset }) => preset === 'aac_160k')
     ?? hlsTranscodings.find(({ format }) => format.mime_type === 'audio/mpeg')
 
   if (!transcoding)
-    throw new Error('failed to find hls transcoding')
+    return newErr('failed to find hls transcoding')
 
   const { url } = await ofetch(transcoding.url, {
     params: {
-      track_authorization: track.track_authorization,
+      track_authorization: track.val.track_authorization,
       client_id: clientId,
     },
   })
 
-  return (Array.isArray(url) ? url[0] : url) as string
+  return ok((Array.isArray(url) ? url[0] : url) as string)
 })

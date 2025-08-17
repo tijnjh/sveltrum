@@ -9,7 +9,9 @@
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
+  import SafeRender from '$lib/components/SafeRender.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
+  import { err, isErr } from 'dethrow'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
 
   const id = Number(page.params!.id)
@@ -38,14 +40,17 @@
   async function doFetch() {
     isLoading = true
 
-    const { results: newResults, hasMore } = await getUser(selectedKind.current ?? 'tracks')({
+    const user = await getUser(selectedKind.current ?? 'tracks')({
       id,
       index: currentIndex,
     })
 
-    hasMoreResults = hasMore
+    if (isErr(user))
+      return err(user.err)
 
-    results = [...results, ...newResults]
+    hasMoreResults = user.val.hasMore
+
+    results = [...results, ...user.val.results]
     isLoading = false
   }
 
@@ -53,58 +58,64 @@
 </script>
 
 <svelte:head>
-  <title>{user?.username} &bull; sveltrum</title>
-  <link rel='icon' href={user?.avatar_url} />
+  {#if !isErr(user)}
+    <title>{user.val.username} &bull; sveltrum</title>
+    <link rel='icon' href={user.val.avatar_url} />
+  {/if}
 </svelte:head>
 
-<img src={user.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
+<SafeRender res={user}>
+  {#snippet ok(u)}
+    <img src={user.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
 
-<div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <h1 class='font-medium text-2xl'>{user.username}</h1>
-</div>
+    <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
+      <h1 class='font-medium text-2xl'>{user.username}</h1>
+    </div>
 
-<main class='flex flex-col gap-4 p-4'>
+    <main class='flex flex-col gap-4 p-4'>
 
-  <div class='flex gap-2'>
-    {#each ['tracks', 'playlists'] as kind}
-      <Button
-        variant={selectedKind.current === kind ? 'primary' : 'secondary'}
-        class='capitalize'
-        onclick={() => {
-          selectedKind.current = kind
-          results = []
-          currentIndex = 0
-          doFetch()
-        }}
-      >
-        {kind}
-      </Button>
-    {/each}
-  </div>
+      <div class='flex gap-2'>
+        {#each ['tracks', 'playlists'] as kind}
+          <Button
+            variant={selectedKind.current === kind ? 'primary' : 'secondary'}
+            class='capitalize'
+            onclick={() => {
+              selectedKind.current = kind
+              results = []
+              currentIndex = 0
+              doFetch()
+            }}
+          >
+            {kind}
+          </Button>
+        {/each}
+      </div>
 
-  <div class='flex flex-col gap-4'>
-    {#each results as result}
-      {#if selectedKind.current === 'tracks'}
-        <TrackListing track={result as Track} />
-      {:else if selectedKind.current === 'playlists'}
-        <PlaylistListing playlist={result as Playlist} />
-      {:else if selectedKind.current === 'users'}
-        <UserListing user={result as User} />
+      <div class='flex flex-col gap-4'>
+        {#each results as result}
+          {#if selectedKind.current === 'tracks'}
+            <TrackListing track={result as Track} />
+          {:else if selectedKind.current === 'playlists'}
+            <PlaylistListing playlist={result as Playlist} />
+          {:else if selectedKind.current === 'users'}
+            <UserListing user={result as User} />
+          {/if}
+        {/each}
+      </div>
+
+      {#if isLoading}
+        <Spinner />
+      {:else if hasMoreResults}
+        <Button
+          class='mt-8 w-full'
+          onclick={() => {
+            currentIndex++
+            doFetch()
+          }}
+        >
+          Load more
+        </Button>
       {/if}
-    {/each}
-  </div>
-
-  {#if isLoading}
-    <Spinner />
-  {:else if hasMoreResults}
-    <Button
-      class='mt-8 w-full'
-      onclick={() => {
-        currentIndex++
-        doFetch()
-      }}
-    >
-      Load more
-    </Button>
-  {/if}
-</main>
+    </main>
+  {/snippet}
+</SafeRender>

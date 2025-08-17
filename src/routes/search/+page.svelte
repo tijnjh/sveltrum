@@ -9,6 +9,7 @@
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { SearchIcon } from '@lucide/svelte'
+  import { err, isErr } from 'dethrow'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
   import { onMount } from 'svelte'
 
@@ -40,20 +41,22 @@
   let hasMoreResults = $state(false)
 
   async function doFetch() {
-    if (!query.current) {
+    if (!query.current)
       return
-    }
 
     isLoading = true
 
-    const { results: newResults, hasMore } = await searchFor(selectedKind.current ?? 'tracks')({
+    const res = await searchFor(selectedKind.current ?? 'tracks')({
       query: query.current,
       index: currentIndex,
     })
 
-    hasMoreResults = hasMore
+    if (isErr(res))
+      return err(res)
 
-    results = [...results, ...newResults]
+    hasMoreResults = res.val.hasMore
+
+    results = [...results, ...res.val.results]
     isLoading = false
   }
 
