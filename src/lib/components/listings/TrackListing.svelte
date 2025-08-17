@@ -19,7 +19,7 @@
       <h3 class='truncate'>{track.title}</h3>
 
       {#if track.policy === 'SNIP'}
-        <div class='px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 text-sm'>30s only</div>
+        <div class='px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 text-sm whitespace-nowrap'>30s only</div>
       {/if}
     </div>
     <p class='truncate opacity-50'>{track.user?.username}</p>
