@@ -1,7 +1,6 @@
 <script lang='ts'>
-  import type { Playlist } from '$lib/schemas/playlist'
   import type { Track } from '$lib/schemas/track'
-  import type { Err, Ok } from 'dethrow'
+  import type { Err } from 'dethrow'
   import { page } from '$app/state'
   import { getPlaylistById, getTracksByIds } from '$lib/api/get-by-id.remote'
   import Button from '$lib/components/Button.svelte'
@@ -9,17 +8,22 @@
   import SafeRender from '$lib/components/SafeRender.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { safeParseNumber } from '$lib/utils'
-  import { err, isErr, newErr } from 'dethrow'
+  import { err, isErr } from 'dethrow'
+
+  let hasFailed = $state<{ status: boolean, err: Err | null }>({ status: false, err: null })
 
   const id = safeParseNumber(page.params!.id)
 
   if (isErr(id)) {
-    console.error(id.err.message)
-    playlist = err(id.err)
+    hasFailed = { status: true, err: id }
+    throw id.err
   }
-  else {
-    // @ts-expect-error
-    playlist = await getPlaylistById(id.val)
+
+  const playlist = await getPlaylistById(id.val)
+
+  if (isErr(playlist)) {
+    hasFailed = { status: true, err: playlist }
+    throw playlist.err
   }
 
   let isLoading = $state(false)
@@ -56,6 +60,10 @@
 
   doFetch()
 </script>
+
+{#if hasFailed.status}
+  {JSON.stringify(hasFailed.err)}
+{/if}
 
 <svelte:head>
   {#if !isErr(playlist)}

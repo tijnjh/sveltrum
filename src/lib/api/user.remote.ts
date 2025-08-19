@@ -1,7 +1,7 @@
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
-import { err, isErr, ok } from 'dethrow'
+import { err, ok } from 'dethrow'
 import { z } from 'zod'
 import { $api, withPagination } from './utils'
 
@@ -21,7 +21,7 @@ function baseGetUser<T extends z.ZodType>(kind: string, schema: T) {
       }),
     })
 
-    if (isErr(res))
+    if (res.isErr())
       return err(res.err)
 
     return ok(res.val.collection)

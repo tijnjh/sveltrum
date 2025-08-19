@@ -2,7 +2,7 @@ import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
-import { err, isErr, ok } from 'dethrow'
+import { err, ok } from 'dethrow'
 import { z } from 'zod'
 import { $api, withPagination } from './utils'
 
@@ -22,10 +22,7 @@ function baseSearch<T extends z.ZodType>(kind: string, schema: T) {
       }),
     })
 
-    if (isErr(res))
-      return err(res.err)
-
-    return ok(res.val.collection)
+    return res.isErr() ? err(res.err) : ok(res.val.collection)
   }))
 }
 

@@ -1,7 +1,6 @@
 <script lang='ts' generics="T, E">
   import type { Err, Ok } from 'dethrow'
   import type { Snippet } from 'svelte'
-  import { isErr } from 'dethrow'
 
   const { res, ok, err }: {
     res: Ok<T> | Err<E>
@@ -10,7 +9,7 @@
   } = $props()
 </script>
 
-{#if isErr(res)}
+{#if res.isErr()}
   {#if err}
     {@render err(res.err)}
   {:else}

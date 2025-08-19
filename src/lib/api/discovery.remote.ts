@@ -1,6 +1,6 @@
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
-import { err, isErr, ok } from 'dethrow'
+import { err, ok } from 'dethrow'
 import { z } from 'zod'
 import { $api } from './utils'
 
@@ -16,10 +16,7 @@ export const getSelections = query(async () => {
     }),
   })
 
-  if (isErr(res))
-    return err(res.err)
-
-  return ok(res.val.collection)
+  return res.isErr() ? err(res.err) : ok(res.val.collection)
 })
 
 export const getRelatedTracks = query(z.number(), async (id) => {
@@ -27,5 +24,5 @@ export const getRelatedTracks = query(z.number(), async (id) => {
     path: `/tracks/${id}/related`,
   })
 
-  return res
+  return res.isErr() ? err(res.err) : ok(res.val)
 })

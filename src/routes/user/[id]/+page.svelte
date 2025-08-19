@@ -11,7 +11,7 @@
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import SafeRender from '$lib/components/SafeRender.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
-  import { err, isErr } from 'dethrow'
+  import { err } from 'dethrow'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
 
   const id = Number(page.params!.id)
@@ -45,7 +45,7 @@
       index: currentIndex,
     })
 
-    if (isErr(user))
+    if (user.isErr())
       return err(user.err)
 
     hasMoreResults = user.val.hasMore
@@ -58,7 +58,7 @@
 </script>
 
 <svelte:head>
-  {#if !isErr(user)}
+  {#if !user.isErr()}
     <title>{user.val.username} &bull; sveltrum</title>
     <link rel='icon' href={user.val.avatar_url} />
   {/if}
@@ -66,10 +66,10 @@
 
 <SafeRender res={user}>
   {#snippet ok(u)}
-    <img src={user.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
+    <img src={u.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
 
     <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-      <h1 class='font-medium text-2xl'>{user.username}</h1>
+      <h1 class='font-medium text-2xl'>{u.username}</h1>
     </div>
 
     <main class='flex flex-col gap-4 p-4'>

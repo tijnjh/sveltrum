@@ -9,7 +9,7 @@
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { SearchIcon } from '@lucide/svelte'
-  import { err, isErr } from 'dethrow'
+  import { err } from 'dethrow'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
   import { onMount } from 'svelte'
 
@@ -51,7 +51,7 @@
       index: currentIndex,
     })
 
-    if (isErr(res))
+    if (res.isErr())
       return err(res)
 
     hasMoreResults = res.val.hasMore

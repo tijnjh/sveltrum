@@ -2,7 +2,7 @@ import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
-import { err, isErr, ok } from 'dethrow'
+import { err, ok } from 'dethrow'
 import { z } from 'zod'
 import { $api, chunked } from './utils'
 
@@ -39,7 +39,7 @@ export const getTracksByIds = query(
       schema: track.array(),
     })
 
-    if (isErr(tracks))
+    if (tracks.isErr())
       return err(tracks.err)
 
     return ok({

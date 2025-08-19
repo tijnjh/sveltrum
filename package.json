@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "cnfn": "^0.0.2",
-    "dethrow": "^0.1.4",
+    "dethrow": "^0.2.1",
     "hls.js": "^1.6.10",
     "ios-haptics": "^0.1.0",
     "nuqs-svelte": "^1.2.1",

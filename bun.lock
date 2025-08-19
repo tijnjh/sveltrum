@@ -5,7 +5,7 @@
       "name": "sveltrum",
       "dependencies": {
         "cnfn": "^0.0.2",
-        "dethrow": "^0.1.4",
+        "dethrow": "^0.2.1",
         "hls.js": "^1.6.10",
         "ios-haptics": "^0.1.0",
         "nuqs-svelte": "^1.2.1",
@@ -387,7 +387,7 @@
 
     "detect-libc": ["detect-libc@2.0.4", "", {}, "sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA=="],
 
-    "dethrow": ["dethrow@0.1.4", "", {}, "sha512-JNQ29/Riswas20cee7zyfnqzLch+vfiHd0niRcGq3PwrmpZ7QR84OzJjJ1+MEPDciDwQy1OWbbUk6PBDr8R61Q=="],
+    "dethrow": ["dethrow@0.2.1", "", {}, "sha512-F0udD4JPQSrDY4rIczFgyP1MzKhESupsfrmGzn5pBX0hLWekjpuKPvd18Yzcs2CCSgcp+xI1GkZ+6jy94ex+Iw=="],
 
     "devalue": ["devalue@5.1.1", "", {}, "sha512-maua5KUiapvEwiEAe+XnlZ3Rh0GD+qI1J/nb9vrJc3muPXvcF/8gXYTWF76+5DAqHyDUtOIImEuo0YKE9mshVw=="],
 

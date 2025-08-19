@@ -5,7 +5,7 @@
   import { global } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
-  import { err, isErr, newErr } from 'dethrow'
+  import { err } from 'dethrow'
   import Hls from 'hls.js'
   import TrackListing from './listings/TrackListing.svelte'
   import SafeRender from './SafeRender.svelte'
@@ -34,19 +34,17 @@
     }
   })
 
-  const applySource = (track: Track) => (element: HTMLAudioElement) => {
-    getTrackSource(track.id).then((url) => {
-      if (isErr(url))
-        return err(url.err)
+  const applySource = (track: Track) => (element: HTMLAudioElement) => void getTrackSource(track.id).then((url) => {
+    if (url.isErr())
+      return err(url.err)
 
-      if (!Hls.isSupported())
-        return newErr('hls is not supported')
+    if (!Hls.isSupported())
+      return err('hls is not supported')
 
-      const hls = new Hls()
-      hls.loadSource(url.val)
-      hls.attachMedia(element)
-    })
-  }
+    const hls = new Hls()
+    hls.loadSource(url.val)
+    hls.attachMedia(element)
+  })
 
   $effect(() => {
     if (global.nowPlaying) {
@@ -106,7 +104,7 @@
           class='h-10'
           bind:paused={isPaused}
           controls
-        {@attach track && applySource(track)}>
+          {@attach track && applySource(track)}>
         </audio>
       {/key}
     </div>
