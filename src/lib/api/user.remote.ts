@@ -1,6 +1,7 @@
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
+import { Effect } from 'effect'
 import { z } from 'zod'
 import { $api, withPagination } from './utils'
 
@@ -11,8 +12,8 @@ const getUserSchema = z.object({
 })
 
 function baseGetUser<T extends z.ZodType>(kind: string, schema: T) {
-  return query(getUserSchema, withPagination(async ({ id, limit, offset }) => {
-    const res = await $api({
+  return query(getUserSchema, withPagination(({ id, limit, offset }) => Effect.gen(function* () {
+    const res = yield* $api({
       path: `/users/${id}/${kind}`,
       params: { limit, offset },
       schema: z.object({
@@ -20,7 +21,7 @@ function baseGetUser<T extends z.ZodType>(kind: string, schema: T) {
       }),
     })
     return res.collection
-  }))
+  })))
 }
 
 export const getUserTracks = baseGetUser('tracks', track)

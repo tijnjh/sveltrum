@@ -1,10 +1,11 @@
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
+import { Effect } from 'effect'
 import { z } from 'zod'
 import { $api } from './utils'
 
-export const getSelections = query(async () => {
-  const res = await $api({
+export const getSelections = query(async () => Effect.gen(function* () {
+  const res = yield* $api({
     path: '/mixed-selections',
     schema: z.object({
       collection: z.object({
@@ -16,12 +17,12 @@ export const getSelections = query(async () => {
   })
 
   return res.collection
-})
+}))
 
-export const getRelatedTracks = query(z.number(), async (id) => {
-  const res = await $api({
+export const getRelatedTracks = query(z.number(), id => Effect.gen(function* () {
+  const res = yield* $api({
     path: `/tracks/${id}/related`,
   })
 
   return res
-})
+}))

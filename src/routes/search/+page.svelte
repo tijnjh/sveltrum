@@ -3,12 +3,14 @@
   import type { Track } from '$lib/schemas/track'
   import type { User } from '$lib/schemas/user'
   import { searchPlaylists, searchTracks, searchUsers } from '$lib/api/search.remote'
+  import { effectFromRq } from '$lib/api/utils'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { SearchIcon } from '@lucide/svelte'
+  import { Effect } from 'effect'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
   import { onMount } from 'svelte'
 
@@ -23,15 +25,11 @@
     history: 'push',
   }))
 
-  onMount(() => {
-    query && doFetch()
-  })
-
   function searchFor(kind: string) {
     switch (kind) {
-      case 'playlists': return searchPlaylists
-      case 'users': return searchUsers
-      default: return searchTracks
+      case 'playlists': return effectFromRq(() => searchPlaylists)
+      case 'users': return effectFromRq(() => searchUsers)
+      default: return effectFromRq(() => searchTracks)
     }
   }
 
@@ -39,14 +37,14 @@
 
   let hasMoreResults = $state(false)
 
-  async function doFetch() {
+  export const doFetch = Effect.gen(function* () {
     if (!query.current) {
       return
     }
 
     isLoading = true
 
-    const { results: newResults, hasMore } = await searchFor(selectedKind.current ?? 'tracks')({
+    const { results: newResults, hasMore } = yield* searchFor(selectedKind.current ?? 'tracks')({
       query: query.current,
       index: currentIndex,
     })
@@ -55,13 +53,19 @@
 
     results = [...results, ...newResults]
     isLoading = false
-  }
+  })
+
+  onMount(() => {
+    if (query) {
+      doFetch.pipe(Effect.runPromise)
+    }
+  })
 
   function onsubmit(e: Event) {
     e.preventDefault()
     results = []
     currentIndex = 0
-    doFetch()
+    doFetch.pipe(Effect.runPromise)
   }
 </script>
 

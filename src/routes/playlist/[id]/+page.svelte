@@ -2,13 +2,15 @@
   import type { Track } from '$lib/schemas/track'
   import { page } from '$app/state'
   import { getPlaylistById, getTracksByIds } from '$lib/api/get-by-id.remote'
+  import { effectFromRq } from '$lib/api/utils'
   import Button from '$lib/components/Button.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
+  import { Effect } from 'effect'
 
   const id = Number(page.params!.id)
 
-  const playlist = await getPlaylistById(id)
+  const playlist = await (await getPlaylistById(id)).pipe(Effect.runPromise)
 
   let isLoading = $state(false)
 
@@ -18,25 +20,25 @@
 
   let hasMoreTracks = $state(true)
 
-  async function doFetch() {
-    if (!playlist.tracks)
+  const doFetch = Effect.gen(function* () {
+    if (!playlist.tracks) {
       return
+    }
 
     isLoading = true
-
-    const { tracks: newTracks, hasMore } = await getTracksByIds({
-      ids: playlist.tracks.map(({ id }) => id),
+    const { tracks: newTracks, hasMore } = yield* effectFromRq(() => getTracksByIds({
+      ids: playlist.tracks!.map(({ id }) => id),
       index: currentIndex,
-    })
+    }))
 
     hasMoreTracks = hasMore
 
     tracks = [...tracks, ...newTracks]
 
     isLoading = false
-  }
+  })
 
-  doFetch()
+  doFetch.pipe(Effect.runPromise)
 </script>
 
 <svelte:head>
@@ -65,7 +67,7 @@
       class='w-full mt-8'
       onclick={() => {
         currentIndex++
-        doFetch()
+        doFetch.pipe(Effect.runPromise)
       }}
     >
       Load more

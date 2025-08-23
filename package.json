@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "cnfn": "^0.0.2",
+    "effect": "^3.17.8",
     "hls.js": "^1.6.9",
     "ios-haptics": "^0.1.0",
     "nuqs-svelte": "^1.2.1",

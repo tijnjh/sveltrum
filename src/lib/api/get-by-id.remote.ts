@@ -2,6 +2,7 @@ import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
+import { Effect } from 'effect'
 import { z } from 'zod'
 import { $api, chunked } from './utils'
 
@@ -26,14 +27,14 @@ export const getTracksByIds = query(
     size: z.number().optional(),
     index: z.number().optional(),
   }),
-  async ({ ids, size = 32, index = 0 }) => {
+  ({ ids, size = 32, index = 0 }) => Effect.gen(function* () {
     const chunkedIds = chunked(ids, { size, index })
 
     if (!chunkedIds.length) {
       return { tracks: [], hasMore: false }
     }
 
-    const tracks = await $api({
+    const tracks = yield* $api({
       path: `/tracks`,
       params: { ids: chunkedIds.join(',') },
       schema: track.array(),
@@ -43,5 +44,5 @@ export const getTracksByIds = query(
       tracks,
       hasMore: (index + 1) * size < ids.length,
     }
-  },
+  }),
 )
