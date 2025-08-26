@@ -1,6 +1,6 @@
   <script lang='ts'>
   import { page } from '$app/state'
-  import { global } from '$lib/global.svelte'
+  import { nowPlaying } from '$lib/global.svelte'
   import { PauseIcon, PlayIcon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
   import Button from './Button.svelte'
@@ -11,16 +11,16 @@
 </script>
 
 <div class='bottom-0 fixed inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
-  {#if global.nowPlaying}
+  {#if nowPlaying.current}
     <div class='p-4 border-zinc-100/10'>
       <div class='items-center gap-4 grid grid-cols-[1fr_auto]'>
 
         <button onclick={() => show = true} class='flex text-left gap-4 truncate'>
-          <img src={global.nowPlaying?.artwork_url} alt="" class='rounded size-12 aspect-square'>
+          <img src={nowPlaying.current.artwork_url} alt="" class='rounded size-12 aspect-square'>
 
           <div class='flex flex-col w-full min-w-0'>
-            <h3 class='truncate'>{global.nowPlaying?.title}</h3>
-            <p class='opacity-50 truncate'>{global.nowPlaying?.user.username}</p>
+            <h3 class='truncate'>{nowPlaying.current.title}</h3>
+            <p class='opacity-50 truncate'>{nowPlaying.current.user.username}</p>
           </div>
         </button>
 

@@ -1,5 +1,4 @@
 import type { Track } from './schemas/track'
+import { Ref } from './ref.svelte'
 
-export const global = $state({
-  nowPlaying: null as Track | null,
-})
+export const nowPlaying = new Ref<Track | null>(null)

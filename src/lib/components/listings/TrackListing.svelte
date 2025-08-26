@@ -1,13 +1,13 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
-  import { global } from '$lib/global.svelte'
+  import { nowPlaying } from '$lib/global.svelte'
   import ListingThumbnail from '../ListingThumbnail.svelte'
 
   const { track, inAlbum = false }: { track: Track, inAlbum?: boolean } = $props()
 </script>
 
 <button
-  onclick={() => { global.nowPlaying = track }}
+  onclick={() => { nowPlaying.current = track }}
   class='items-center text-left gap-4 grid grid-cols-[auto_1fr] active:scale-95 transition-transform active:opacity-50'
 >
   {#if !inAlbum}

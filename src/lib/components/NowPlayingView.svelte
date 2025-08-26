@@ -2,7 +2,7 @@
   import type { Track } from '$lib/schemas/track'
   import { getRelatedTracks } from '$lib/api/discovery.remote'
   import { getTrackSource } from '$lib/api/hsl.remote'
-  import { global } from '$lib/global.svelte'
+  import { nowPlaying } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
@@ -12,17 +12,17 @@
   let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
 
   $effect(() => {
-    if (global.nowPlaying) {
+    if (nowPlaying.current) {
       isPaused = true
 
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: global.nowPlaying.title,
-          artist: global.nowPlaying.user.username,
+          title: nowPlaying.current.title,
+          artist: nowPlaying.current.user.username,
           album: 'Sveltrum',
           artwork: [
             {
-              src: global.nowPlaying.artwork_url ?? '',
+              src: nowPlaying.current.artwork_url ?? '',
               sizes: '500x500',
               type: 'image/jpeg',
             },
@@ -44,17 +44,17 @@
   }
 
   $effect(() => {
-    if (global.nowPlaying) {
+    if (nowPlaying.current) {
       isPaused = true
 
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: global.nowPlaying.title,
-          artist: global.nowPlaying.user.username,
+          title: nowPlaying.current.title,
+          artist: nowPlaying.current.user.username,
           album: 'Sveltrum',
           artwork: [
             {
-              src: global.nowPlaying.artwork_url ?? '',
+              src: nowPlaying.current.artwork_url ?? '',
               sizes: '500x500',
               type: 'image/jpeg',
             },
@@ -65,8 +65,8 @@
   })
 </script>
 
-{#if global.nowPlaying}
-  {@const track = global.nowPlaying}
+{#if nowPlaying.current}
+  {@const track = nowPlaying.current}
 
   <div
     class={cn(
