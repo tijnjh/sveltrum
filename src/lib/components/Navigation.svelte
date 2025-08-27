@@ -1,14 +1,14 @@
   <script lang='ts'>
   import { page } from '$app/state'
-  import { nowPlaying } from '$lib/global.svelte'
+  import { isPaused, nowPlaying } from '$lib/global.svelte'
   import { PauseIcon, PlayIcon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
   import Button from './Button.svelte'
   import ListingThumbnail from './ListingThumbnail.svelte'
 
-  let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
+  let { show = $bindable() }: { show: boolean } = $props()
 
-  const StatusIcon = $derived(isPaused ? PlayIcon : PauseIcon)
+  const StatusIcon = $derived(isPaused.current ? PlayIcon : PauseIcon)
 </script>
 
 <div class='bottom-0 fixed z-50 inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
@@ -30,7 +30,7 @@
           variant='secondary'
           onclick={() => {
             haptic()
-            isPaused = !isPaused
+            isPaused.current = !isPaused.current
           }}
         >
           <StatusIcon fill='currentColor' class='opacity-50' size={16} />

@@ -3,7 +3,7 @@
   import { onNavigate } from '$app/navigation'
   import { getRelatedTracks } from '$lib/api/discovery.remote'
   import { getTrackSource } from '$lib/api/hsl.remote'
-  import { nowPlaying } from '$lib/global.svelte'
+  import { isPaused, nowPlaying } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
@@ -11,11 +11,11 @@
   import UserListing from './listings/UserListing.svelte'
   import Spinner from './Spinner.svelte'
 
-  let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
+  let { show = $bindable() }: { show: boolean } = $props()
 
   $effect(() => {
     if (nowPlaying.current) {
-      isPaused = true
+      isPaused.current = true
 
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -48,7 +48,7 @@
 
   $effect(() => {
     if (nowPlaying.current) {
-      isPaused = true
+      isPaused.current = true
 
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -103,7 +103,7 @@
       {#key track}
         <audio
           class='h-10'
-          bind:paused={isPaused}
+          bind:paused={isPaused.current}
           controls
         {@attach track && applySource(track)}>
         </audio>

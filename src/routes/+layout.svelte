@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import BottomNav from '$lib/components/BottomNav.svelte'
+  import Navigation from '$lib/components/Navigation.svelte'
   import NowPlayingView from '$lib/components/NowPlayingView.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
@@ -7,7 +7,6 @@
 
   const { children } = $props()
 
-  let isPaused = $state(true)
   let showNowPlayingView = $state(false)
 </script>
 
@@ -17,8 +16,8 @@
       {@render children()}
     </div>
 
-    <BottomNav bind:show={showNowPlayingView} bind:isPaused />
-    <NowPlayingView bind:show={showNowPlayingView} bind:isPaused />
+    <Navigation bind:show={showNowPlayingView} />
+    <NowPlayingView bind:show={showNowPlayingView} />
 
     {#snippet pending()}
       <Spinner />
