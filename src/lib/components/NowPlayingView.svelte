@@ -72,6 +72,13 @@
   })
 </script>
 
+<svelte:window onkeydown={(e) => {
+  if (e.key === 'Escape') {
+    e.preventDefault()
+    show = false
+  }
+}} />
+
 {#if nowPlaying.current}
   {@const track = nowPlaying.current}
 
@@ -118,6 +125,10 @@
       {:then relatedTracks}
         {#each relatedTracks.collection as track}
           <TrackListing {track} />
+        {:else}
+          <span class='text-xl font-medium text-zinc-100/25'>
+            Nothing here...
+          </span>
         {/each}
       {/await}
     </div>

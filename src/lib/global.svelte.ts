@@ -1,5 +1,5 @@
 import type { Track } from './schemas/track'
-import { Ref } from './ref.svelte'
+import { ref } from './ref.svelte'
 
-export const nowPlaying = new Ref<Track | null>(null)
-export const isPaused = new Ref(true)
+export const nowPlaying = ref<Track | null>(null)
+export const isPaused = ref(true)

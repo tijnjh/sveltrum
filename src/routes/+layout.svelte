@@ -12,11 +12,12 @@
 
 <NuqsAdapter>
   <svelte:boundary>
-    <div class='mb-64'>
-      {@render children()}
-    </div>
 
-    <Navigation bind:show={showNowPlayingView} />
+    <Navigation bind:show={showNowPlayingView}>
+      <div class='mb-64'>
+        {@render children()}
+      </div>
+    </Navigation>
     <NowPlayingView bind:show={showNowPlayingView} />
 
     {#snippet pending()}

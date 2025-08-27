@@ -1,15 +1,17 @@
-export class Ref<T> {
-  private state: T
+export interface Ref<T> {
+    get current(): T
+    set current(value: T)
+}
 
-  constructor(value: T) {
-    this.state = $state(value)
-  }
+export function ref<T>(value: T): Ref<T> {
+    let state = $state<T>(value)
 
-  get current() {
-    return this.state
-  }
-
-  set current(value: T) {
-    this.state = value
-  }
+    return {
+        get current() {
+            return state
+        },
+        set current(value: T) {
+            state = value
+        },
+    }
 }
