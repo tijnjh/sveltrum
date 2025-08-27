@@ -6,6 +6,7 @@
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
+  import { toast } from 'svelte-sonner'
   import TrackListing from './listings/TrackListing.svelte'
   import Spinner from './Spinner.svelte'
 
@@ -34,11 +35,18 @@
 
   const applySource = (track: Track) => (element: HTMLAudioElement) => {
     getTrackSource(track.id).then((url) => {
-      if (!Hls.isSupported())
-        throw new Error('hls is not supported')
+      if (url.isErr()) {
+        toast.error(`failed to get track source: ${url.error}`)
+        return
+      }
+
+      if (!Hls.isSupported()) {
+        toast.error('hls is not supported')
+        return
+      }
 
       const hls = new Hls()
-      hls.loadSource(url)
+      hls.loadSource(url.value)
       hls.attachMedia(element)
     })
   }
@@ -112,9 +120,14 @@
       {#await getRelatedTracks(track.id)}
         <Spinner />
       {:then relatedTracks}
-        {#each relatedTracks.collection as track}
-          <TrackListing {track} />
-        {/each}
+        {#if relatedTracks.isErr()}
+          Failed
+        {:else}
+          {#each relatedTracks.value.collection as track}
+            <TrackListing {track} />
+          {/each}
+        {/if}
+
       {/await}
     </div>
   </div>

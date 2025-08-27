@@ -2,6 +2,7 @@ import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
+import { err, ok } from 'neverthrow'
 import { z } from 'zod'
 import { $api, chunked } from './utils'
 
@@ -30,7 +31,7 @@ export const getTracksByIds = query(
     const chunkedIds = chunked(ids, { size, index })
 
     if (!chunkedIds.length) {
-      return { tracks: [], hasMore: false }
+      return ok({ tracks: [], hasMore: false })
     }
 
     const tracks = await $api({
@@ -39,9 +40,13 @@ export const getTracksByIds = query(
       schema: track.array(),
     })
 
-    return {
-      tracks,
-      hasMore: (index + 1) * size < ids.length,
+    if (tracks.isErr()) {
+      return err(tracks.error)
     }
+
+    return ok({
+      tracks: tracks.value,
+      hasMore: (index + 1) * size < ids.length,
+    })
   },
 )

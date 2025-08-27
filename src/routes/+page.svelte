@@ -1,8 +1,25 @@
 <script lang='ts'>
   import { getSelections } from '$lib/api/discovery.remote'
   import Button from '$lib/components/Button.svelte'
-  import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
-  import Spinner from '$lib/components/Spinner.svelte'
+  // import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
+  // import Spinner from '$lib/components/Spinner.svelte'
+  import { toast } from 'svelte-sonner'
+
+  // await getSelections().then()
+
+  const selections = await getSelections()
+
+  console.log(selections, 'arrived')
+
+// if (selections.isErr()) {
+    // toast.error(`${selections.error}`)
+  // }
+// try {
+
+  // }
+  // catch (error) {
+  //   toast.error(error)
+  // }
 </script>
 
 <div class='max-w-xl mx-auto p-4 flex flex-col gap-4'>
@@ -15,13 +32,19 @@
 
   <h2 class='text-2xl font-medium'>Trending playlists</h2>
 
-  {#await getSelections()}
+  <!-- {#await getSelections()}
     <Spinner />
   {:then selections}
-    {#each selections as selection}
-      {#each selection.items.collection as playlist}
-        <PlaylistListing playlist={playlist} />
+    {#if selections.isErr()}
+      Faield
+    {:else}
+      {#each selections.value as selection}
+        {#each selection.items.collection as playlist}
+          <PlaylistListing playlist={playlist} />
+        {/each}
       {/each}
-    {/each}
-  {/await}
+    {/if}
+
+    {JSON.stringify(selections)}
+  {/await} -->
 </div>

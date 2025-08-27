@@ -1,5 +1,7 @@
+import type { Ok } from 'neverthrow'
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
+import { err, ok } from 'neverthrow'
 import { z } from 'zod'
 import { $api } from './utils'
 
@@ -15,7 +17,11 @@ export const getSelections = query(async () => {
     }),
   })
 
-  return res.collection
+  if (res.isErr()) {
+    return err(res.error)
+  }
+
+  return ok(res.value.collection)
 })
 
 export const getRelatedTracks = query(z.number(), async (id) => {
@@ -23,5 +29,9 @@ export const getRelatedTracks = query(z.number(), async (id) => {
     path: `/tracks/${id}/related`,
   })
 
-  return res
+  if (res.isErr()) {
+    return err(res.error)
+  }
+
+  return ok(res.value)
 })

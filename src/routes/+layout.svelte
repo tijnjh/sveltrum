@@ -3,6 +3,7 @@
   import NowPlayingView from '$lib/components/NowPlayingView.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
+  import { Toaster } from 'svelte-sonner'
   import '../app.css'
 
   const { children } = $props()
@@ -28,3 +29,5 @@
     {/snippet}
   </svelte:boundary>
 </NuqsAdapter>
+
+<Toaster richColors />

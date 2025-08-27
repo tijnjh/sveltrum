@@ -2,6 +2,8 @@
   import type { Playlist } from '$lib/schemas/playlist'
   import type { Track } from '$lib/schemas/track'
   import type { User } from '$lib/schemas/user'
+  import type { RemoteQueryFunction } from '@sveltejs/kit'
+  import type { Result } from 'neverthrow'
   import { searchPlaylists, searchTracks, searchUsers } from '$lib/api/search.remote'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
@@ -11,6 +13,7 @@
   import { SearchIcon } from '@lucide/svelte'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
   import { onMount } from 'svelte'
+  import { toast } from 'svelte-sonner'
 
   let isLoading = $state(false)
 
@@ -27,7 +30,15 @@
     query && doFetch()
   })
 
-  function searchFor(kind: string) {
+  function searchFor(kind: string):
+    RemoteQueryFunction<
+      {
+        query: string
+        limit?: number | undefined
+        index?: number | undefined
+      },
+      Result<any, Error>
+    > {
     switch (kind) {
       case 'playlists': return searchPlaylists
       case 'users': return searchUsers
@@ -46,14 +57,19 @@
 
     isLoading = true
 
-    const { results: newResults, hasMore } = await searchFor(selectedKind.current ?? 'tracks')({
+    const res = await searchFor(selectedKind.current ?? 'tracks')({
       query: query.current,
       index: currentIndex,
     })
 
-    hasMoreResults = hasMore
+    if (res.isErr()) {
+      toast.error(`failed to search: ${res.error}`)
+      return
+    }
 
-    results = [...results, ...newResults]
+    hasMoreResults = res.value.hasMore
+
+    results = [...results, ...res.value]
     isLoading = false
   }
 

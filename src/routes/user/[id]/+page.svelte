@@ -11,10 +11,12 @@
   import UserListing from '$lib/components/listings/UserListing.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
+  import { onMount } from 'svelte'
+  import { toast } from 'svelte-sonner'
 
   const id = Number(page.params!.id)
 
-  const user = await getUserById(id)
+  let user: User | null = $state(null)
 
   const selectedKind = useQueryState('kind', parseAsString.withDefault('tracks').withOptions({
     shallow: false,
@@ -35,17 +37,35 @@
   let currentIndex = $state(0)
   let hasMoreResults = $state(true)
 
+  onMount(async () => {
+    const res = await getUserById(id)
+
+    if (res.isErr()) {
+      toast.error(`faield to get user: ${res.error}`)
+      return
+    }
+
+    user = res.value
+  })
+
   async function doFetch() {
     isLoading = true
 
-    const { results: newResults, hasMore } = await getUser(selectedKind.current ?? 'tracks')({
+    const kind = selectedKind.current ?? 'tracks'
+
+    const res = await getUser(kind)({
       id,
       index: currentIndex,
     })
 
-    hasMoreResults = hasMore
+    if (res.isErr()) {
+      toast.error(`faield to get user ${kind}: ${res.error}`)
+      return
+    }
 
-    results = [...results, ...newResults]
+    hasMoreResults = res.value.hasMore
+
+    results = [...results, ...res.value.results]
     isLoading = false
   }
 
@@ -57,10 +77,10 @@
   <link rel='icon' href={user?.avatar_url} />
 </svelte:head>
 
-<img src={user.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
+<img src={user?.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
 
 <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <h1 class='font-medium text-2xl'>{user.username}</h1>
+  <h1 class='font-medium text-2xl'>{user?.username}</h1>
 </div>
 
 <main class='flex flex-col gap-4 p-4'>
