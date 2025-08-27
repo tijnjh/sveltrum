@@ -3,7 +3,9 @@
   import { page } from '$app/state'
   import { getPlaylistById, getTracksByIds } from '$lib/api/get-by-id.remote'
   import Button from '$lib/components/Button.svelte'
+  import HeroSection from '$lib/components/HeroSection.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
+  import Main from '$lib/components/Main.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
 
   const id = Number(page.params!.id)
@@ -44,16 +46,9 @@
   <link rel='icon' href={playlist?.artwork_url} />
 </svelte:head>
 
-{#if playlist.artwork_url}
-  <img src={playlist.artwork_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
-{/if}
+<HeroSection pictureSrc={playlist.artwork_url} title={playlist.title} user={playlist.user} />
 
-<div class='flex flex-col z-50 gap-4 w-full sticky p-4 top-0 inset-x-0  bg-zinc-700/75 backdrop-blur-lg'>
-  <h1 class='font-medium text-2xl'>{playlist.title}</h1>
-</div>
-
-<main class='p-4 flex flex-col gap-4'>
-
+<Main>
   {#each tracks as track}
     <TrackListing {track} inAlbum={playlist.is_album} />
   {/each}
@@ -71,4 +66,4 @@
       Load more
     </Button>
   {/if}
-</main>
+</Main>

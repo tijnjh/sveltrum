@@ -2,10 +2,11 @@
   import { getSelections } from '$lib/api/discovery.remote'
   import Button from '$lib/components/Button.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
+  import Main from '$lib/components/Main.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
 </script>
 
-<div class='max-w-xl mx-auto p-4 flex flex-col gap-4'>
+<Main>
   <div class='my-16 flex flex-col gap-4'>
     <h1 class='mx-auto text-center text-3xl font-mediums'>Sveltrum</h1>
     <div class='flex gap-4 justify-center'>
@@ -24,4 +25,4 @@
       {/each}
     {/each}
   {/await}
-</div>
+</Main>

@@ -7,6 +7,7 @@
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
+  import Main from '$lib/components/Main.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { SearchIcon } from '@lucide/svelte'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
@@ -24,7 +25,9 @@
   }))
 
   onMount(() => {
-    query && doFetch()
+    if (query) {
+      doFetch()
+    }
   })
 
   function searchFor(kind: string) {
@@ -70,7 +73,7 @@
 </svelte:head>
 
 <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <form {onsubmit} class='flex gap-2'>
+  <form {onsubmit} class='flex gap-2 max-w-xl mx-auto w-full'>
     <input
       type='text'
       bind:value={query.current}
@@ -82,7 +85,7 @@
       <SearchIcon size={16} strokeWidth={3} />
     </Button>
   </form>
-  <div class='flex gap-2'>
+  <div class='flex gap-2 max-w-xl mx-auto w-full'>
     {#each ['tracks', 'playlists', 'users'] as kind}
       {#key selectedKind.current}
         <Button
@@ -103,7 +106,7 @@
   </div>
 </div>
 
-<main class='p-4'>
+<Main>
   <div class='flex flex-col gap-4'>
     {#each results as result}
       {#if selectedKind.current === 'tracks'}
@@ -131,4 +134,4 @@
       </Button>
     {/if}
   {/if}
-</main>
+</Main>

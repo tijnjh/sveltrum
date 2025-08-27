@@ -6,9 +6,11 @@
   import { getUserById } from '$lib/api/get-by-id.remote'
   import { getUserPlaylists, getUserTracks } from '$lib/api/user.remote'
   import Button from '$lib/components/Button.svelte'
+  import HeroSection from '$lib/components/HeroSection.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
   import UserListing from '$lib/components/listings/UserListing.svelte'
+  import Main from '$lib/components/Main.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
 
@@ -57,13 +59,9 @@
   <link rel='icon' href={user?.avatar_url} />
 </svelte:head>
 
-<img src={user.avatar_url.replace('large', 't500x500')} class='w-full aspect-square md:max-w-md' alt="">
+<HeroSection pictureSrc={user.avatar_url} title={user.username} />
 
-<div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <h1 class='font-medium text-2xl'>{user.username}</h1>
-</div>
-
-<main class='flex flex-col gap-4 p-4'>
+<Main>
 
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists'] as kind}
@@ -107,4 +105,4 @@
       Load more
     </Button>
   {/if}
-</main>
+</Main>

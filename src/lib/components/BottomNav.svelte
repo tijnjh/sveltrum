@@ -4,19 +4,20 @@
   import { PauseIcon, PlayIcon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
   import Button from './Button.svelte'
+  import ListingThumbnail from './ListingThumbnail.svelte'
 
   let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
 
   const StatusIcon = $derived(isPaused ? PlayIcon : PauseIcon)
 </script>
 
-<div class='bottom-0 fixed inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
+<div class='bottom-0 fixed z-50 inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
   {#if nowPlaying.current}
-    <div class='p-4 border-zinc-100/10'>
-      <div class='items-center gap-4 grid grid-cols-[1fr_auto]'>
+    <div class=' border-zinc-100/10 border'>
+      <div class='items-center max-w-xl mx-auto p-4 gap-4 grid grid-cols-[1fr_auto]'>
 
         <button onclick={() => show = true} class='flex text-left gap-4 truncate'>
-          <img src={nowPlaying.current.artwork_url} alt="" class='rounded size-12 aspect-square'>
+          <ListingThumbnail src={nowPlaying.current.artwork_url} alt='' />
 
           <div class='flex flex-col w-full min-w-0'>
             <h3 class='truncate'>{nowPlaying.current.title}</h3>

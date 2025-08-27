@@ -22,7 +22,7 @@
           album: 'Sveltrum',
           artwork: [
             {
-              src: nowPlaying.current.artwork_url ?? '',
+              src: nowPlaying.current.artwork_url?.replace('large', 't500x500') ?? '',
               sizes: '500x500',
               type: 'image/jpeg',
             },
