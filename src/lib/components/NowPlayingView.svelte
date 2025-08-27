@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
+  import { onNavigate } from '$app/navigation'
   import { getRelatedTracks } from '$lib/api/discovery.remote'
   import { getTrackSource } from '$lib/api/hsl.remote'
   import { nowPlaying } from '$lib/global.svelte'
@@ -7,6 +8,7 @@
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
   import TrackListing from './listings/TrackListing.svelte'
+  import UserListing from './listings/UserListing.svelte'
   import Spinner from './Spinner.svelte'
 
   let { show = $bindable(), isPaused = $bindable() }: { show: boolean, isPaused: boolean } = $props()
@@ -34,8 +36,9 @@
 
   const applySource = (track: Track) => (element: HTMLAudioElement) => {
     getTrackSource(track.id).then((url) => {
-      if (!Hls.isSupported())
+      if (!Hls.isSupported()) {
         throw new Error('hls is not supported')
+      }
 
       const hls = new Hls()
       hls.loadSource(url)
@@ -54,7 +57,7 @@
           album: 'Sveltrum',
           artwork: [
             {
-              src: nowPlaying.current.artwork_url ?? '',
+              src: nowPlaying.current.artwork_url?.replace('large', 't500x500') ?? '',
               sizes: '500x500',
               type: 'image/jpeg',
             },
@@ -62,6 +65,10 @@
         })
       }
     }
+  })
+
+  onNavigate(() => {
+    show = false
   })
 </script>
 
@@ -90,10 +97,7 @@
 
       <hgroup>
         <h1 class='font-medium text-2xl'>{track.title}</h1>
-
-        <a href='/user/{track.user.id}' class='text-white/50 text-xl' onclick={() => show = false}>
-          {track.user.username}
-        </a>
+        <UserListing user={track.user} class='mt-4' />
       </hgroup>
 
       {#key track}
@@ -106,7 +110,7 @@
       {/key}
     </div>
 
-    <div class='flex flex-col w-full gap-4 md:max-w-sm'>
+    <div class='flex flex-col w-full gap-4 md:max-w-sm mb-16'>
       <h2 class='text-2xl mt-8 font-medium'>Related tracks</h2>
 
       {#await getRelatedTracks(track.id)}

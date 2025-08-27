@@ -46,9 +46,11 @@
   <link rel='icon' href={playlist?.artwork_url} />
 </svelte:head>
 
-<HeroSection pictureSrc={playlist.artwork_url} title={playlist.title} user={playlist.user} />
-
 <Main>
+  <HeroSection pictureSrc={playlist.artwork_url} title={playlist.title} user={playlist.user} />
+
+  <h2 class='text-2xl mt-4 font-medium'>{playlist.track_count} track{playlist.track_count === 1 ? '' : 's'}</h2>
+
   {#each tracks as track}
     <TrackListing {track} inAlbum={playlist.is_album} />
   {/each}

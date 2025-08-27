@@ -13,7 +13,7 @@
 
 <div class='bottom-0 fixed z-50 inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
   {#if nowPlaying.current}
-    <div class=' border-zinc-100/10 border'>
+    <div class=' border-zinc-100/10 border-b'>
       <div class='items-center max-w-xl mx-auto p-4 gap-4 grid grid-cols-[1fr_auto]'>
 
         <button onclick={() => show = true} class='flex text-left gap-4 truncate'>

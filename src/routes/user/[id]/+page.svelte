@@ -59,9 +59,12 @@
   <link rel='icon' href={user?.avatar_url} />
 </svelte:head>
 
-<HeroSection pictureSrc={user.avatar_url} title={user.username} />
-
 <Main>
+  <HeroSection
+    pictureSrc={user.avatar_url}
+    title={user.username}
+    roundedPicture
+  />
 
   <div class='flex gap-2'>
     {#each ['tracks', 'playlists'] as kind}
