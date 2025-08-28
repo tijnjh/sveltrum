@@ -46,27 +46,6 @@
     })
   }
 
-  $effect(() => {
-    if (nowPlaying.current) {
-      isPaused.current = true
-
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: nowPlaying.current.title,
-          artist: nowPlaying.current.user.username,
-          album: 'Sveltrum',
-          artwork: [
-            {
-              src: nowPlaying.current.artwork_url?.replace('large', 't500x500') ?? '',
-              sizes: '500x500',
-              type: 'image/jpeg',
-            },
-          ],
-        })
-      }
-    }
-  })
-
   onNavigate(() => {
     show = false
   })
