@@ -3,7 +3,7 @@
   import { onNavigate } from '$app/navigation'
   import { getRelatedTracks } from '$lib/api/discovery.remote'
   import { getTrackSource } from '$lib/api/hsl.remote'
-  import { isPaused, nowPlaying } from '$lib/global.svelte'
+  import { global } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
   import Hls from 'hls.js'
@@ -14,17 +14,17 @@
   let { show = $bindable() }: { show: boolean } = $props()
 
   $effect(() => {
-    if (nowPlaying.current) {
-      isPaused.current = true
+    if (global.nowPlaying) {
+      global.isPaused = true
 
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: nowPlaying.current.title,
-          artist: nowPlaying.current.user.username,
+          title: global.nowPlaying.title,
+          artist: global.nowPlaying.user.username,
           album: 'Sveltrum',
           artwork: [
             {
-              src: nowPlaying.current.artwork_url?.replace('large', 't500x500') ?? '',
+              src: global.nowPlaying.artwork_url?.replace('large', 't500x500') ?? '',
               sizes: '500x500',
               type: 'image/jpeg',
             },
@@ -58,8 +58,8 @@
   }
 }} />
 
-{#if nowPlaying.current}
-  {@const track = nowPlaying.current}
+{#if global.nowPlaying}
+  {@const track = global.nowPlaying}
 
   <div
     class={cn(
@@ -89,7 +89,7 @@
       {#key track}
         <audio
           class='h-10'
-          bind:paused={isPaused.current}
+          bind:paused={global.isPaused}
           controls
         {@attach track && applySource(track)}>
         </audio>

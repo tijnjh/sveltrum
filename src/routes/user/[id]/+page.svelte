@@ -9,7 +9,6 @@
   import HeroSection from '$lib/components/HeroSection.svelte'
   import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
   import TrackListing from '$lib/components/listings/TrackListing.svelte'
-  import UserListing from '$lib/components/listings/UserListing.svelte'
   import Main from '$lib/components/Main.svelte'
   import Spinner from '$lib/components/Spinner.svelte'
   import { parseAsString, useQueryState } from 'nuqs-svelte'
@@ -89,8 +88,12 @@
         <TrackListing track={result as Track} />
       {:else if selectedKind.current === 'playlists'}
         <PlaylistListing playlist={result as Playlist} />
-      {:else if selectedKind.current === 'users'}
-        <UserListing user={result as User} />
+      {/if}
+    {:else}
+      {#if !isLoading}
+        <span class='mt-4 text-zinc-100/25 text-lg'>
+          Nothing here...
+        </span>
       {/if}
     {/each}
   </div>

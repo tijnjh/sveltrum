@@ -73,7 +73,7 @@
 </svelte:head>
 
 <div class='top-0 z-50 sticky inset-x-0 flex flex-col gap-4 bg-zinc-700/75 backdrop-blur-lg p-4 w-full'>
-  <form {onsubmit} class='flex gap-2 max-w-xl mx-auto w-full'>
+  <form {onsubmit} class='flex gap-2 mx-auto w-full max-w-xl'>
     <input
       type='text'
       bind:value={query.current}
@@ -85,7 +85,7 @@
       <SearchIcon size={16} strokeWidth={3} />
     </Button>
   </form>
-  <div class='flex gap-2 max-w-xl mx-auto w-full'>
+  <div class='flex gap-2 mx-auto w-full max-w-xl'>
     {#each ['tracks', 'playlists', 'users'] as kind}
       {#key selectedKind.current}
         <Button
@@ -115,6 +115,12 @@
         <PlaylistListing playlist={result as Playlist} />
       {:else if selectedKind.current === 'users'}
         <UserListing user={result as User} />
+      {/if}
+    {:else}
+      {#if !isLoading}
+        <span class='mt-4 text-zinc-100/25 text-lg'>
+          Nothing here...
+        </span>
       {/if}
     {/each}
   </div>

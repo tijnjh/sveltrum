@@ -21,8 +21,9 @@
   let hasMoreTracks = $state(true)
 
   async function doFetch() {
-    if (!playlist.tracks)
+    if (!playlist.tracks) {
       return
+    }
 
     isLoading = true
 
@@ -49,17 +50,23 @@
 <Main>
   <HeroSection pictureSrc={playlist.artwork_url} title={playlist.title} user={playlist.user} />
 
-  <h2 class='text-2xl mt-4 font-medium'>{playlist.track_count} track{playlist.track_count === 1 ? '' : 's'}</h2>
+  <h2 class='mt-4 font-medium text-2xl'>{playlist.track_count} track{playlist.track_count === 1 ? '' : 's'}</h2>
 
   {#each tracks as track}
     <TrackListing {track} inAlbum={playlist.is_album} />
+  {:else}
+    {#if !isLoading}
+      <span class='mt-4 text-zinc-100/25 text-lg'>
+        Nothing here...
+      </span>
+    {/if}
   {/each}
 
   {#if isLoading}
     <Spinner />
   {:else if hasMoreTracks}
     <Button
-      class='w-full mt-8'
+      class='mt-8 w-full'
       onclick={() => {
         currentIndex++
         doFetch()

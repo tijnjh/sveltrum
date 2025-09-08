@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type { Track } from '$lib/schemas/track'
-  import { isPaused, nowPlaying } from '$lib/global.svelte'
+  import { global } from '$lib/global.svelte'
   import ListingThumbnail from '../ListingThumbnail.svelte'
 
   const { track, inAlbum = false }: { track: Track, inAlbum?: boolean } = $props()
@@ -8,12 +8,13 @@
 
 <button
   onclick={() => {
-    nowPlaying.current = track
+    global.nowPlaying = track
+
     setTimeout(() => {
-      isPaused.current = false
+      global.isPaused = false
     }, 50)
   }}
-  class='items-center text-left gap-4 grid grid-cols-[auto_1fr] active:scale-95 transition-transform active:opacity-50'
+  class='items-center gap-4 grid grid-cols-[auto_1fr] active:opacity-50 text-left active:scale-95 transition-transform'
 >
   {#if !inAlbum}
     <ListingThumbnail src={track.artwork_url} alt='album cover of {track.title}' />
@@ -24,10 +25,10 @@
       <h3 class='truncate'>{track.title}</h3>
 
       {#if track.policy === 'SNIP'}
-        <div class='px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 text-sm whitespace-nowrap'>30s only</div>
+        <div class='bg-zinc-700 px-2 py-0.5 rounded-full text-zinc-400 text-sm whitespace-nowrap'>30s only</div>
       {/if}
     </div>
-    <p class='truncate opacity-50'>
+    <p class='opacity-50 truncate'>
       {#if inAlbum}
         {track.playback_count?.toLocaleString()} plays
       {:else}

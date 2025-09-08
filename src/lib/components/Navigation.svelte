@@ -1,7 +1,7 @@
   <script lang='ts'>
   import type { Snippet } from 'svelte'
   import { page } from '$app/state'
-  import { isPaused, nowPlaying } from '$lib/global.svelte'
+  import { global } from '$lib/global.svelte'
   import { PauseIcon, PlayIcon } from '@lucide/svelte'
   import { haptic } from 'ios-haptics'
   import { MediaQuery } from 'svelte/reactivity'
@@ -10,7 +10,7 @@
 
   let { show = $bindable(), children }: { show: boolean, children: Snippet } = $props()
 
-  const StatusIcon = $derived(isPaused.current ? PlayIcon : PauseIcon)
+  const StatusIcon = $derived(global.isPaused ? PlayIcon : PauseIcon)
 
   const md = new MediaQuery('width > 768px')
 
@@ -20,7 +20,7 @@
 {#if md.current}
   <!-- desktop -->
   <div class='grid grid-cols-[12rem_1fr]'>
-    <div class='flex flex-col gap-2 z-50 p-4 border-r h-svh sticky top-0 border-zinc-100/10 bg-zinc-700/50'>
+    <div class='top-0 z-50 sticky flex flex-col gap-2 bg-zinc-700/50 p-4 border-zinc-100/10 border-r h-svh'>
       {#each navItems as [href, label]}
         {@const isCurrent = page.url.pathname === `/${href.replace('/', '')}`}
         <Button {href} variant={isCurrent ? 'primary' : 'secondary'}>
@@ -28,9 +28,9 @@
         </Button>
       {/each}
     </div>
-    <div class='relative isolate'>
+    <div class='isolate relative'>
       {@render children()}
-      <div class='fixed bottom-0 z-50 left-[12rem] right-0 bg-zinc-700/75 backdrop-blur-lg'>
+      <div class='right-0 bottom-0 left-[12rem] z-50 fixed bg-zinc-700/75 backdrop-blur-lg'>
         {@render nowPlayingBar()}
       </div>
     </div>
@@ -40,7 +40,7 @@
   <!-- mobile -->
   {@render children()}
 
-  <div class='bottom-0 fixed z-50 inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
+  <div class='bottom-0 z-50 fixed inset-x-0 bg-zinc-700/75 backdrop-blur-lg'>
     {@render nowPlayingBar()}
 
     <nav class='flex justify-center items-center gap-2 p-4'>
@@ -55,16 +55,16 @@
 {/if}
 
 {#snippet nowPlayingBar()}
-  {#if nowPlaying.current}
+  {#if global.nowPlaying}
     <div class='max-md:border-zinc-100/10 max-md:border-b'>
-      <div class='items-center max-w-xl mx-auto p-4 gap-4 grid grid-cols-[1fr_auto]'>
+      <div class='items-center gap-4 grid grid-cols-[1fr_auto] mx-auto p-4 max-w-xl'>
 
-        <button onclick={() => show = true} class='flex text-left gap-4 truncate'>
-          <ListingThumbnail src={nowPlaying.current.artwork_url} alt='' />
+        <button onclick={() => show = true} class='flex gap-4 text-left truncate'>
+          <ListingThumbnail src={global.nowPlaying.artwork_url} alt='' />
 
           <div class='flex flex-col w-full min-w-0'>
-            <h3 class='truncate'>{nowPlaying.current.title}</h3>
-            <p class='opacity-50 truncate'>{nowPlaying.current.user.username}</p>
+            <h3 class='truncate'>{global.nowPlaying.title}</h3>
+            <p class='opacity-50 truncate'>{global.nowPlaying.user.username}</p>
           </div>
         </button>
 
@@ -73,7 +73,7 @@
           variant='secondary'
           onclick={() => {
             haptic()
-            isPaused.current = !isPaused.current
+            global.isPaused = !global.isPaused
           }}
         >
           <StatusIcon fill='currentColor' class='opacity-50' size={16} />
