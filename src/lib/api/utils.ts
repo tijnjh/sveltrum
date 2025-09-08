@@ -72,3 +72,5 @@ export function withPagination<TArgs extends Record<string, any>, T>(
     }
   }
 }
+
+export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null }
