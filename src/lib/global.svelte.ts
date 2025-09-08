@@ -1,6 +1,6 @@
 import type { Track } from './schemas/track'
 
-interface Global {
+export interface Global {
   nowPlaying: Track | null
   isPaused: boolean
 }

@@ -1,14 +1,19 @@
-<script lang='ts'>
+<script module lang='ts'>
   import type { User } from '$lib/schemas/user'
-  import { cn } from 'cnfn'
-  import UserListing from './listings/UserListing.svelte'
 
-  const { pictureSrc, title, user, roundedPicture = false }: {
-    pictureSrc: string | null
+  export interface HeroSectionProps {
+    pictureSrc?: string | null
     title: string
     user?: User
     roundedPicture?: boolean
-  } = $props()
+  }
+</script>
+
+<script lang='ts'>
+  import { cn } from 'cnfn'
+  import UserListing from './listings/UserListing.svelte'
+
+  const { pictureSrc, title, user, roundedPicture = false }: HeroSectionProps = $props()
 </script>
 
 {#if pictureSrc}

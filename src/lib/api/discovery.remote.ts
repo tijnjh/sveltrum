@@ -1,14 +1,15 @@
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
-import { z } from 'zod'
+import { track } from '$lib/schemas/track'
+import { type } from 'arktype'
 import { $api } from './utils'
 
 export const getSelections = query(async () => {
   const res = await $api({
     path: '/mixed-selections',
-    schema: z.object({
-      collection: z.object({
-        items: z.object({
+    schema: type({
+      collection: type({
+        items: type({
           collection: playlist.array(),
         }),
       }).array(),
@@ -18,10 +19,9 @@ export const getSelections = query(async () => {
   return res.collection
 })
 
-export const getRelatedTracks = query(z.number(), async (id) => {
-  const res = await $api({
-    path: `/tracks/${id}/related`,
-  })
-
-  return res
-})
+export const getRelatedTracks = query(type('number'), id => $api({
+  path: `/tracks/${id}/related`,
+  schema: type({
+    collection: track.array(),
+  }),
+}))

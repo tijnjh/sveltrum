@@ -2,7 +2,7 @@
   import type { Track } from '$lib/schemas/track'
   import { onNavigate } from '$app/navigation'
   import { getRelatedTracks } from '$lib/api/discovery.remote'
-  import { getTrackSource } from '$lib/api/hsl.remote'
+  import { getTrackSource } from '$lib/api/hls.remote'
   import { global } from '$lib/global.svelte'
   import { ChevronDownIcon } from '@lucide/svelte'
   import { cn } from 'cnfn'
@@ -34,17 +34,15 @@
     }
   })
 
-  const applySource = (track: Track) => (element: HTMLAudioElement) => {
-    getTrackSource(track.id).then((url) => {
-      if (!Hls.isSupported()) {
-        throw new Error('hls is not supported')
-      }
+  const applySource = (track: Track) => (element: HTMLAudioElement) => void getTrackSource(track.id).then((url) => {
+    if (!Hls.isSupported()) {
+      throw new Error('hls is not supported')
+    }
 
-      const hls = new Hls()
-      hls.loadSource(url)
-      hls.attachMedia(element)
-    })
-  }
+    const hls = new Hls()
+    hls.loadSource(url)
+    hls.attachMedia(element)
+  })
 
   onNavigate(() => {
     show = false

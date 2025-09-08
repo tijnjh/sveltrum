@@ -1,23 +1,25 @@
 import { query } from '$app/server'
-import { ofetch } from 'ofetch/node'
-import { z } from 'zod'
+import { type } from 'arktype'
+import { ofetch } from 'ofetch'
 import { getTrackById } from './get-by-id.remote'
 import { getClientId } from './utils'
 
-export const getTrackSource = query(z.number(), async (trackId) => {
+export const getTrackSource = query(type('number'), async (trackId) => {
   const track = await getTrackById(trackId)
   const clientId = await getClientId()
 
-  if (!track)
+  if (!track) {
     throw new Error('failed to find track')
+  }
 
   const hlsTranscodings = track.media.transcodings.filter(({ format }) => format.protocol === 'hls')
 
   const transcoding = hlsTranscodings.find(({ preset }) => preset === 'aac_160k')
     ?? hlsTranscodings.find(({ format }) => format.mime_type === 'audio/mpeg')
 
-  if (!transcoding)
+  if (!transcoding) {
     throw new Error('failed to find hls transcoding')
+  }
 
   const { url } = await ofetch(transcoding.url, {
     params: {

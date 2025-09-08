@@ -1,5 +1,5 @@
 <script lang='ts' module>
-  import type { WithElementRef } from '$lib/api/utils'
+  import type { WithElementRef } from '$lib/utils'
   import type { Snippet } from 'svelte'
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements'
 

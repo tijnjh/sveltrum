@@ -1,5 +1,13 @@
-  <script lang='ts'>
+<script module lang='ts'>
   import type { Snippet } from 'svelte'
+
+  export interface NavigationProps {
+    show: boolean
+    children: Snippet
+  }
+</script>
+
+<script lang='ts'>
   import { page } from '$app/state'
   import { global } from '$lib/global.svelte'
   import { PauseIcon, PlayIcon } from '@lucide/svelte'
@@ -8,7 +16,7 @@
   import Button from './Button.svelte'
   import ListingThumbnail from './ListingThumbnail.svelte'
 
-  let { show = $bindable(), children }: { show: boolean, children: Snippet } = $props()
+  let { show = $bindable(), children }: NavigationProps = $props()
 
   const StatusIcon = $derived(global.isPaused ? PlayIcon : PauseIcon)
 

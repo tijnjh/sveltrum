@@ -1,22 +1,23 @@
+import type { Type } from 'arktype'
 import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
-import { z } from 'zod'
+import { type } from 'arktype'
 import { $api, withPagination } from './utils'
 
-const getUserSchema = z.object({
-  id: z.number(),
-  size: z.number().optional(),
-  index: z.number().optional(),
+const getUserSchema = type({
+  id: 'number',
+  size: 'number?',
+  index: 'number?',
 })
 
-function baseGetUser<T extends z.ZodType>(kind: string, schema: T) {
+function baseGetUser<S extends Type<T>, T = type.infer<S>>(kind: string, schema: S) {
   return query(getUserSchema, withPagination(async ({ id, limit, offset }) => {
     const res = await $api({
       path: `/users/${id}/${kind}`,
       params: { limit, offset },
-      schema: z.object({
-        collection: z.array(schema),
+      schema: type({
+        collection: schema.array(),
       }),
     })
     return res.collection

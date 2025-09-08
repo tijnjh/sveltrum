@@ -1,13 +1,20 @@
-<script lang='ts'>
+<script module lang='ts'>
   import type { Playlist } from '$lib/schemas/playlist'
+
+  export interface PlaylistListingProps {
+    playlist: Playlist
+  }
+</script>
+
+<script lang='ts'>
   import ListingThumbnail from '../ListingThumbnail.svelte'
 
-  const { playlist }: { playlist: Playlist } = $props()
+  const { playlist }: PlaylistListingProps = $props()
 </script>
 
 <a
   href='/playlist/{playlist.id}'
-  class='items-center text-left gap-4 grid grid-cols-[auto_1fr] active:scale-95 transition-transform active:opacity-50'
+  class='items-center gap-4 grid grid-cols-[auto_1fr] active:opacity-50 text-left active:scale-95 transition-transform'
 >
   <ListingThumbnail src={playlist.artwork_url} alt='Playlist picture of {playlist.title}' />
 
@@ -15,9 +22,9 @@
     <div class='flex gap-2'>
       <h3 class='truncate'>{playlist.title}</h3>
       {#if playlist.is_album}
-        <div class='px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 text-sm whitespace-nowrap'>Album</div>
+        <div class='bg-zinc-700 px-2 py-0.5 rounded-full text-zinc-400 text-sm whitespace-nowrap'>Album</div>
       {/if}
     </div>
-    <p class='truncate opacity-50'>{playlist.user.username}</p>
+    <p class='opacity-50 truncate'>{playlist.user.username}</p>
   </div>
 </a>

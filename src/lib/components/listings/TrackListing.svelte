@@ -1,9 +1,17 @@
-<script lang='ts'>
+<script module lang='ts'>
   import type { Track } from '$lib/schemas/track'
+
+  export interface TrackListingProps {
+    track: Track
+    inAlbum?: boolean
+  }
+</script>
+
+<script lang='ts'>
   import { global } from '$lib/global.svelte'
   import ListingThumbnail from '../ListingThumbnail.svelte'
 
-  const { track, inAlbum = false }: { track: Track, inAlbum?: boolean } = $props()
+  const { track, inAlbum = false }: TrackListingProps = $props()
 </script>
 
 <button

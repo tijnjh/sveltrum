@@ -2,29 +2,29 @@ import { query } from '$app/server'
 import { playlist } from '$lib/schemas/playlist'
 import { track } from '$lib/schemas/track'
 import { user } from '$lib/schemas/user'
-import { z } from 'zod'
+import { type } from 'arktype'
 import { $api, chunked } from './utils'
 
-export const getTrackById = query(z.number(), id => $api({
+export const getTrackById = query(type('number'), id => $api({
   path: `/tracks/${id}`,
   schema: track,
 }))
 
-export const getPlaylistById = query(z.number(), id => $api({
+export const getPlaylistById = query(type('number'), id => $api({
   path: `/playlists/${id}`,
   schema: playlist,
 }))
 
-export const getUserById = query(z.number(), id => $api({
+export const getUserById = query(type('number'), id => $api({
   path: `/users/${id}`,
   schema: user,
 }))
 
 export const getTracksByIds = query(
-  z.object({
-    ids: z.number().array(),
-    size: z.number().optional(),
-    index: z.number().optional(),
+  type({
+    ids: type('number').array(),
+    size: 'number?',
+    index: 'number?',
   }),
   async ({ ids, size = 32, index = 0 }) => {
     const chunkedIds = chunked(ids, { size, index })
