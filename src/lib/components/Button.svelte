@@ -1,4 +1,4 @@
-<script lang='ts' module>
+<script module lang='ts'>
   import type { WithElementRef } from '$lib/utils'
   import type { Snippet } from 'svelte'
   import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements'
