@@ -14,7 +14,7 @@ export const track = type({
   duration: 'number',
   full_duration: 'number',
   embeddable_by: '"all"|"none"|"me"',
-  genre: 'string?',
+  'genre?': 'string | null',
   has_downloads_left: 'boolean',
   id: 'number',
   kind: '"track"',
