@@ -4,6 +4,6 @@
   const { children }: { children: Snippet } = $props()
 </script>
 
-<main class='p-4 max-w-xl mx-auto flex flex-col gap-4'>
+<main class='flex flex-col gap-4 mx-auto p-4 max-w-xl'>
   {@render children()}
 </main>

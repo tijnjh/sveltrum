@@ -63,22 +63,22 @@
 
   <div
     class={cn(
-      'z-50 fixed inset-x-0 overflow-y-scroll place-items-center md:grid-cols-2 grid grid-cols-1 gap-x-8 bg-zinc-700/75 backdrop-blur-lg p-4 h-full transition-[top] duration-300',
+      'z-50 fixed inset-x-0 place-items-center gap-x-8 grid grid-cols-1 md:grid-cols-2 bg-zinc-700/75 backdrop-blur-lg p-4 h-full overflow-y-scroll transition-[top] duration-300',
       show ? 'top-0' : 'top-[100%]',
     )}
   >
     <button
       onclick={() => show = false}
-      class='flex absolute justify-center items-center bg-zinc-100/10 active:opacity-50 top-4 right-4 rounded-full size-10 active:scale-90 transition-transform'
+      class='top-4 right-4 absolute flex justify-center items-center bg-zinc-100/10 active:opacity-50 rounded-full size-10 active:scale-90 transition-transform'
     >
       <ChevronDownIcon size={16} strokeWidth={3} />
     </button>
 
-    <div class='flex flex-col max-md:mt-16 gap-4 w-full md:max-w-sm'>
+    <div class='flex flex-col gap-4 max-md:mt-16 w-full md:max-w-sm'>
       {#if track.artwork_url}
-        <img src={track.artwork_url.replace('large', 't500x500')} class='mt-12 aspect-square rounded-xl w-full' alt="">
+        <img src={track.artwork_url.replace('large', 't500x500')} class='mt-12 rounded-xl w-full aspect-square' alt="">
       {:else}
-        <div class='mt-12 rounded-xl aspect-square bg-zinc-700 w-full md:max-w-md'></div>
+        <div class='bg-zinc-700 mt-12 rounded-xl w-full md:max-w-md aspect-square'></div>
       {/if}
 
       <hgroup>
@@ -91,13 +91,13 @@
           class='h-10'
           bind:paused={global.isPaused}
           controls
-        {@attach track && applySource(track)}>
+          {@attach track && applySource(track)}>
         </audio>
       {/key}
     </div>
 
-    <div class='flex flex-col w-full gap-4 md:max-w-sm mb-16'>
-      <h2 class='text-2xl mt-8 font-medium'>Related tracks</h2>
+    <div class='flex flex-col gap-4 mb-16 w-full md:max-w-sm'>
+      <h2 class='mt-8 font-medium text-2xl'>Related tracks</h2>
 
       {#await getRelatedTracks(track.id)}
         <Spinner />
@@ -105,7 +105,7 @@
         {#each relatedTracks.collection as track}
           <TrackListing {track} />
         {:else}
-          <span class='text-xl font-medium text-zinc-100/25'>
+          <span class='font-medium text-zinc-100/25 text-xl'>
             Nothing here...
           </span>
         {/each}
