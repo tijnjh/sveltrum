@@ -20,7 +20,7 @@
   <img
     src={pictureSrc.replace('large', 't500x500')}
     class={cn('mx-auto my-4 w-full max-w-xs aspect-square', roundedPicture ? 'rounded-full' : 'rounded-xl')}
-    alt=""
+    alt={title}
   />
 {/if}
 

@@ -5,7 +5,7 @@ export interface Global {
   isPaused: boolean
 }
 
-export const global: Global = $state({
+export const global = $state<Global>({
   nowPlaying: null,
   isPaused: true,
 })
