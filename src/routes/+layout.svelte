@@ -1,20 +1,19 @@
-<script lang='ts'>
-  import Navigation from '$lib/components/Navigation.svelte'
-  import NowPlayingView from '$lib/components/NowPlayingView.svelte'
-  import Spinner from '$lib/components/Spinner.svelte'
-  import { NuqsAdapter } from 'nuqs-svelte/adapters/svelte-kit'
-  import '../app.css'
+<script lang="ts">
+  import Navigation from "$lib/components/Navigation.svelte";
+  import NowPlayingView from "$lib/components/NowPlayingView.svelte";
+  import Spinner from "$lib/components/Spinner.svelte";
+  import "../app.css";
+  import { NuqsAdapter } from "nuqs-svelte/adapters/svelte-kit";
 
-  const { children } = $props()
+  const { children } = $props();
 
-  let showNowPlayingView = $state(false)
+  let showNowPlayingView = $state(false);
 </script>
 
 <NuqsAdapter>
   <svelte:boundary>
-
     <Navigation bind:show={showNowPlayingView}>
-      <div class='mb-64'>
+      <div class="mb-64">
         {@render children()}
       </div>
     </Navigation>

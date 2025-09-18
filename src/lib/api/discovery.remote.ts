@@ -1,12 +1,12 @@
-import { query } from '$app/server'
-import { playlist } from '$lib/schemas/playlist'
-import { track } from '$lib/schemas/track'
-import { type } from 'arktype'
-import { $api } from './utils'
+import { query } from "$app/server";
+import { playlist } from "$lib/schemas/playlist";
+import { track } from "$lib/schemas/track";
+import { $api } from "./utils";
+import { type } from "arktype";
 
 export const getSelections = query(async () => {
   const res = await $api({
-    path: '/mixed-selections',
+    path: "/mixed-selections",
     schema: type({
       collection: type({
         items: type({
@@ -14,14 +14,16 @@ export const getSelections = query(async () => {
         }),
       }).array(),
     }),
-  })
+  });
 
-  return res.collection
-})
+  return res.collection;
+});
 
-export const getRelatedTracks = query(type('number'), id => $api({
-  path: `/tracks/${id}/related`,
-  schema: type({
-    collection: track.array(),
+export const getRelatedTracks = query(type("number"), (id) =>
+  $api({
+    path: `/tracks/${id}/related`,
+    schema: type({
+      collection: track.array(),
+    }),
   }),
-}))
+);

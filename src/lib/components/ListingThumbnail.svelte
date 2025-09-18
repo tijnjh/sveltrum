@@ -1,23 +1,28 @@
-<script module lang='ts'>
-  import type { ClassValue } from 'cnfn'
+<script module lang="ts">
+  import type { ClassValue } from "cnfn";
 
   export interface ListingThumbnailProps {
-    src?: string | null
-    alt: string
-    class?: ClassValue
+    src?: string | null;
+    alt: string;
+    class?: ClassValue;
   }
 </script>
 
-<script lang='ts'>
-  import { cn } from 'cnfn'
+<script lang="ts">
+  import { cn } from "cnfn";
 
-  const { src, alt, ...props }: ListingThumbnailProps = $props()
+  const { src, alt, ...props }: ListingThumbnailProps = $props();
 
-  let hasFailed = $state(false)
+  let hasFailed = $state(false);
 </script>
 
 {#if src && !hasFailed}
-  <img {src} {alt} class={cn('rounded size-12 aspect-square', props.class)} onerror={() => hasFailed = true}>
+  <img
+    {src}
+    {alt}
+    class={cn("aspect-square size-12 rounded", props.class)}
+    onerror={() => (hasFailed = true)}
+  />
 {:else}
-  <div class='bg-zinc-700 rounded size-12 aspect-square'></div>
+  <div class="aspect-square size-12 rounded bg-zinc-700"></div>
 {/if}
