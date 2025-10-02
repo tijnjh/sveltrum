@@ -1,3 +1,8 @@
+import {
+	QueryClient,
+	QueryClientProvider,
+	useQueryClient,
+} from "@tanstack/react-query";
 import "../app.css";
 import {
 	createRootRoute,
@@ -34,15 +39,19 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+	const queryClient = new QueryClient();
+
 	return (
-		<html lang="en">
-			<head>
-				<HeadContent />
-			</head>
-			<body className="bg-red-400 p-3 hover:bg-red-500">
-				{children}
-				<Scripts />
-			</body>
-		</html>
+		<QueryClientProvider client={queryClient}>
+			<html lang="en">
+				<head>
+					<HeadContent />
+				</head>
+				<body className="bg-red-400 p-3 hover:bg-red-500">
+					{children}
+					<Scripts />
+				</body>
+			</html>
+		</QueryClientProvider>
 	);
 }

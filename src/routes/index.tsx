@@ -1,48 +1,37 @@
-import * as fs from "node:fs";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-
-const filePath = "count.txt";
-
-async function readCount() {
-	return parseInt(
-		await fs.promises.readFile(filePath, "utf-8").catch(() => "0"),
-		10,
-	);
-}
-
-const getCount = createServerFn({
-	method: "GET",
-}).handler(() => {
-	return readCount();
-});
-
-const updateCount = createServerFn({ method: "POST" })
-	.inputValidator((d: number) => d)
-	.handler(async ({ data }) => {
-		const count = await readCount();
-		await fs.promises.writeFile(filePath, `${count + data}`);
-	});
+import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "../lib/components/button";
+import { PlaylistListing } from "../lib/components/listings/playlist-listing";
+import { Main } from "../lib/components/main";
+import { getSelections } from "../lib/server-functions/discovery";
 
 export const Route = createFileRoute("/")({
-	component: Home,
-	loader: async () => await getCount(),
+	component: RouteComponent,
+	loader: () => getSelections(),
 });
 
-function Home() {
-	const router = useRouter();
-	const state = Route.useLoaderData();
+function RouteComponent() {
+	const selections = Route.useLoaderData();
 
 	return (
-		<button
-			type="button"
-			onClick={() => {
-				updateCount({ data: 1 }).then(() => {
-					router.invalidate();
-				});
-			}}
-		>
-			Add 1 to {state}?
-		</button>
+		<Main>
+			<div className="my-16 flex flex-col gap-4">
+				<h1 className="mx-auto text-center font-mediums text-3xl">Sveltrum</h1>
+				<div className="flex justify-center gap-4">
+					<Button href="https://tijn.dev/sveltrum">View on GitHub</Button>
+				</div>
+			</div>
+
+			<h2 className="font-medium text-2xl">Trending playlists</h2>
+
+			{selections.length ? (
+				selections.map((selection) =>
+					selection.items.collection.map((playlist) => (
+						<PlaylistListing key={playlist.id} playlist={playlist} />
+					)),
+				)
+			) : (
+				<span className="mt-4 text-lg text-zinc-100/25">Nothing here...</span>
+			)}
+		</Main>
 	);
 }
