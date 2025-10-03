@@ -1,37 +1,44 @@
+import { Slot } from "@radix-ui/react-slot";
 import { cn } from "cnfn";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps } from "react";
+import { tv } from "tailwind-variants";
 
-export type ButtonProps = ComponentProps<"button"> &
-	ComponentProps<"a"> & {
-		variant?: "primary" | "secondary";
-		size?: "icon";
-		children?: ReactNode;
-		href?: string;
-	};
+export interface ButtonProps extends ComponentProps<"button"> {
+	variant?: "primary" | "secondary";
+	size?: "icon";
+	asChild?: boolean;
+}
+
+export const buttonVariants = tv({
+	slots: {
+		base: "flex items-center justify-center gap-2 rounded-full transition-transform active:scale-90 active:opacity-50",
+	},
+	variants: {
+		variant: {
+			primary: "bg-white text-zinc-800",
+			secondary: "bg-zinc-100/10",
+		},
+		size: {
+			default: "h-9 px-4",
+			icon: "size-10",
+		},
+	},
+	defaultVariants: {
+		variant: "primary",
+		size: "default",
+	},
+});
 
 export function Button({
 	variant = "primary",
 	size,
 	className,
-	children,
-	href,
-	...rest
+	asChild,
+	...props
 }: ButtonProps) {
-	const Tag = href ? "a" : "button";
+	const Comp = asChild ? Slot : "button";
 
-	return (
-		<Tag
-			href={href}
-			{...rest}
-			className={cn(
-				"flex items-center justify-center gap-2 rounded-full transition-transform active:scale-90 active:opacity-50",
-				variant === "primary" && "bg-white text-zinc-800",
-				variant === "secondary" && "bg-zinc-100/10",
-				size === "icon" ? "size-10" : "h-9 px-4",
-				className,
-			)}
-		>
-			{children}
-		</Tag>
-	);
+	const classes = buttonVariants({ variant, size, className });
+
+	return <Comp data-slot="button" className={cn(classes.base())} {...props} />;
 }

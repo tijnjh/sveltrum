@@ -17,7 +17,9 @@ function RouteComponent() {
 			<div className="my-16 flex flex-col gap-4">
 				<h1 className="mx-auto text-center font-mediums text-3xl">Sveltrum</h1>
 				<div className="flex justify-center gap-4">
-					<Button href="https://tijn.dev/sveltrum">View on GitHub</Button>
+					<Button asChild>
+						<a href="https://tijn.dev/sveltrum">View on GitHub</a>
+					</Button>
 				</div>
 			</div>
 
