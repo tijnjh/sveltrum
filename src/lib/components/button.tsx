@@ -1,13 +1,7 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "cnfn";
 import type { ComponentProps } from "react";
-import { tv } from "tailwind-variants";
-
-export interface ButtonProps extends ComponentProps<"button"> {
-	variant?: "primary" | "secondary";
-	size?: "icon";
-	asChild?: boolean;
-}
+import { tv, type VariantProps } from "tailwind-variants";
 
 export const buttonVariants = tv({
 	slots: {
@@ -29,8 +23,14 @@ export const buttonVariants = tv({
 	},
 });
 
+export interface ButtonProps extends ComponentProps<"button"> {
+	variant?: VariantProps<typeof buttonVariants>["variant"];
+	size?: VariantProps<typeof buttonVariants>["size"];
+	asChild?: boolean;
+}
+
 export function Button({
-	variant = "primary",
+	variant,
 	size,
 	className,
 	asChild,
