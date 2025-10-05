@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { scan } from "react-scan";
 import { Button } from "../lib/components/button";
 import { PlaylistListing } from "../lib/components/listings/playlist-listing";
 import { Main } from "../lib/components/main";
 import { getSelections } from "../lib/server-functions/discovery";
+
+scan({ enabled: true });
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,

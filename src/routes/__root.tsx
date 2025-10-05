@@ -1,15 +1,26 @@
+/// <reference types="vite/client" />
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "../app.css";
 import {
 	createRootRoute,
 	HeadContent,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
+import { type ReactNode, useState } from "react";
+import appCss from "../app.css?url";
+import { Navigation } from "../lib/components/navigation";
+import { NowPlayingView } from "../lib/components/now-playing-view";
 
 export const Route = createRootRoute({
 	head: () => ({
+		scripts: [
+			{
+				crossOrigin: "anonymous",
+				src: "https://unpkg.com/react-scan/dist/auto.global.js",
+			},
+		],
 		meta: [
 			{
 				charSet: "utf-8",
@@ -22,32 +33,45 @@ export const Route = createRootRoute({
 				title: "TanStack Start Starter",
 			},
 		],
+		links: [{ rel: "stylesheet", href: appCss }],
 	}),
 	component: RootComponent,
 });
 
 function RootComponent() {
-	return (
-		<RootDocument>
-			<Outlet />
-		</RootDocument>
-	);
-}
-
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	const queryClient = new QueryClient();
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<html lang="en">
-				<head>
-					<HeadContent />
-				</head>
-				<body className="bg-red-400 p-3 hover:bg-red-500">
-					{children}
-					<Scripts />
-				</body>
-			</html>
+			<NuqsAdapter>
+				<RootDocument>
+					<Outlet />
+				</RootDocument>
+			</NuqsAdapter>
 		</QueryClientProvider>
+	);
+}
+
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+	const [showNowPlayingView, setShowNowPlayingView] = useState(false);
+
+	return (
+		<html lang="en">
+			<head>
+				<HeadContent />
+			</head>
+			<body>
+				<Navigation setShow={setShowNowPlayingView}>
+					<div className="mb-64">{children}</div>
+				</Navigation>
+
+				<NowPlayingView
+					show={showNowPlayingView}
+					setShow={setShowNowPlayingView}
+				/>
+
+				<Scripts />
+			</body>
+		</html>
 	);
 }

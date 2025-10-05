@@ -5,7 +5,7 @@ import { track } from "../schemas/track";
 import { $api, chunked } from "./utils";
 
 export const getTrackById = createServerFn()
-	.inputValidator(type.string)
+	.inputValidator(type.number)
 	.handler(async ({ data: id }) =>
 		$api({
 			path: `/tracks/${id}`,
@@ -14,7 +14,7 @@ export const getTrackById = createServerFn()
 	);
 
 export const getPlaylistById = createServerFn()
-	.inputValidator(type.string)
+	.inputValidator(type.number)
 	.handler(async ({ data: id }) =>
 		$api({
 			path: `/playlists/${id}`,

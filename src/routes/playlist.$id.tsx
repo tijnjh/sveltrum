@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "../lib/components/button";
 import { HeroSection } from "../lib/components/hero-section";
+import { TrackListing } from "../lib/components/listings/track-listing";
 import { Main } from "../lib/components/main";
 import { Spinner } from "../lib/components/spinner";
 import {
@@ -12,7 +13,7 @@ import {
 
 export const Route = createFileRoute("/playlist/$id")({
 	component: RouteComponent,
-	loader: ({ params }) => getPlaylistById({ data: params.id }),
+	loader: ({ params }) => getPlaylistById({ data: Number(params.id) }),
 	head: ({ loaderData }) => ({
 		meta: [
 			{ title: loaderData?.title ?? "Playlist" },
@@ -57,7 +58,7 @@ function RouteComponent() {
 				},
 			}),
 		placeholderData: (previousData) => previousData,
-	});
+	})
 
 	return (
 		<Main>
@@ -72,7 +73,7 @@ function RouteComponent() {
 			</h2>
 
 			{data?.tracks.map((track) => (
-				<div key={track.id}>{track.title}</div>
+				<TrackListing key={track.id} track={track} />
 			))}
 
 			{isPending ? (
@@ -83,7 +84,7 @@ function RouteComponent() {
 						className="mt-8 w-full"
 						onClick={() => {
 							setCurrentIndex((prev) => prev + 1);
-							refetch();
+							refetch()
 						}}
 					>
 						Load more
@@ -91,5 +92,5 @@ function RouteComponent() {
 				)
 			)}
 		</Main>
-	);
+	)
 }

@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { type ClassValue, cn } from "cnfn";
 import type { User } from "../../schemas/user";
 import { ListingThumbnail } from "../listing-thumbnail";
@@ -9,8 +10,8 @@ export interface UserListingProps {
 
 export function UserListing({ user, className }: UserListingProps) {
 	return (
-		<a
-			href="/user/{user.id}"
+		<Link
+			to={`/user/${user.id}`}
 			className={cn(
 				"grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50",
 				className,
@@ -18,7 +19,7 @@ export function UserListing({ user, className }: UserListingProps) {
 		>
 			<ListingThumbnail
 				src={user.avatar_url}
-				alt="Profile picture of {user.username}"
+				alt={`Profile picture of ${user.username}`}
 				class="rounded-full"
 			/>
 			<div className="flex w-full min-w-0 flex-col">
@@ -27,6 +28,6 @@ export function UserListing({ user, className }: UserListingProps) {
 					<p className="truncate opacity-50">{user.full_name}</p>
 				)}
 			</div>
-		</a>
+		</Link>
 	);
 }
