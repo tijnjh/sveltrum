@@ -4,24 +4,26 @@ import { useState } from "react";
 export interface ListingThumbnailProps {
 	src?: string | null;
 	alt: string;
-	class?: ClassValue;
+	className?: ClassValue;
 }
 
 export function ListingThumbnail({
 	src,
 	alt,
-	...props
+	className,
 }: ListingThumbnailProps) {
 	const [hasFailed, setHasFailed] = useState(false);
 
-	return src && !hasFailed ? (
+	if (hasFailed || !src) {
+		return <div className="aspect-square size-12 rounded bg-zinc-700" />;
+	}
+
+	return (
 		<img
 			src={src}
 			alt={alt}
-			className={cn("aspect-square size-12 rounded", props.class)}
+			className={cn("aspect-square size-12 rounded", className)}
 			onError={() => setHasFailed(true)}
 		/>
-	) : (
-		<div className="aspect-square size-12 rounded bg-zinc-700"></div>
 	);
 }
