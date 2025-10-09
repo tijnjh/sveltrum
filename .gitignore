@@ -25,5 +25,3 @@ vite.config.ts.timestamp-*
 # Generated
 **/*.gen.ts
 
-# Million Lint
-.million

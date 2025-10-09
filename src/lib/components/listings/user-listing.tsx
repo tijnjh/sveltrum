@@ -11,7 +11,9 @@ export interface UserListingProps {
 export function UserListing({ user, className }: UserListingProps) {
 	return (
 		<Link
-			to={`/user/${user.id}`}
+			to="/"
+			// to="/user/$id"
+			// params={{ id: String(user.id) }}
 			className={cn(
 				"grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50",
 				className,
@@ -20,7 +22,7 @@ export function UserListing({ user, className }: UserListingProps) {
 			<ListingThumbnail
 				src={user.avatar_url}
 				alt={`Profile picture of ${user.username}`}
-				class="rounded-full"
+				className="rounded-full"
 			/>
 			<div className="flex w-full min-w-0 flex-col">
 				<h3 className="truncate">{user.username}</h3>

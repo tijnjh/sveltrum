@@ -15,12 +15,6 @@ import { NowPlayingView } from "../lib/components/now-playing-view";
 
 export const Route = createRootRoute({
 	head: () => ({
-		scripts: [
-			{
-				crossOrigin: "anonymous",
-				src: "https://unpkg.com/react-scan/dist/auto.global.js",
-			},
-		],
 		meta: [
 			{
 				charSet: "utf-8",
@@ -35,6 +29,7 @@ export const Route = createRootRoute({
 		],
 		links: [{ rel: "stylesheet", href: appCss }],
 	}),
+
 	component: RootComponent,
 });
 

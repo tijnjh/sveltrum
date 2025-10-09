@@ -3,11 +3,14 @@ import { cn } from "cnfn";
 import Hls from "hls.js";
 import { useAtom, useAtomValue } from "jotai";
 import { ChevronDownIcon } from "lucide-react";
-import { type Dispatch, useEffect, useRef } from "react";
+import { type Dispatch, Suspense, use, useEffect, useRef } from "react";
 import { isPausedAtom, nowPlayingAtom } from "../atoms";
 import type { Track } from "../schemas/track";
+import { getRelatedTracks } from "../server-functions/discovery";
 import { getTrackSource } from "../server-functions/hls";
+import { TrackListing } from "./listings/track-listing";
 import { UserListing } from "./listings/user-listing";
+import { Spinner } from "./spinner";
 
 function applySource({
 	track,
@@ -135,6 +138,27 @@ export function NowPlayingView({ show, setShow }: NowPlayingViewProps) {
 					ref={audioRef}
 				/>
 			</div>
+
+			<Suspense fallback={<Spinner />}>
+				<RelatedTracks trackId={track.id} />
+			</Suspense>
 		</div>
 	);
+}
+
+function RelatedTracks({ trackId }: { trackId: number }) {
+	const relatedTracks = use(getRelatedTracks({ data: trackId }));
+
+	console.log(relatedTracks);
+
+	if (!relatedTracks.collection.length)
+		return (
+			<span className="font-medium text-xl text-zinc-100/25">
+				Nothing here...
+			</span>
+		);
+
+	return relatedTracks.collection.map((track) => (
+		<TrackListing key={track.id} track={track} />
+	));
 }

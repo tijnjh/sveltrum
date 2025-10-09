@@ -1,6 +1,6 @@
 {
-  "prettier.enable": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-  }
+    "source.fixAll.biome": "explicit"
+  },
+  "prettier.enable": false
 }

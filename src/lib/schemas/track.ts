@@ -22,7 +22,7 @@ export const track = type({
 	last_modified: "string.date",
 	license: "string",
 	"likes_count?": "number | null",
-	permalink: "string",
+	permalink: "string | null",
 	permalink_url: "string",
 	"playback_count?": "number | null",
 	public: "boolean",
@@ -88,7 +88,7 @@ export const track = type({
 			is_legacy_transcoding: "boolean",
 		}).array(),
 	},
-	station_urn: "string",
+	station_urn: "string | null",
 	station_permalink: "string",
 	track_authorization: "string",
 	monetization_model:

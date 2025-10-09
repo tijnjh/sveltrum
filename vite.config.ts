@@ -1,4 +1,3 @@
-import MillionLint from "@million/lint";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -10,12 +9,13 @@ export default defineConfig({
 		port: 3000,
 	},
 	plugins: [
-		MillionLint.vite({
-			enabled: true,
-		}),
 		tsConfigPaths(),
 		tanstackStart(),
-		viteReact(),
+		viteReact({
+			babel: {
+				plugins: ["babel-plugin-react-compiler"],
+			},
+		}),
 		tailwindcss(),
 	],
 });

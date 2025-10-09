@@ -9,7 +9,8 @@ export interface PlaylistListingProps {
 export function PlaylistListing({ playlist }: PlaylistListingProps) {
 	return (
 		<Link
-			to={`/playlist/${playlist.id}`}
+			to={`/playlist/$id`}
+			params={{ id: String(playlist.id) }}
 			className="grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50"
 		>
 			<ListingThumbnail

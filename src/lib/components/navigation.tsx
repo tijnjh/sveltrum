@@ -2,9 +2,8 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { haptic } from "ios-haptics";
 import { useAtom, useAtomValue } from "jotai";
 import { PauseIcon, PlayIcon } from "lucide-react";
-import type { Dispatch, ReactNode } from "react";
+import { type Dispatch, type ReactNode, useEffect } from "react";
 import { isPausedAtom, nowPlayingAtom } from "../atoms";
-import { useMediaQuery } from "../utils/reactive-media-query";
 import { Button } from "./button";
 import { ListingThumbnail } from "./listing-thumbnail";
 
@@ -16,19 +15,26 @@ export interface NavigationProps {
 export function Navigation({ setShow, children }: NavigationProps) {
 	const location = useLocation();
 
-	const md = useMediaQuery("width > 768px");
+	useEffect(() => {
+		console.log(location);
+	});
 
 	const navItems = [
 		["/", "Home"],
 		["/search", "Search"],
 	] as const;
 
-	if (md.matches) {
-		return (
-			<div className="grid grid-cols-[12rem_1fr]">
+	function isActiveNavItem(to: string) {
+		return location.pathname.replaceAll("/", "") === to.replaceAll("/", "");
+	}
+
+	return (
+		<>
+			{/* desktop */}
+			<div className="grid grid-cols-[12rem_1fr] max-md:hidden">
 				<div className="sticky top-0 z-50 flex h-svh flex-col gap-2 border-zinc-100/10 border-r bg-zinc-700/50 p-4">
 					{navItems.map(([to, label]) => {
-						const isCurrent = location.pathname === `/${to.replace("/", "")}`;
+						const isCurrent = isActiveNavItem(to);
 
 						return (
 							<Button
@@ -48,10 +54,9 @@ export function Navigation({ setShow, children }: NavigationProps) {
 					</div>
 				</div>
 			</div>
-		);
-	} else {
-		return (
-			<>
+
+			{/* mobile */}
+			<div className="md:hidden">
 				{children}
 
 				<div className="fixed inset-x-0 bottom-0 z-50 bg-zinc-700/75 backdrop-blur-lg">
@@ -59,7 +64,7 @@ export function Navigation({ setShow, children }: NavigationProps) {
 
 					<nav className="flex items-center justify-center gap-2 p-4">
 						{navItems.map(([to, label]) => {
-							const isCurrent = location.pathname === `/${to.replace("/", "")}`;
+							const isCurrent = isActiveNavItem(to);
 
 							return (
 								<Button
@@ -73,9 +78,9 @@ export function Navigation({ setShow, children }: NavigationProps) {
 						})}
 					</nav>
 				</div>
-			</>
-		);
-	}
+			</div>
+		</>
+	);
 }
 
 function NowPlayingBar({ setShow }: { setShow: Dispatch<boolean> }) {
