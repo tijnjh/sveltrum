@@ -1,15 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
-import { type } from "arktype";
+import { z } from "zod";
 import { playlist } from "../schemas/playlist";
 import { track } from "../schemas/track";
 import { user } from "../schemas/user";
 import { $api } from "./utils";
 
-const searchSchema = type({
-	query: "string",
-	offset: "number?",
-	limit: "number?",
-	index: "number?",
+const searchSchema = z.object({
+	query: z.string(),
+	offset: z.number().optional(),
+	limit: z.number().optional(),
+	index: z.number().optional(),
 });
 
 export const searchTracks = createServerFn()
@@ -18,7 +18,7 @@ export const searchTracks = createServerFn()
 		const response = await $api({
 			path: "/search/tracks",
 			params: { q: query, limit, offset },
-			schema: type({
+			schema: z.object({
 				collection: track.array(),
 			}),
 		});
@@ -36,7 +36,7 @@ export const searchPlaylists = createServerFn()
 		const response = await $api({
 			path: "/search/playlists",
 			params: { q: query, limit, offset },
-			schema: type({
+			schema: z.object({
 				collection: playlist.array(),
 			}),
 		});
@@ -49,7 +49,7 @@ export const searchUsers = createServerFn()
 		const response = await $api({
 			path: "/search/users",
 			params: { q: query, limit, offset },
-			schema: type({
+			schema: z.object({
 				collection: user.array(),
 			}),
 		});

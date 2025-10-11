@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "../lib/components/button";
 import { PlaylistListing } from "../lib/components/listings/playlist-listing";
+import { UserListing } from "../lib/components/listings/user-listing";
 import { Main } from "../lib/components/main";
 import { getSelections } from "../lib/server-functions/discovery";
-
 
 export const Route = createFileRoute("/")({
 	loader: () => getSelections(),
@@ -28,9 +28,15 @@ export const Route = createFileRoute("/")({
 
 				{selections.length ? (
 					selections.map((selection) =>
-						selection.items.collection.map((playlist) => (
-							<PlaylistListing key={playlist.id} playlist={playlist} />
-						)),
+						selection.items.collection.map((item) =>
+							item.kind === "playlist" ? (
+								<PlaylistListing key={item.id} playlist={item} />
+							) : (
+								item.kind === "user" && (
+									<UserListing key={item.id} user={item} />
+								)
+							),
+						),
 					)
 				) : (
 					<span className="mt-4 text-lg text-zinc-100/25">Nothing here...</span>

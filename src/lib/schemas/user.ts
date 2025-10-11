@@ -1,66 +1,71 @@
-import { type } from "arktype";
+import { z } from "zod";
 
-export const user = type({
-  "+": "reject",
-  avatar_url: "string.url",
-  city: "string | null",
-  comments_count: "number?",
-  country_code: "string | null",
-  created_at: "string.date?",
-  creator_subscriptions: type({
-    product: {
-      id: "string",
-    },
-  })
-    .array()
-    .optional(),
-  creator_subscription: type({
-    product: {
-      id: "string",
-    },
-  }).optional(),
-  "description?": "string | null",
-  followers_count: "number",
-  followings_count: "number?",
-  first_name: "string",
-  full_name: "string",
-  groups_count: "number?",
-  id: "number",
-  kind: "'user'",
-  last_modified: "string.date",
-  last_name: "string",
-  likes_count: "number?",
-  playlist_likes_count: "number?",
-  permalink: "string",
-  permalink_url: "string.url",
-  playlist_count: "number?",
-  "reposts_count?": "number | null",
-  track_count: "number?",
-  uri: "string.url",
-  urn: "string",
-  username: "string",
-  verified: "boolean",
-  "visuals?": type({
-    urn: "string",
-    enabled: "boolean",
-    visuals: type({
-      urn: "string",
-      entry_time: "number",
-      visual_url: "string.url",
-      link: "string.url?",
-    }).array(),
-    tracking: "null",
-  }).or("null"),
-  badges: type({
-    pro: "boolean",
-    creator_mid_tier: "boolean",
-
-    pro_unlimited: "boolean",
-    verified: "boolean",
-  }),
-  station_urn: "string?",
-  station_permalink: "string?",
-  "date_of_birth?": "string | null",
+export const user = z.strictObject({
+	avatar_url: z.url(),
+	city: z.string().nullable(),
+	comments_count: z.number().optional(),
+	country_code: z.string().nullable(),
+	created_at: z.iso.datetime().optional(),
+	creator_subscriptions: z
+		.strictObject({
+			product: z.strictObject({
+				id: z.string(),
+			}),
+		})
+		.array()
+		.optional(),
+	creator_subscription: z
+		.strictObject({
+			product: z.strictObject({
+				id: z.string(),
+			}),
+		})
+		.optional(),
+	description: z.string().nullish(),
+	followers_count: z.number(),
+	followings_count: z.number().optional(),
+	first_name: z.string(),
+	full_name: z.string(),
+	groups_count: z.number().optional(),
+	id: z.number(),
+	kind: z.literal("user"),
+	last_modified: z.iso.datetime(),
+	last_name: z.string(),
+	likes_count: z.number().optional(),
+	playlist_likes_count: z.number().optional(),
+	permalink: z.string(),
+	permalink_url: z.url(),
+	playlist_count: z.number().optional(),
+	reposts_count: z.number().nullish(),
+	track_count: z.number().optional(),
+	uri: z.url(),
+	urn: z.string(),
+	username: z.string(),
+	verified: z.boolean(),
+	visuals: z
+		.strictObject({
+			urn: z.string(),
+			enabled: z.boolean(),
+			visuals: z
+				.strictObject({
+					urn: z.string(),
+					entry_time: z.number(),
+					visual_url: z.url(),
+					link: z.url().optional(),
+				})
+				.array(),
+			tracking: z.null(),
+		})
+		.nullish(),
+	badges: z.strictObject({
+		pro: z.boolean(),
+		creator_mid_tier: z.boolean(),
+		pro_unlimited: z.boolean(),
+		verified: z.boolean(),
+	}),
+	station_urn: z.string().optional(),
+	station_permalink: z.string().optional(),
+	date_of_birth: z.string().nullish(),
 });
 
-export type User = type.infer<typeof user>;
+export type User = z.output<typeof user>;

@@ -1,18 +1,21 @@
 import { createServerFn } from "@tanstack/react-start";
-import { type } from "arktype";
+import { z } from "zod";
 import { playlist } from "../schemas/playlist";
 import { track } from "../schemas/track";
+import { user } from "../schemas/user";
 import { $api } from "./utils";
 
 export const getSelections = createServerFn().handler(async () => {
 	const res = await $api({
 		path: "/mixed-selections",
-		schema: type({
-			collection: type({
-				items: {
-					collection: playlist.array(),
-				},
-			}).array(),
+		schema: z.object({
+			collection: z
+				.object({
+					items: z.object({
+						collection: z.union([playlist, user]).array(),
+					}),
+				})
+				.array(),
 		}),
 	});
 
@@ -20,11 +23,11 @@ export const getSelections = createServerFn().handler(async () => {
 });
 
 export const getRelatedTracks = createServerFn()
-	.inputValidator(type.number)
+	.inputValidator(z.number())
 	.handler(async ({ data: id }) =>
 		$api({
 			path: `/tracks/${id}/related`,
-			schema: type({
+			schema: z.object({
 				collection: track.array(),
 			}),
 		}),

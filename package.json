@@ -12,7 +12,6 @@
     "@tanstack/react-router": "^1.132.31",
     "@tanstack/react-start": "^1.132.31",
     "@vitejs/plugin-react": "^5.0.4",
-    "arktype": "^2.1.22",
     "cnfn": "^0.0.2",
     "hls.js": "^1.6.13",
     "ios-haptics": "^0.1.4",
@@ -23,7 +22,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-variants": "^3.1.1",
-    "use-debounce": "^10.0.6"
+    "use-debounce": "^10.0.6",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",

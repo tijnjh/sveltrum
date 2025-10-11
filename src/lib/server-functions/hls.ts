@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
-import { type } from "arktype";
 import { ofetch } from "ofetch";
+import { z } from "zod";
 import { getTrackById } from "./get-by-id";
 import { getClientId } from "./utils";
 
 export const getTrackSource = createServerFn()
-	.inputValidator(type.number)
+	.inputValidator(z.number())
 	.handler(async ({ data: trackId }) => {
 		const track = await getTrackById({ data: trackId });
 		const clientId = await getClientId();

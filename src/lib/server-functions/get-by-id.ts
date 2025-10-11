@@ -1,11 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
-import { type } from "arktype";
+
+import { z } from "zod";
 import { playlist } from "../schemas/playlist";
 import { track } from "../schemas/track";
 import { $api, chunked } from "./utils";
 
 export const getTrackById = createServerFn()
-	.inputValidator(type.number)
+	.inputValidator(z.number())
 	.handler(async ({ data: id }) =>
 		$api({
 			path: `/tracks/${id}`,
@@ -14,7 +15,7 @@ export const getTrackById = createServerFn()
 	);
 
 export const getPlaylistById = createServerFn()
-	.inputValidator(type.number)
+	.inputValidator(z.number())
 	.handler(async ({ data: id }) =>
 		$api({
 			path: `/playlists/${id}`,
@@ -24,10 +25,10 @@ export const getPlaylistById = createServerFn()
 
 export const getTracksByIds = createServerFn()
 	.inputValidator(
-		type({
-			ids: type("number").array(),
-			size: "number?",
-			index: "number?",
+		z.object({
+			ids: z.number().array(),
+			size: z.number().optional(),
+			index: z.number().optional(),
 		}),
 	)
 	.handler(async ({ data: { ids, size = 32, index = 0 } }) => {
