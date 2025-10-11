@@ -1,6 +1,6 @@
 import { cn } from "cnfn";
 import type { User } from "../schemas/user";
-import { UserListing } from "./listings/user-listing";
+import { UserListing } from "./listings/UserListing";
 
 export interface HeroSectionProps {
 	pictureSrc?: string | null;

@@ -8,9 +8,9 @@ import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from "../atoms";
 import type { Track } from "../schemas/track";
 import { getRelatedTracks } from "../server-functions/discovery";
 import { getTrackSource } from "../server-functions/hls";
-import { TrackListing } from "./listings/track-listing";
-import { UserListing } from "./listings/user-listing";
-import { Spinner } from "./spinner";
+import { TrackListing } from "./listings/TrackListing";
+import { UserListing } from "./listings/UserListing";
+import { Spinner } from "./Spinner";
 
 function applySource({
 	track,

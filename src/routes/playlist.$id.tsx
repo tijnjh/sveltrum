@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Button } from "../lib/components/button";
-import { HeroSection } from "../lib/components/hero-section";
-import { TrackListing } from "../lib/components/listings/track-listing";
-import { Main } from "../lib/components/main";
-import { Spinner } from "../lib/components/spinner";
+import { Button } from "../lib/components/Button";
+import { HeroSection } from "../lib/components/HeroSection";
+import { TrackListing } from "../lib/components/listings/TrackListing";
+import { Main } from "../lib/components/Main";
+import { Spinner } from "../lib/components/Spinner";
 import { getPlaylistById } from "../lib/server-functions/playlist";
 import { getTracksByIds } from "../lib/server-functions/track";
 

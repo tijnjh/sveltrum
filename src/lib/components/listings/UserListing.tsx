@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { type ClassValue, cn } from "cnfn";
 import type { User } from "../../schemas/user";
-import { ListingThumbnail } from "../listing-thumbnail";
+import { ListingThumbnail } from "../ListingThumbnail";
 
 export interface UserListingProps {
 	user: User;

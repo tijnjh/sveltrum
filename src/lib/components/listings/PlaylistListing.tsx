@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { Playlist } from "../../schemas/playlist";
-import { ListingThumbnail } from "../listing-thumbnail";
+import { ListingThumbnail } from "../ListingThumbnail";
 
 export interface PlaylistListingProps {
 	playlist: Playlist;

@@ -4,8 +4,8 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { PauseIcon, PlayIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from "../atoms";
-import { Button } from "./button";
-import { ListingThumbnail } from "./listing-thumbnail";
+import { Button } from "./Button";
+import { ListingThumbnail } from "./ListingThumbnail";
 
 export function Navigation({ children }: { children: ReactNode }) {
 	const location = useLocation();

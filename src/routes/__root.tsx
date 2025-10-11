@@ -10,8 +10,8 @@ import {
 import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
 import { type ReactNode, StrictMode } from "react";
 import appCss from "../app.css?url";
-import { Navigation } from "../lib/components/navigation";
-import { NowPlayingView } from "../lib/components/now-playing-view";
+import { Navigation } from "../lib/components/Navigation";
+import { NowPlayingView } from "../lib/components/NowPlayingView";
 
 export const Route = createRootRoute({
 	head: () => ({
