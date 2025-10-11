@@ -149,8 +149,6 @@ export function NowPlayingView({ show, setShow }: NowPlayingViewProps) {
 function RelatedTracks({ trackId }: { trackId: number }) {
 	const relatedTracks = use(getRelatedTracks({ data: trackId }));
 
-	console.log(relatedTracks);
-
 	if (!relatedTracks.collection.length)
 		return (
 			<span className="font-medium text-xl text-zinc-100/25">

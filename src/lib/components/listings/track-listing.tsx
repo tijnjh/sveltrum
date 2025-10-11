@@ -21,7 +21,6 @@ export function TrackListing({ track, inAlbum = false }: TrackListingProps) {
 				setTimeout(() => {
 					setIsPaused(false);
 				}, 100);
-				console.log("clicked");
 			}}
 			className="grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50"
 		>

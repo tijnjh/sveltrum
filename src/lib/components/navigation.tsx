@@ -15,10 +15,6 @@ export interface NavigationProps {
 export function Navigation({ setShow, children }: NavigationProps) {
 	const location = useLocation();
 
-	useEffect(() => {
-		console.log(location);
-	});
-
 	const navItems = [
 		["/", "Home"],
 		["/search", "Search"],
