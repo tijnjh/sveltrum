@@ -1,8 +1,8 @@
-import { Button } from '../lib/components/Button'
-import { Main } from '../lib/components/Main'
-import { PlaylistListing } from '../lib/components/listings/PlaylistListing'
-import { UserListing } from '../lib/components/listings/UserListing'
-import { getSelections } from '../lib/server-functions/discovery'
+import { Button } from '@/components/Button'
+import { Main } from '@/components/Main'
+import { PlaylistListing } from '@/components/listings/PlaylistListing'
+import { UserListing } from '@/components/listings/UserListing'
+import { getSelections } from '@/lib/server-functions/discovery'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({

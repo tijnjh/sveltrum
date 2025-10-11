@@ -1,5 +1,5 @@
-import type { Playlist } from '../../schemas/playlist'
-import { ListingThumbnail } from '../ListingThumbnail'
+import { ListingThumbnail } from '@/components/ListingThumbnail'
+import type { Playlist } from '@/lib/schemas/playlist'
 import { Link } from '@tanstack/react-router'
 
 export interface PlaylistListingProps {

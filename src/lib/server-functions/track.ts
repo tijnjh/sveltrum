@@ -1,6 +1,5 @@
-import { paginatedSchema } from '../schemas/paginated'
-import { trackSchema } from '../schemas/track'
 import { $api, chunked } from './utils'
+import { trackSchema } from '@/lib/schemas/track'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
@@ -10,7 +9,7 @@ export const getTrackById = createServerFn()
 			id: z.number(),
 		}),
 	)
-	.handler(async ({ data: { id } }) =>
+	.handler(({ data: { id } }) =>
 		$api({
 			path: `/tracks/${id}`,
 			schema: trackSchema,

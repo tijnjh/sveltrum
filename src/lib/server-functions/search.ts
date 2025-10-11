@@ -1,8 +1,8 @@
-import { paginatedSchema } from '../schemas/paginated'
-import { playlistSchema } from '../schemas/playlist'
-import { trackSchema } from '../schemas/track'
-import { userSchema } from '../schemas/user'
 import { $api } from './utils'
+import { paginatedSchema } from '@/lib/schemas/paginated'
+import { playlistSchema } from '@/lib/schemas/playlist'
+import { trackSchema } from '@/lib/schemas/track'
+import { userSchema } from '@/lib/schemas/user'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 

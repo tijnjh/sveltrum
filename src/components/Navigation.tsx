@@ -1,6 +1,10 @@
-import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from '../atoms'
 import { Button } from './Button'
 import { ListingThumbnail } from './ListingThumbnail'
+import {
+	isPausedAtom,
+	nowPlayingAtom,
+	showNowPlayingViewAtom,
+} from '@/lib/atoms'
 import { Link, useLocation } from '@tanstack/react-router'
 import { haptic } from 'ios-haptics'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'

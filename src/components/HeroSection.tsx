@@ -1,5 +1,5 @@
-import type { User } from '../schemas/user'
 import { UserListing } from './listings/UserListing'
+import type { User } from '@/lib/schemas/user'
 import { cn } from 'cnfn'
 
 export interface HeroSectionProps {

@@ -1,17 +1,17 @@
-import { Button } from '../lib/components/Button'
-import { HeroSection } from '../lib/components/HeroSection'
-import { Main } from '../lib/components/Main'
-import { Spinner } from '../lib/components/Spinner'
-import { PlaylistListing } from '../lib/components/listings/PlaylistListing'
-import { TrackListing } from '../lib/components/listings/TrackListing'
-import { paginated_limit } from '../lib/constants'
-import type { Playlist } from '../lib/schemas/playlist'
-import type { Track } from '../lib/schemas/track'
+import { Button } from '@/components/Button'
+import { HeroSection } from '@/components/HeroSection'
+import { Main } from '@/components/Main'
+import { Spinner } from '@/components/Spinner'
+import { PlaylistListing } from '@/components/listings/PlaylistListing'
+import { TrackListing } from '@/components/listings/TrackListing'
+import { paginated_limit } from '@/lib/constants'
+import type { Playlist } from '@/lib/schemas/playlist'
+import type { Track } from '@/lib/schemas/track'
 import {
 	getUserById,
 	getUserPlaylists,
 	getUserTracks,
-} from '../lib/server-functions/user'
+} from '@/lib/server-functions/user'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { parseAsString, useQueryState } from 'nuqs'

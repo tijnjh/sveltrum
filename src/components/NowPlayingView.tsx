@@ -1,10 +1,14 @@
-import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from '../atoms'
-import type { Track } from '../schemas/track'
-import { getRelatedTracks } from '../server-functions/discovery'
-import { getTrackSource } from '../server-functions/hls'
 import { Spinner } from './Spinner'
 import { TrackListing } from './listings/TrackListing'
 import { UserListing } from './listings/UserListing'
+import {
+	isPausedAtom,
+	nowPlayingAtom,
+	showNowPlayingViewAtom,
+} from '@/lib/atoms'
+import type { Track } from '@/lib/schemas/track'
+import { getRelatedTracks } from '@/lib/server-functions/discovery'
+import { getTrackSource } from '@/lib/server-functions/hls'
 import { isServer } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from 'cnfn'

@@ -1,7 +1,7 @@
-import { playlistSchema } from '../schemas/playlist'
-import { trackSchema } from '../schemas/track'
-import { userSchema } from '../schemas/user'
 import { $api } from './utils'
+import { playlistSchema } from '@/lib/schemas/playlist'
+import { trackSchema } from '@/lib/schemas/track'
+import { userSchema } from '@/lib/schemas/user'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
@@ -11,7 +11,7 @@ export const getUserById = createServerFn()
 			id: z.number(),
 		}),
 	)
-	.handler(async ({ data: { id } }) =>
+	.handler(({ data: { id } }) =>
 		$api({
 			path: `/users/${id}`,
 			schema: userSchema,

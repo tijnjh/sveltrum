@@ -1,6 +1,6 @@
-import { isPausedAtom, nowPlayingAtom } from '../../atoms'
-import type { Track } from '../../schemas/track'
-import { ListingThumbnail } from '../ListingThumbnail'
+import { ListingThumbnail } from '@/components/ListingThumbnail'
+import { isPausedAtom, nowPlayingAtom } from '@/lib/atoms'
+import type { Track } from '@/lib/schemas/track'
 import { useSetAtom } from 'jotai'
 
 export interface TrackListingProps {

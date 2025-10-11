@@ -1,5 +1,5 @@
-import { playlistSchema } from '../schemas/playlist'
 import { $api } from './utils'
+import { playlistSchema } from '@/lib/schemas/playlist'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
@@ -9,7 +9,7 @@ export const getPlaylistById = createServerFn()
 			id: z.number(),
 		}),
 	)
-	.handler(async ({ data: { id } }) =>
+	.handler(({ data: { id } }) =>
 		$api({
 			path: `/playlists/${id}`,
 			schema: playlistSchema,

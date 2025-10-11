@@ -1,5 +1,5 @@
-import type { User } from '../../schemas/user'
-import { ListingThumbnail } from '../ListingThumbnail'
+import { ListingThumbnail } from '@/components/ListingThumbnail'
+import type { User } from '@/lib/schemas/user'
 import { Link } from '@tanstack/react-router'
 import { type ClassValue, cn } from 'cnfn'
 

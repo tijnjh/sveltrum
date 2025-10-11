@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
-import appCss from '../app.css?url'
-import { Navigation } from '../lib/components/Navigation'
-import { NowPlayingView } from '../lib/components/NowPlayingView'
+import appCss from '@/app.css?url'
+import { Navigation } from '@/components/Navigation'
+import { NowPlayingView } from '@/components/NowPlayingView'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
 	createRootRoute,
