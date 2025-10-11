@@ -1,16 +1,16 @@
-import { z } from "zod";
-import { trackSchema } from "./track";
-import { userSchema } from "./user";
+import { trackSchema } from './track'
+import { userSchema } from './user'
+import { z } from 'zod'
 
 export const playlistSchema = z.strictObject({
 	artwork_url: z.string().nullable(),
 	created_at: z.iso.datetime(),
 	description: z.string().nullish(),
 	duration: z.number(),
-	embeddable_by: z.enum(["all", "none", "me"]).optional(),
+	embeddable_by: z.enum(['all', 'none', 'me']).optional(),
 	genre: z.string().nullish(),
 	id: z.number(),
-	kind: z.literal("playlist"),
+	kind: z.literal('playlist'),
 	label_name: z.string().nullish(),
 	last_modified: z.iso.datetime(),
 	license: z.string().optional(),
@@ -24,7 +24,7 @@ export const playlistSchema = z.strictObject({
 	release_date: z.string().nullable(),
 	reposts_count: z.number(),
 	secret_token: z.string().nullable(),
-	sharing: z.enum(["public", "private"]),
+	sharing: z.enum(['public', 'private']),
 	tag_list: z.string().optional(),
 	title: z.string(),
 	uri: z.url(),
@@ -47,6 +47,6 @@ export const playlistSchema = z.strictObject({
 		])
 		.array()
 		.optional(),
-});
+})
 
-export type Playlist = z.output<typeof playlistSchema>;
+export type Playlist = z.output<typeof playlistSchema>

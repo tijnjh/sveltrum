@@ -1,8 +1,8 @@
-import { createServerFn } from "@tanstack/react-start";
-import { ofetch } from "ofetch";
-import { z } from "zod";
-import { getTrackById } from "./track";
-import { getClientId } from "./utils";
+import { getTrackById } from './track'
+import { getClientId } from './utils'
+import { createServerFn } from '@tanstack/react-start'
+import { ofetch } from 'ofetch'
+import { z } from 'zod'
 
 export const getTrackSource = createServerFn()
 	.inputValidator(
@@ -11,27 +11,27 @@ export const getTrackSource = createServerFn()
 		}),
 	)
 	.handler(async ({ data: { id: trackId } }) => {
-		const track = await getTrackById({ data: { id: trackId } });
-		const clientId = await getClientId();
+		const track = await getTrackById({ data: { id: trackId } })
+		const clientId = await getClientId()
 
-		if (!track) throw new Error("failed to find track");
+		if (!track) throw new Error('failed to find track')
 
 		const hlsTranscodings = track.media.transcodings.filter(
-			(t) => t.format.protocol === "hls",
-		);
+			(t) => t.format.protocol === 'hls',
+		)
 
 		const transcoding =
-			hlsTranscodings.find(({ preset }) => preset === "aac_160k") ??
-			hlsTranscodings.find(({ format }) => format.mime_type === "audio/mpeg");
+			hlsTranscodings.find(({ preset }) => preset === 'aac_160k') ??
+			hlsTranscodings.find(({ format }) => format.mime_type === 'audio/mpeg')
 
-		if (!transcoding) throw new Error("failed to find hls transcoding");
+		if (!transcoding) throw new Error('failed to find hls transcoding')
 
 		const { url } = await ofetch(transcoding.url, {
 			params: {
 				track_authorization: track.track_authorization,
 				client_id: clientId,
 			},
-		});
+		})
 
-		return (Array.isArray(url) ? url[0] : url) as string;
-	});
+		return (Array.isArray(url) ? url[0] : url) as string
+	})

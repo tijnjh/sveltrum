@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const userSchema = z.strictObject({
 	avatar_url: z.url(),
@@ -28,7 +28,7 @@ export const userSchema = z.strictObject({
 	full_name: z.string(),
 	groups_count: z.number().optional(),
 	id: z.number(),
-	kind: z.literal("user"),
+	kind: z.literal('user'),
 	last_modified: z.iso.datetime(),
 	last_name: z.string(),
 	likes_count: z.number().optional(),
@@ -66,6 +66,6 @@ export const userSchema = z.strictObject({
 	station_urn: z.string().optional(),
 	station_permalink: z.string().optional(),
 	date_of_birth: z.string().nullish(),
-});
+})
 
-export type User = z.output<typeof userSchema>;
+export type User = z.output<typeof userSchema>

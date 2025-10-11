@@ -1,28 +1,28 @@
-import { useSetAtom } from "jotai";
-import { isPausedAtom, nowPlayingAtom } from "../../atoms";
-import type { Track } from "../../schemas/track";
-import { ListingThumbnail } from "../ListingThumbnail";
+import { isPausedAtom, nowPlayingAtom } from '../../atoms'
+import type { Track } from '../../schemas/track'
+import { ListingThumbnail } from '../ListingThumbnail'
+import { useSetAtom } from 'jotai'
 
 export interface TrackListingProps {
-	track: Track;
-	inAlbum?: boolean;
+	track: Track
+	inAlbum?: boolean
 }
 
 export function TrackListing({ track, inAlbum = false }: TrackListingProps) {
-	const setIsPaused = useSetAtom(isPausedAtom);
-	const setNowPlaying = useSetAtom(nowPlayingAtom);
+	const setIsPaused = useSetAtom(isPausedAtom)
+	const setNowPlaying = useSetAtom(nowPlayingAtom)
 
 	return (
 		<button
-			type="button"
+			type='button'
 			onClick={() => {
-				setNowPlaying(track);
+				setNowPlaying(track)
 
 				setTimeout(() => {
-					setIsPaused(false);
-				}, 100);
+					setIsPaused(false)
+				}, 100)
 			}}
-			className="grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50"
+			className='grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50'
 		>
 			{!inAlbum && (
 				<ListingThumbnail
@@ -31,22 +31,22 @@ export function TrackListing({ track, inAlbum = false }: TrackListingProps) {
 				/>
 			)}
 
-			<div className="flex w-full min-w-0 flex-col">
-				<div className="flex gap-2">
-					<h3 className="truncate">{track.title}</h3>
+			<div className='flex w-full min-w-0 flex-col'>
+				<div className='flex gap-2'>
+					<h3 className='truncate'>{track.title}</h3>
 
-					{track.policy === "SNIP" && (
-						<div className="whitespace-nowrap rounded-full bg-zinc-700 px-2 py-0.5 text-sm text-zinc-400">
+					{track.policy === 'SNIP' && (
+						<div className='whitespace-nowrap rounded-full bg-zinc-700 px-2 py-0.5 text-sm text-zinc-400'>
 							30s only
 						</div>
 					)}
 				</div>
-				<p className="truncate opacity-50">
+				<p className='truncate opacity-50'>
 					{inAlbum
 						? `${track.playback_count?.toLocaleString()} plays`
 						: track.user?.username}
 				</p>
 			</div>
 		</button>
-	);
+	)
 }

@@ -1,10 +1,10 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { paginatedSchema } from "../schemas/paginated";
-import { playlistSchema } from "../schemas/playlist";
-import { trackSchema } from "../schemas/track";
-import { userSchema } from "../schemas/user";
-import { $api } from "./utils";
+import { paginatedSchema } from '../schemas/paginated'
+import { playlistSchema } from '../schemas/playlist'
+import { trackSchema } from '../schemas/track'
+import { userSchema } from '../schemas/user'
+import { $api } from './utils'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 
 export const searchTracks = createServerFn()
 	.inputValidator(
@@ -14,14 +14,14 @@ export const searchTracks = createServerFn()
 	)
 	.handler(async ({ data: { query, offset, limit } }) => {
 		const response = await $api({
-			path: "/search/tracks",
+			path: '/search/tracks',
 			params: { q: query, limit, offset },
 			schema: z.object({
 				collection: trackSchema.array(),
 			}),
-		});
-		return response.collection;
-	});
+		})
+		return response.collection
+	})
 
 export const searchPlaylists = createServerFn()
 	.inputValidator(
@@ -31,14 +31,14 @@ export const searchPlaylists = createServerFn()
 	)
 	.handler(async ({ data: { query, offset, limit } }) => {
 		const response = await $api({
-			path: "/search/playlists",
+			path: '/search/playlists',
 			params: { q: query, limit, offset },
 			schema: z.object({
 				collection: playlistSchema.array(),
 			}),
-		});
-		return response.collection;
-	});
+		})
+		return response.collection
+	})
 
 export const searchUsers = createServerFn()
 	.inputValidator(
@@ -48,11 +48,11 @@ export const searchUsers = createServerFn()
 	)
 	.handler(async ({ data: { query, offset, limit } }) => {
 		const response = await $api({
-			path: "/search/users",
+			path: '/search/users',
 			params: { q: query, limit, offset },
 			schema: z.object({
 				collection: userSchema.array(),
 			}),
-		});
-		return response.collection;
-	});
+		})
+		return response.collection
+	})

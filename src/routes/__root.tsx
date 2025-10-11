@@ -1,40 +1,39 @@
 /// <reference types="vite/client" />
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import appCss from '../app.css?url'
+import { Navigation } from '../lib/components/Navigation'
+import { NowPlayingView } from '../lib/components/NowPlayingView'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
 	createRootRoute,
 	HeadContent,
 	Outlet,
 	Scripts,
-} from "@tanstack/react-router";
-import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
-import { type ReactNode, StrictMode } from "react";
-import appCss from "../app.css?url";
-import { Navigation } from "../lib/components/Navigation";
-import { NowPlayingView } from "../lib/components/NowPlayingView";
+} from '@tanstack/react-router'
+import { NuqsAdapter } from 'nuqs/adapters/tanstack-router'
+import { type ReactNode, StrictMode } from 'react'
 
 export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{
-				charSet: "utf-8",
+				charSet: 'utf-8',
 			},
 			{
-				name: "viewport",
-				content: "width=device-width, initial-scale=1",
+				name: 'viewport',
+				content: 'width=device-width, initial-scale=1',
 			},
 			{
-				title: "TanStack Start Starter",
+				title: 'TanStack Start Starter',
 			},
 		],
-		links: [{ rel: "stylesheet", href: appCss }],
+		links: [{ rel: 'stylesheet', href: appCss }],
 	}),
 
 	component: RootComponent,
-});
+})
 
 function RootComponent() {
-	const queryClient = new QueryClient();
+	const queryClient = new QueryClient()
 
 	return (
 		<StrictMode>
@@ -46,18 +45,18 @@ function RootComponent() {
 				</NuqsAdapter>
 			</QueryClientProvider>
 		</StrictMode>
-	);
+	)
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
-		<html lang="en">
+		<html lang='en'>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
 				<Navigation>
-					<div className="mb-64">{children}</div>
+					<div className='mb-64'>{children}</div>
 				</Navigation>
 
 				<NowPlayingView />
@@ -65,5 +64,5 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<Scripts />
 			</body>
 		</html>
-	);
+	)
 }

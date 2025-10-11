@@ -1,13 +1,13 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { playlistSchema } from "../schemas/playlist";
-import { trackSchema } from "../schemas/track";
-import { userSchema } from "../schemas/user";
-import { $api } from "./utils";
+import { playlistSchema } from '../schemas/playlist'
+import { trackSchema } from '../schemas/track'
+import { userSchema } from '../schemas/user'
+import { $api } from './utils'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 
 export const getSelections = createServerFn().handler(async () => {
 	const res = await $api({
-		path: "/mixed-selections",
+		path: '/mixed-selections',
 		schema: z.object({
 			collection: z
 				.object({
@@ -17,10 +17,10 @@ export const getSelections = createServerFn().handler(async () => {
 				})
 				.array(),
 		}),
-	});
+	})
 
-	return res.collection;
-});
+	return res.collection
+})
 
 export const getRelatedTracks = createServerFn()
 	.inputValidator(z.number())
@@ -31,4 +31,4 @@ export const getRelatedTracks = createServerFn()
 				collection: trackSchema.array(),
 			}),
 		}),
-	);
+	)

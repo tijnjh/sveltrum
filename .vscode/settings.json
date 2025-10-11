@@ -1,6 +1,0 @@
-{
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit"
-  },
-  "prettier.enable": false
-}

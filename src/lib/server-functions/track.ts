@@ -1,8 +1,8 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { paginatedSchema } from "../schemas/paginated";
-import { trackSchema } from "../schemas/track";
-import { $api, chunked } from "./utils";
+import { paginatedSchema } from '../schemas/paginated'
+import { trackSchema } from '../schemas/track'
+import { $api, chunked } from './utils'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 
 export const getTrackById = createServerFn()
 	.inputValidator(
@@ -15,7 +15,7 @@ export const getTrackById = createServerFn()
 			path: `/tracks/${id}`,
 			schema: trackSchema,
 		}),
-	);
+	)
 
 export const getTracksByIds = createServerFn()
 	.inputValidator(
@@ -26,20 +26,20 @@ export const getTracksByIds = createServerFn()
 		}),
 	)
 	.handler(async ({ data: { ids, size = 32, index = 0 } }) => {
-		const chunkedIds = chunked(ids, { size, index });
+		const chunkedIds = chunked(ids, { size, index })
 
 		if (!chunkedIds.length) {
-			return { tracks: [], hasMore: false };
+			return { tracks: [], hasMore: false }
 		}
 
 		const tracks = await $api({
 			path: `/tracks`,
-			params: { ids: chunkedIds.join(",") },
+			params: { ids: chunkedIds.join(',') },
 			schema: trackSchema.array(),
-		});
+		})
 
 		return {
 			tracks,
 			hasMore: (index + 1) * size < ids.length,
-		};
-	});
+		}
+	})

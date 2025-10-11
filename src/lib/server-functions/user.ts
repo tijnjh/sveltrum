@@ -1,9 +1,9 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { playlistSchema } from "../schemas/playlist";
-import { trackSchema } from "../schemas/track";
-import { userSchema } from "../schemas/user";
-import { $api } from "./utils";
+import { playlistSchema } from '../schemas/playlist'
+import { trackSchema } from '../schemas/track'
+import { userSchema } from '../schemas/user'
+import { $api } from './utils'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 
 export const getUserById = createServerFn()
 	.inputValidator(
@@ -16,7 +16,7 @@ export const getUserById = createServerFn()
 			path: `/users/${id}`,
 			schema: userSchema,
 		}),
-	);
+	)
 
 export const getUserTracks = createServerFn()
 	.inputValidator(
@@ -33,9 +33,9 @@ export const getUserTracks = createServerFn()
 			schema: z.object({
 				collection: trackSchema.array(),
 			}),
-		});
-		return res.collection;
-	});
+		})
+		return res.collection
+	})
 
 export const getUserPlaylists = createServerFn()
 	.inputValidator(
@@ -52,6 +52,6 @@ export const getUserPlaylists = createServerFn()
 			schema: z.object({
 				collection: playlistSchema.array(),
 			}),
-		});
-		return res.collection;
-	});
+		})
+		return res.collection
+	})

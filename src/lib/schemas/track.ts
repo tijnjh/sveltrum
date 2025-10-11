@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { userSchema } from "./user";
+import { userSchema } from './user'
+import { z } from 'zod'
 
 export const trackSchema = z.strictObject({
 	artwork_url: z.url().nullable(),
@@ -12,11 +12,11 @@ export const trackSchema = z.strictObject({
 	download_count: z.number().nullable(),
 	duration: z.number(),
 	full_duration: z.number(),
-	embeddable_by: z.enum(["all", "none", "me"]),
+	embeddable_by: z.enum(['all', 'none', 'me']),
 	genre: z.string().nullable(),
 	has_downloads_left: z.boolean(),
 	id: z.number(),
-	kind: z.literal("track"),
+	kind: z.literal('track'),
 	label_name: z.string().nullable(),
 	last_modified: z.iso.datetime(),
 	license: z.string(),
@@ -50,8 +50,8 @@ export const trackSchema = z.strictObject({
 	release_date: z.string().nullable(),
 	reposts_count: z.number(),
 	secret_token: z.string().nullable(),
-	sharing: z.enum(["public", "private"]),
-	state: z.enum(["finished", "processing"]),
+	sharing: z.enum(['public', 'private']),
+	state: z.enum(['finished', 'processing']),
 	streamable: z.boolean(),
 	tag_list: z.string(),
 	title: z.string(),
@@ -80,31 +80,31 @@ export const trackSchema = z.strictObject({
 			z.strictObject({
 				url: z.url(),
 				preset: z.enum([
-					"opus_0_0",
-					"aac_160k",
-					"mp3_0_0",
-					"abr_sq",
-					"mp3_1_0",
-					"mp3_0_1",
-					"mp3_standard",
+					'opus_0_0',
+					'aac_160k',
+					'mp3_0_0',
+					'abr_sq',
+					'mp3_1_0',
+					'mp3_0_1',
+					'mp3_standard',
 				]),
 				duration: z.number(),
 				snipped: z.boolean(),
 				format: z.strictObject({
 					protocol: z.enum([
-						"hls",
-						"progressive",
-						"ctr-encrypted-hls",
-						"cbc-encrypted-hls",
+						'hls',
+						'progressive',
+						'ctr-encrypted-hls',
+						'cbc-encrypted-hls',
 					]),
 					mime_type: z.enum([
 						'audio/mp4; codecs="mp4a.40.2"',
-						"audio/mpegurl",
-						"audio/mpeg",
+						'audio/mpegurl',
+						'audio/mpeg',
 						'audio/ogg; codecs="opus"',
 					]),
 				}),
-				quality: z.literal("sq"),
+				quality: z.literal('sq'),
 				is_legacy_transcoding: z.boolean(),
 			}),
 		),
@@ -113,13 +113,13 @@ export const trackSchema = z.strictObject({
 	station_permalink: z.string(),
 	track_authorization: z.string(),
 	monetization_model: z.enum([
-		"AD_SUPPORTED",
-		"BLACKBOX",
-		"NOT_APPLICABLE",
-		"SUB_HIGH_TIER",
+		'AD_SUPPORTED',
+		'BLACKBOX',
+		'NOT_APPLICABLE',
+		'SUB_HIGH_TIER',
 	]),
-	policy: z.enum(["MONETIZE", "BLOCK", "SNIP", "ALLOW"]),
+	policy: z.enum(['MONETIZE', 'BLOCK', 'SNIP', 'ALLOW']),
 	user: userSchema,
-});
+})
 
-export type Track = z.output<typeof trackSchema>;
+export type Track = z.output<typeof trackSchema>

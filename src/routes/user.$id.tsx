@@ -1,73 +1,73 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { parseAsString, useQueryState } from "nuqs";
-import { Fragment } from "react/jsx-runtime";
-import { Button } from "../lib/components/Button";
-import { HeroSection } from "../lib/components/HeroSection";
-import { PlaylistListing } from "../lib/components/listings/PlaylistListing";
-import { TrackListing } from "../lib/components/listings/TrackListing";
-import { Main } from "../lib/components/Main";
-import { Spinner } from "../lib/components/Spinner";
-import { paginated_limit } from "../lib/constants";
-import type { Playlist } from "../lib/schemas/playlist";
-import type { Track } from "../lib/schemas/track";
+import { Button } from '../lib/components/Button'
+import { HeroSection } from '../lib/components/HeroSection'
+import { Main } from '../lib/components/Main'
+import { Spinner } from '../lib/components/Spinner'
+import { PlaylistListing } from '../lib/components/listings/PlaylistListing'
+import { TrackListing } from '../lib/components/listings/TrackListing'
+import { paginated_limit } from '../lib/constants'
+import type { Playlist } from '../lib/schemas/playlist'
+import type { Track } from '../lib/schemas/track'
 import {
 	getUserById,
 	getUserPlaylists,
 	getUserTracks,
-} from "../lib/server-functions/user";
+} from '../lib/server-functions/user'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+import { parseAsString, useQueryState } from 'nuqs'
+import { Fragment } from 'react/jsx-runtime'
 
-export const Route = createFileRoute("/user/$id")({
+export const Route = createFileRoute('/user/$id')({
 	loader: ({ params }) => getUserById({ data: { id: Number(params.id) } }),
 
 	head: ({ loaderData }) => ({
 		meta: [{ title: `${loaderData?.username} - sveltrum` }],
-		links: [{ rel: "icon", href: loaderData?.avatar_url }],
+		links: [{ rel: 'icon', href: loaderData?.avatar_url }],
 	}),
 
 	component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-	const { id } = Route.useParams();
+	const { id } = Route.useParams()
 
-	const user = Route.useLoaderData();
+	const user = Route.useLoaderData()
 
 	const [selectedKind, setSelectedKind] = useQueryState(
-		"kind",
-		parseAsString.withDefault("tracks").withOptions({
+		'kind',
+		parseAsString.withDefault('tracks').withOptions({
 			shallow: false,
-			history: "push",
+			history: 'push',
 		}),
-	);
+	)
 
 	const { data, refetch, isLoading, hasNextPage, fetchNextPage } =
 		useInfiniteQuery({
-			queryKey: ["user", id, selectedKind],
+			queryKey: ['user', id, selectedKind],
 			queryFn: async ({ pageParam = 0 }) => {
 				const data = {
 					id: Number(id),
 					offset: pageParam * paginated_limit,
 					limit: paginated_limit,
-				};
-
-				let results: (Track | Playlist)[] = [];
-
-				switch (selectedKind) {
-					case "playlists":
-						results = await getUserPlaylists({ data });
-						break;
-					default:
-						results = await getUserTracks({ data });
-						break;
 				}
 
-				return results;
+				let results: (Track | Playlist)[] = []
+
+				switch (selectedKind) {
+					case 'playlists':
+						results = await getUserPlaylists({ data })
+						break
+					default:
+						results = await getUserTracks({ data })
+						break
+				}
+
+				return results
 			},
 			initialPageParam: 0,
 			getNextPageParam: (lastPage, allPages) =>
 				lastPage.length < paginated_limit ? allPages.length : undefined,
-		});
+		})
 
 	return (
 		<Main>
@@ -77,16 +77,16 @@ function RouteComponent() {
 				roundedPicture
 			/>
 
-			<div className="flex gap-2">
-				{["tracks", "playlists"].map((kind) => (
+			<div className='flex gap-2'>
+				{['tracks', 'playlists'].map((kind) => (
 					<Button
 						key={kind}
-						variant={selectedKind === kind ? "primary" : "secondary"}
-						className="capitalize"
+						variant={selectedKind === kind ? 'primary' : 'secondary'}
+						className='capitalize'
 						onClick={() => {
-							setSelectedKind(kind);
-							console.log("clicked");
-							refetch();
+							setSelectedKind(kind)
+							console.log('clicked')
+							refetch()
 						}}
 					>
 						{kind}
@@ -94,13 +94,13 @@ function RouteComponent() {
 				))}
 			</div>
 
-			<div className="flex flex-col gap-4">
+			<div className='flex flex-col gap-4'>
 				{data?.pages.map((page) =>
 					page?.map((result) => (
 						<Fragment key={result.id}>
-							{selectedKind === "tracks" ? (
+							{selectedKind === 'tracks' ? (
 								<TrackListing track={result as Track} />
-							) : selectedKind === "playlists" ? (
+							) : selectedKind === 'playlists' ? (
 								<PlaylistListing playlist={result as Playlist} />
 							) : null}
 						</Fragment>
@@ -113,9 +113,9 @@ function RouteComponent() {
 			) : (
 				hasNextPage && (
 					<Button
-						className="mt-8 w-full"
+						className='mt-8 w-full'
 						onClick={() => {
-							fetchNextPage();
+							fetchNextPage()
 						}}
 					>
 						Load more
@@ -123,5 +123,5 @@ function RouteComponent() {
 				)
 			)}
 		</Main>
-	);
+	)
 }

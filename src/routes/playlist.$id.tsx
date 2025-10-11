@@ -1,30 +1,30 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Button } from "../lib/components/Button";
-import { HeroSection } from "../lib/components/HeroSection";
-import { TrackListing } from "../lib/components/listings/TrackListing";
-import { Main } from "../lib/components/Main";
-import { Spinner } from "../lib/components/Spinner";
-import { getPlaylistById } from "../lib/server-functions/playlist";
-import { getTracksByIds } from "../lib/server-functions/track";
+import { Button } from '../lib/components/Button'
+import { HeroSection } from '../lib/components/HeroSection'
+import { Main } from '../lib/components/Main'
+import { Spinner } from '../lib/components/Spinner'
+import { TrackListing } from '../lib/components/listings/TrackListing'
+import { getPlaylistById } from '../lib/server-functions/playlist'
+import { getTracksByIds } from '../lib/server-functions/track'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute("/playlist/$id")({
+export const Route = createFileRoute('/playlist/$id')({
 	loader: ({ params }) => getPlaylistById({ data: { id: Number(params.id) } }),
 
 	head: ({ loaderData }) => ({
 		meta: [{ title: `${loaderData?.title} - sveltrum` }],
-		links: [{ rel: "icon", href: loaderData?.artwork_url ?? "" }],
+		links: [{ rel: 'icon', href: loaderData?.artwork_url ?? '' }],
 	}),
 
 	component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-	const playlist = Route.useLoaderData();
+	const playlist = Route.useLoaderData()
 
 	const { data, isError, isLoading, fetchNextPage, hasNextPage } =
 		useInfiniteQuery({
-			queryKey: ["tracks", playlist.tracks],
+			queryKey: ['tracks', playlist.tracks],
 			queryFn: ({ pageParam = 0 }) =>
 				getTracksByIds({
 					data: {
@@ -35,16 +35,16 @@ function RouteComponent() {
 			initialPageParam: 0,
 			getNextPageParam: (lastPage, allPages) =>
 				lastPage.hasMore ? allPages.length : undefined,
-		});
+		})
 
 	if (isError) {
 		return (
 			<Main>
-				<span className="font-medium text-xl text-zinc-100/25">
+				<span className='font-medium text-xl text-zinc-100/25'>
 					Failed to load playlist
 				</span>
 			</Main>
-		);
+		)
 	}
 
 	return (
@@ -55,8 +55,9 @@ function RouteComponent() {
 				user={playlist.user}
 			/>
 
-			<h2 className="mt-4 font-medium text-2xl">
-				{playlist.track_count} track{playlist.track_count === 1 ? "" : "s"}
+			<h2 className='mt-4 font-medium text-2xl'>
+				{playlist.track_count} track
+				{playlist.track_count === 1 ? '' : 's'}
 			</h2>
 
 			{data?.pages.map((page) =>
@@ -69,11 +70,11 @@ function RouteComponent() {
 				<Spinner />
 			) : (
 				hasNextPage && (
-					<Button className="mt-8 w-full" onClick={() => fetchNextPage()}>
+					<Button className='mt-8 w-full' onClick={() => fetchNextPage()}>
 						Load more
 					</Button>
 				)
 			)}
 		</Main>
-	);
+	)
 }

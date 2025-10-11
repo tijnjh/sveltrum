@@ -1,7 +1,7 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import { playlistSchema } from "../schemas/playlist";
-import { $api } from "./utils";
+import { playlistSchema } from '../schemas/playlist'
+import { $api } from './utils'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 
 export const getPlaylistById = createServerFn()
 	.inputValidator(
@@ -14,4 +14,4 @@ export const getPlaylistById = createServerFn()
 			path: `/playlists/${id}`,
 			schema: playlistSchema,
 		}),
-	);
+	)

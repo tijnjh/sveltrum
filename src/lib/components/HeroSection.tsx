@@ -1,12 +1,12 @@
-import { cn } from "cnfn";
-import type { User } from "../schemas/user";
-import { UserListing } from "./listings/UserListing";
+import type { User } from '../schemas/user'
+import { UserListing } from './listings/UserListing'
+import { cn } from 'cnfn'
 
 export interface HeroSectionProps {
-	pictureSrc?: string | null;
-	title: string;
-	user?: User;
-	roundedPicture?: boolean;
+	pictureSrc?: string | null
+	title: string
+	user?: User
+	roundedPicture?: boolean
 }
 
 export function HeroSection({
@@ -17,20 +17,20 @@ export function HeroSection({
 }: HeroSectionProps) {
 	return (
 		<>
-			{!!pictureSrc && (
+			{pictureSrc && (
 				<img
-					src={pictureSrc.replace("large", "t500x500")}
+					src={pictureSrc.replace('large', 't500x500')}
 					className={cn(
-						"mx-auto my-4 aspect-square w-full max-w-xs",
-						roundedPicture ? "rounded-full" : "rounded-xl",
+						'mx-auto my-4 aspect-square w-full max-w-xs',
+						roundedPicture ? 'rounded-full' : 'rounded-xl',
 					)}
 					alt={title}
 				/>
 			)}
 
-			<h1 className="font-medium text-2xl">{title}</h1>
+			<h1 className='font-medium text-2xl'>{title}</h1>
 
-			{!!user && <UserListing user={user} className="mt-4" />}
+			{user && <UserListing user={user} className='mt-4' />}
 		</>
-	);
+	)
 }
