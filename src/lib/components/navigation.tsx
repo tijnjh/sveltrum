@@ -1,18 +1,13 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { haptic } from "ios-haptics";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { PauseIcon, PlayIcon } from "lucide-react";
-import { type Dispatch, type ReactNode, useEffect } from "react";
-import { isPausedAtom, nowPlayingAtom } from "../atoms";
+import type { ReactNode } from "react";
+import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from "../atoms";
 import { Button } from "./button";
 import { ListingThumbnail } from "./listing-thumbnail";
 
-export interface NavigationProps {
-	setShow: Dispatch<boolean>;
-	children: ReactNode;
-}
-
-export function Navigation({ setShow, children }: NavigationProps) {
+export function Navigation({ children }: { children: ReactNode }) {
 	const location = useLocation();
 
 	const navItems = [
@@ -46,7 +41,7 @@ export function Navigation({ setShow, children }: NavigationProps) {
 				<div className="relative isolate">
 					{children}
 					<div className="fixed right-0 bottom-0 left-[12rem] z-50 bg-zinc-700/75 backdrop-blur-lg">
-						<NowPlayingBar setShow={setShow} />
+						<NowPlayingBar />
 					</div>
 				</div>
 			</div>
@@ -56,7 +51,7 @@ export function Navigation({ setShow, children }: NavigationProps) {
 				{children}
 
 				<div className="fixed inset-x-0 bottom-0 z-50 bg-zinc-700/75 backdrop-blur-lg">
-					<NowPlayingBar setShow={setShow} />
+					<NowPlayingBar />
 
 					<nav className="flex items-center justify-center gap-2 p-4">
 						{navItems.map(([to, label]) => {
@@ -79,9 +74,10 @@ export function Navigation({ setShow, children }: NavigationProps) {
 	);
 }
 
-function NowPlayingBar({ setShow }: { setShow: Dispatch<boolean> }) {
+function NowPlayingBar() {
 	const nowPlaying = useAtomValue(nowPlayingAtom);
 	const [isPaused, setIsPaused] = useAtom(isPausedAtom);
+	const showNowPlayingView = useSetAtom(showNowPlayingViewAtom);
 
 	if (!nowPlaying) return;
 
@@ -92,7 +88,7 @@ function NowPlayingBar({ setShow }: { setShow: Dispatch<boolean> }) {
 			<div className="mx-auto grid max-w-xl grid-cols-[1fr_auto] items-center gap-4 p-4">
 				<button
 					type="button"
-					onClick={() => setShow(true)}
+					onClick={() => showNowPlayingView(true)}
 					className="flex gap-4 truncate text-left"
 				>
 					<ListingThumbnail src={nowPlaying.artwork_url} alt="" />

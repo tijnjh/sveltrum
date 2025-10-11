@@ -3,8 +3,8 @@ import { cn } from "cnfn";
 import Hls from "hls.js";
 import { useAtom, useAtomValue } from "jotai";
 import { ChevronDownIcon } from "lucide-react";
-import { type Dispatch, Suspense, use, useEffect, useRef } from "react";
-import { isPausedAtom, nowPlayingAtom } from "../atoms";
+import { Suspense, use, useEffect, useRef } from "react";
+import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from "../atoms";
 import type { Track } from "../schemas/track";
 import { getRelatedTracks } from "../server-functions/discovery";
 import { getTrackSource } from "../server-functions/hls";
@@ -30,14 +30,12 @@ function applySource({
 	});
 }
 
-export interface NowPlayingViewProps {
-	show: boolean;
-	setShow: Dispatch<boolean>;
-}
-
-export function NowPlayingView({ show, setShow }: NowPlayingViewProps) {
+export function NowPlayingView() {
 	const nowPlaying = useAtomValue(nowPlayingAtom);
 	const [isPaused, setIsPaused] = useAtom(isPausedAtom);
+	const [showNowPlayingView, setShowNowPlayingView] = useAtom(
+		showNowPlayingViewAtom,
+	);
 
 	useEffect(() => {
 		if (nowPlaying) {
@@ -62,7 +60,7 @@ export function NowPlayingView({ show, setShow }: NowPlayingViewProps) {
 		window.onkeydown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") {
 				e.preventDefault();
-				show = false;
+				setShowNowPlayingView(false);
 			}
 		};
 	}
@@ -101,12 +99,12 @@ export function NowPlayingView({ show, setShow }: NowPlayingViewProps) {
 		<div
 			className={cn(
 				"fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll bg-zinc-700/75 p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2",
-				show ? "top-0" : "top-[100%]",
+				showNowPlayingView ? "top-0" : "top-[100%]",
 			)}
 		>
 			<button
 				type="button"
-				onClick={() => setShow(false)}
+				onClick={() => setShowNowPlayingView(false)}
 				className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-zinc-100/10 transition-transform active:scale-90 active:opacity-50"
 			>
 				<ChevronDownIcon size={16} strokeWidth={3} />

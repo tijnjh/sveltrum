@@ -50,22 +50,17 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-	const [showNowPlayingView, setShowNowPlayingView] = useState(false);
-
 	return (
 		<html lang="en">
 			<head>
 				<HeadContent />
 			</head>
 			<body>
-				<Navigation setShow={setShowNowPlayingView}>
+				<Navigation>
 					<div className="mb-64">{children}</div>
 				</Navigation>
 
-				<NowPlayingView
-					show={showNowPlayingView}
-					setShow={setShowNowPlayingView}
-				/>
+				<NowPlayingView />
 
 				<Scripts />
 			</body>
