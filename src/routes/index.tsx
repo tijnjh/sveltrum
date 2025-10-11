@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
 					</div>
 				</div>
 
-				<h2 className="font-medium text-2xl">Trending playlists</h2>
+				<h2 className="font-medium text-2xl">Trending</h2>
 
 				{selections.length ? (
 					selections.map((selection) =>
