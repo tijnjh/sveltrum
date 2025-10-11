@@ -1,13 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { ofetch } from "ofetch";
 import { z } from "zod";
-import { getTrackById } from "./get-by-id";
+import { getTrackById } from "./track";
 import { getClientId } from "./utils";
 
 export const getTrackSource = createServerFn()
-	.inputValidator(z.number())
-	.handler(async ({ data: trackId }) => {
-		const track = await getTrackById({ data: trackId });
+	.inputValidator(
+		z.object({
+			id: z.number(),
+		}),
+	)
+	.handler(async ({ data: { id: trackId } }) => {
+		const track = await getTrackById({ data: { id: trackId } });
 		const clientId = await getClientId();
 
 		if (!track) throw new Error("failed to find track");

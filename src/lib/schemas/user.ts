@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const user = z.strictObject({
+export const userSchema = z.strictObject({
 	avatar_url: z.url(),
 	city: z.string().nullable(),
 	comments_count: z.number().optional(),
@@ -68,4 +68,4 @@ export const user = z.strictObject({
 	date_of_birth: z.string().nullish(),
 });
 
-export type User = z.output<typeof user>;
+export type User = z.output<typeof userSchema>;

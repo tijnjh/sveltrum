@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { track } from "./track";
-import { user } from "./user";
+import { trackSchema } from "./track";
+import { userSchema } from "./user";
 
-export const playlist = z.strictObject({
+export const playlistSchema = z.strictObject({
 	artwork_url: z.string().nullable(),
 	created_at: z.iso.datetime(),
 	description: z.string().nullish(),
@@ -32,13 +32,13 @@ export const playlist = z.strictObject({
 	is_album: z.boolean(),
 	published_at: z.iso.datetime().nullable(),
 	display_date: z.iso.datetime(),
-	user,
+	user: userSchema,
 	set_type: z.string(),
 	track_count: z.number(),
 	tracks: z
 		.union([
-			track,
-			track.pick({
+			trackSchema,
+			trackSchema.pick({
 				id: true,
 				kind: true,
 				monetization_model: true,
@@ -49,4 +49,4 @@ export const playlist = z.strictObject({
 		.optional(),
 });
 
-export type Playlist = z.output<typeof playlist>;
+export type Playlist = z.output<typeof playlistSchema>;

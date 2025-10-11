@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { user } from "./user";
+import { userSchema } from "./user";
 
-export const track = z.strictObject({
+export const trackSchema = z.strictObject({
 	artwork_url: z.url().nullable(),
 	caption: z.string().nullable(),
 	commentable: z.boolean(),
@@ -119,7 +119,7 @@ export const track = z.strictObject({
 		"SUB_HIGH_TIER",
 	]),
 	policy: z.enum(["MONETIZE", "BLOCK", "SNIP", "ALLOW"]),
-	user,
+	user: userSchema,
 });
 
-export type Track = z.output<typeof track>;
+export type Track = z.output<typeof trackSchema>;

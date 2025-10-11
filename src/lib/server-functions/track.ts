@@ -1,25 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
-
 import { z } from "zod";
-import { playlist } from "../schemas/playlist";
-import { track } from "../schemas/track";
+import { paginatedSchema } from "../schemas/paginated";
+import { trackSchema } from "../schemas/track";
 import { $api, chunked } from "./utils";
 
 export const getTrackById = createServerFn()
-	.inputValidator(z.number())
-	.handler(async ({ data: id }) =>
+	.inputValidator(
+		z.object({
+			id: z.number(),
+		}),
+	)
+	.handler(async ({ data: { id } }) =>
 		$api({
 			path: `/tracks/${id}`,
-			schema: track,
-		}),
-	);
-
-export const getPlaylistById = createServerFn()
-	.inputValidator(z.number())
-	.handler(async ({ data: id }) =>
-		$api({
-			path: `/playlists/${id}`,
-			schema: playlist,
+			schema: trackSchema,
 		}),
 	);
 
@@ -41,7 +35,7 @@ export const getTracksByIds = createServerFn()
 		const tracks = await $api({
 			path: `/tracks`,
 			params: { ids: chunkedIds.join(",") },
-			schema: track.array(),
+			schema: trackSchema.array(),
 		});
 
 		return {

@@ -5,7 +5,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 export const buttonVariants = tv({
 	slots: {
-		base: "flex items-center justify-center gap-2 rounded-full transition-transform active:scale-90 active:opacity-50",
+		base: "flex items-center cursor-pointer justify-center gap-2 rounded-full transition-transform active:scale-90 active:opacity-50",
 	},
 	variants: {
 		variant: {

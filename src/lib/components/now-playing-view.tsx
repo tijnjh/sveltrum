@@ -3,7 +3,7 @@ import { cn } from "cnfn";
 import Hls from "hls.js";
 import { useAtom, useAtomValue } from "jotai";
 import { ChevronDownIcon } from "lucide-react";
-import { Suspense, use, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { isPausedAtom, nowPlayingAtom, showNowPlayingViewAtom } from "../atoms";
 import type { Track } from "../schemas/track";
 import { getRelatedTracks } from "../server-functions/discovery";
@@ -19,7 +19,7 @@ function applySource({
 	track: Track;
 	element: HTMLAudioElement;
 }) {
-	getTrackSource({ data: track.id }).then((url) => {
+	getTrackSource({ data: { id: track.id } }).then((url) => {
 		if (!Hls.isSupported()) {
 			throw new Error("hls is not supported");
 		}
@@ -123,7 +123,9 @@ export function NowPlayingView() {
 
 				<hgroup>
 					<h1 className="font-medium text-2xl">{track.title}</h1>
-					<UserListing user={track.user} className="mt-4" />
+					<button type="button" onClick={() => setShowNowPlayingView(false)}>
+						<UserListing user={track.user} className="mt-4" />
+					</button>
 				</hgroup>
 
 				{/** biome-ignore lint/a11y/useMediaCaption: dont care lmao */}
@@ -137,24 +139,42 @@ export function NowPlayingView() {
 				/>
 			</div>
 
-			<Suspense fallback={<Spinner />}>
+			<div className="mb-16 flex w-full flex-col gap-4 md:max-w-sm">
+				<h2 className="mt-8 font-medium text-2xl">Related tracks</h2>
+
 				<RelatedTracks trackId={track.id} />
-			</Suspense>
+			</div>
 		</div>
 	);
 }
 
-function RelatedTracks({ trackId }: { trackId: number }) {
-	const relatedTracks = use(getRelatedTracks({ data: trackId }));
+import { useQuery } from "@tanstack/react-query";
 
-	if (!relatedTracks.collection.length)
+function RelatedTracks({ trackId }: { trackId: number }) {
+	const { data, isLoading, isError } = useQuery({
+		queryKey: ["related-tracks", trackId],
+		queryFn: () => getRelatedTracks({ data: trackId }),
+	});
+
+	if (isLoading) return <Spinner />;
+
+	if (isError || !data) {
+		return (
+			<span className="font-medium text-xl text-zinc-100/25">
+				Failed to load related tracks
+			</span>
+		);
+	}
+
+	if (!data.collection.length) {
 		return (
 			<span className="font-medium text-xl text-zinc-100/25">
 				Nothing here...
 			</span>
 		);
+	}
 
-	return relatedTracks.collection.map((track) => (
+	return data.collection.map((track) => (
 		<TrackListing key={track.id} track={track} />
 	));
 }

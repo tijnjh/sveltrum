@@ -10,6 +10,7 @@ import { TrackListing } from "../lib/components/listings/track-listing";
 import { UserListing } from "../lib/components/listings/user-listing";
 import { Main } from "../lib/components/main";
 import { Spinner } from "../lib/components/spinner";
+import { paginated_limit } from "../lib/constants";
 import type { Playlist } from "../lib/schemas/playlist";
 import type { Track } from "../lib/schemas/track";
 import type { User } from "../lib/schemas/user";
@@ -20,129 +21,132 @@ import {
 } from "../lib/server-functions/search";
 
 export const Route = createFileRoute("/search")({
-	component: () => {
-		const [searchQuery, setSearchQuery] = useQueryState("q", {
+	component: RouteComponent,
+});
+
+function RouteComponent() {
+	const [searchQuery, setSearchQuery] = useQueryState("q", {
+		history: "push",
+		shallow: false,
+	});
+
+	const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
+
+	const [selectedKind, setSelectedKind] = useQueryState(
+		"kind",
+		parseAsString.withDefault("tracks").withOptions({
 			history: "push",
 			shallow: false,
+		}),
+	);
+
+	const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
+		useInfiniteQuery({
+			queryKey: ["search", debouncedSearchQuery, selectedKind],
+			queryFn: async ({ pageParam = 0 }) => {
+				if (!searchQuery) return [];
+
+				const data = {
+					query: searchQuery,
+					offset: pageParam * paginated_limit,
+					limit: paginated_limit,
+				};
+
+				let results: (Track | Playlist | User)[] = [];
+
+				switch (selectedKind) {
+					case "playlists":
+						results = await searchPlaylists({ data });
+						break;
+
+					case "users":
+						results = await searchUsers({ data });
+						break;
+					default:
+						results = await searchTracks({ data });
+						break;
+				}
+
+				return results as (Track | Playlist | User)[];
+			},
+			initialPageParam: 0,
+			getNextPageParam: (lastPage, allPages) =>
+				lastPage.length < paginated_limit ? allPages.length : undefined,
 		});
 
-		const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
+	return (
+		<>
+			<div className="sticky inset-x-0 top-0 z-50 flex w-full flex-col gap-4 bg-zinc-700/75 p-4 backdrop-blur-lg">
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						refetch();
+					}}
+					className="mx-auto flex w-full max-w-xl gap-2"
+				>
+					<input
+						type="text"
+						value={searchQuery ?? ""}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						className="h-10 grow rounded-full bg-zinc-700 px-4"
+						placeholder="Search"
+					/>
 
-		const [selectedKind, setSelectedKind] = useQueryState(
-			"kind",
-			parseAsString.withDefault("tracks").withOptions({
-				history: "push",
-				shallow: false,
-			}),
-		);
+					<Button type="submit" size="icon">
+						<SearchIcon size={16} strokeWidth={3} />
+					</Button>
+				</form>
 
-		function searchFor(kind: string) {
-			switch (kind) {
-				case "playlists":
-					return searchPlaylists;
-				case "users":
-					return searchUsers;
-				default:
-					return searchTracks;
-			}
-		}
-
-		const { data, isPending, fetchNextPage, hasNextPage, refetch } =
-			useInfiniteQuery({
-				queryKey: [debouncedSearchQuery, selectedKind],
-				queryFn: async ({ pageParam = 0 }) => {
-					if (!searchQuery) return [];
-
-					const results = await searchFor(selectedKind ?? "tracks")({
-						data: {
-							query: searchQuery,
-							index: pageParam,
-							offset: pageParam * 25,
-							limit: 25,
-						},
-					});
-
-					return results as (Track | Playlist | User)[];
-				},
-				initialPageParam: 0,
-				getNextPageParam: (lastPage, allPages) =>
-					lastPage.length < 25 ? allPages.length : undefined,
-			});
-
-		return (
-			<>
-				<div className="sticky inset-x-0 top-0 z-50 flex w-full flex-col gap-4 bg-zinc-700/75 p-4 backdrop-blur-lg">
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							refetch();
-						}}
-						className="mx-auto flex w-full max-w-xl gap-2"
-					>
-						<input
-							type="text"
-							value={searchQuery ?? ""}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="h-10 grow rounded-full bg-zinc-700 px-4"
-							placeholder="Search"
-						/>
-
-						<Button type="submit" size="icon">
-							<SearchIcon size={16} strokeWidth={3} />
+				<div className="mx-auto flex w-full max-w-xl gap-2">
+					{["tracks", "playlists", "users"].map((kind) => (
+						<Button
+							key={kind}
+							variant={selectedKind === kind ? "primary" : "secondary"}
+							className="capitalize"
+							onClick={() => {
+								setSelectedKind(kind);
+								refetch();
+							}}
+						>
+							{kind}
 						</Button>
-					</form>
+					))}
+				</div>
+			</div>
 
-					<div className="mx-auto flex w-full max-w-xl gap-2">
-						{["tracks", "playlists", "users"].map((kind) => (
-							<Button
-								key={kind}
-								variant={selectedKind === kind ? "primary" : "secondary"}
-								className="capitalize"
-								onClick={() => {
-									setSelectedKind(kind);
-									refetch();
-								}}
-							>
-								{kind}
-							</Button>
-						))}
-					</div>
+			<Main>
+				<div className="flex flex-col gap-4">
+					{data?.pages.map((page) =>
+						page.map((result) => (
+							<Fragment key={result.id}>
+								{selectedKind === "tracks" ? (
+									<TrackListing track={result as Track} />
+								) : selectedKind === "playlists" ? (
+									<PlaylistListing playlist={result as Playlist} />
+								) : selectedKind === "users" ? (
+									<UserListing user={result as User} />
+								) : null}
+							</Fragment>
+						)),
+					)}
 				</div>
 
-				<Main>
-					<div className="flex flex-col gap-4">
-						{data?.pages.map((page) =>
-							page.map((result) => (
-								<Fragment key={result.id}>
-									{selectedKind === "tracks" ? (
-										<TrackListing track={result as Track} />
-									) : selectedKind === "playlists" ? (
-										<PlaylistListing playlist={result as Playlist} />
-									) : selectedKind === "users" ? (
-										<UserListing user={result as User} />
-									) : null}
-								</Fragment>
-							)),
-						)}
-					</div>
-
-					{isPending ? (
-						<Spinner />
-					) : (
-						searchQuery &&
-						hasNextPage && (
-							<Button
-								className="mt-8 w-full"
-								onClick={() => {
-									fetchNextPage();
-								}}
-							>
-								Load more
-							</Button>
-						)
-					)}
-				</Main>
-			</>
-		);
-	},
-});
+				{isLoading ? (
+					<Spinner />
+				) : (
+					searchQuery &&
+					hasNextPage && (
+						<Button
+							className="mt-8 w-full"
+							onClick={() => {
+								fetchNextPage();
+							}}
+						>
+							Load more
+						</Button>
+					)
+				)}
+			</Main>
+		</>
+	);
+}

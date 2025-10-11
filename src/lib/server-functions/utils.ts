@@ -76,12 +76,6 @@ export function chunked<T>(
 	return arr.slice(start, end);
 }
 
-// type ServerFnHandler<Params> = Parameters<
-// 	ReturnType<
-// 		typeof createServerFn<Method, Register, undefined, Params>
-// 	>["handler"]
-// >[0];
-
 export function withPagination<T>(
 	fetcher: (opts: { data: { limit: number; offset: number } }) => Promise<T[]>,
 ) {
