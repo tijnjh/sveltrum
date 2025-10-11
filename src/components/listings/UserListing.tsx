@@ -25,6 +25,7 @@ export function UserListing({ user, className }: UserListingProps) {
 			/>
 			<div className='flex w-full min-w-0 flex-col'>
 				<h3 className='truncate'>{user.username}</h3>
+
 				{user.full_name !== user.username && (
 					<p className='truncate opacity-50'>{user.full_name}</p>
 				)}

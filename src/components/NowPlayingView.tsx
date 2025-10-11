@@ -108,7 +108,6 @@ export function NowPlayingView() {
 			)}
 		>
 			<button
-				type='button'
 				onClick={() => setShowNowPlayingView(false)}
 				className='absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-zinc-100/10 transition-transform active:scale-90 active:opacity-50'
 			>
@@ -128,12 +127,11 @@ export function NowPlayingView() {
 
 				<hgroup>
 					<h1 className='font-medium text-2xl'>{track.title}</h1>
-					<button type='button' onClick={() => setShowNowPlayingView(false)}>
+					<button onClick={() => setShowNowPlayingView(false)}>
 						<UserListing user={track.user} className='mt-4' />
 					</button>
 				</hgroup>
 
-				{/** biome-ignore lint/a11y/useMediaCaption: dont care lmao */}
 				<audio
 					key={nowPlaying.id}
 					className='h-10'

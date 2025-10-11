@@ -91,7 +91,6 @@ function NowPlayingBar() {
 		<div className='max-md:border-zinc-100/10 max-md:border-b'>
 			<div className='mx-auto grid max-w-xl grid-cols-[1fr_auto] items-center gap-4 p-4'>
 				<button
-					type='button'
 					onClick={() => showNowPlayingView(true)}
 					className='flex gap-4 truncate text-left'
 				>

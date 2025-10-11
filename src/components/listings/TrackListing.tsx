@@ -14,7 +14,6 @@ export function TrackListing({ track, inAlbum = false }: TrackListingProps) {
 
 	return (
 		<button
-			type='button'
 			onClick={() => {
 				setNowPlaying(track)
 

@@ -30,10 +30,10 @@ export interface ButtonProps extends ComponentProps<'button'> {
 }
 
 export function Button({
+	className,
 	variant,
 	size,
-	className,
-	asChild,
+	asChild = false,
 	...props
 }: ButtonProps) {
 	const Comp = asChild ? Slot : 'button'
