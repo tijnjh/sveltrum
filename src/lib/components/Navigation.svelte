@@ -1,12 +1,3 @@
-<script module lang="ts">
-	import type { Snippet } from 'svelte'
-
-	export interface NavigationProps {
-		show: boolean
-		children: Snippet
-	}
-</script>
-
 <script lang="ts">
 	import { page } from '$app/state'
 	import { global } from '$lib/global.svelte'
@@ -16,7 +7,7 @@
 	import { haptic } from 'ios-haptics'
 	import { MediaQuery } from 'svelte/reactivity'
 
-	let { show = $bindable(), children }: NavigationProps = $props()
+	let { children } = $props()
 
 	const StatusIcon = $derived(global.isPaused ? PlayIcon : PauseIcon)
 
@@ -75,7 +66,7 @@
 				class="mx-auto grid max-w-xl grid-cols-[1fr_auto] items-center gap-4 p-4"
 			>
 				<button
-					onclick={() => (show = true)}
+					onclick={() => (global.showNowPlayingView = true)}
 					class="flex gap-4 truncate text-left"
 				>
 					<ListingThumbnail src={global.nowPlaying.artwork_url} alt="" />

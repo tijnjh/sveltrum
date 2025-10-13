@@ -8,18 +8,16 @@
 	const { children } = $props()
 
 	const queryClient = new QueryClient()
-
-	let showNowPlayingView = $state(false)
 </script>
 
 <QueryClientProvider client={queryClient}>
 	<svelte:boundary>
-		<Navigation bind:show={showNowPlayingView}>
+		<Navigation>
 			<div class="mb-64">
 				{@render children()}
 			</div>
 		</Navigation>
-		<NowPlayingView bind:show={showNowPlayingView} />
+		<NowPlayingView />
 
 		{#snippet pending()}
 			<Spinner />

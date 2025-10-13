@@ -11,8 +11,6 @@
 	import { cn } from 'cnfn'
 	import Hls from 'hls.js'
 
-	let { show = $bindable() }: { show: boolean } = $props()
-
 	$effect(() => {
 		if (global.nowPlaying) {
 			global.isPaused = true
@@ -48,7 +46,7 @@
 		})
 
 	onNavigate(() => {
-		show = false
+		global.showNowPlayingView = false
 	})
 </script>
 
@@ -56,7 +54,7 @@
 	onkeydown={(e) => {
 		if (e.key === 'Escape') {
 			e.preventDefault()
-			show = false
+			global.showNowPlayingView = false
 		}
 	}}
 />
@@ -67,11 +65,11 @@
 	<div
 		class={cn(
 			'fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll bg-zinc-700/75 p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2',
-			show ? 'top-0' : 'top-[100%]',
+			global.showNowPlayingView ? 'top-0' : 'top-[100%]',
 		)}
 	>
 		<button
-			onclick={() => (show = false)}
+			onclick={() => (global.showNowPlayingView = false)}
 			class="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-zinc-100/10 transition-transform active:scale-90 active:opacity-50"
 		>
 			<ChevronDownIcon size={16} strokeWidth={3} />
