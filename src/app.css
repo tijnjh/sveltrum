@@ -1,16 +1,16 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 * {
-  @apply touch-manipulation;
+	@apply touch-manipulation;
 }
 
 body,
 html {
-  color-scheme: dark;
-  @apply bg-zinc-800;
+	color-scheme: dark;
+	@apply bg-zinc-800;
 }
 
 button,
 input {
-  @apply focus:outline-0 focus-visible:ring-2 focus-visible:ring-blue-500;
+	@apply focus:outline-0 focus-visible:ring-2 focus-visible:ring-blue-500;
 }
