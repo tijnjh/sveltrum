@@ -14,6 +14,7 @@
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
+	import { whenInView } from '$lib/utils'
 	import { SearchIcon } from '@lucide/svelte'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { Debounced } from 'runed'
@@ -133,6 +134,10 @@
 			onclick={() => {
 				query.fetchNextPage()
 			}}
+			{@attach whenInView(() => {
+				if (query.isFetching) return
+				query.fetchNextPage()
+			})}
 		>
 			Load more
 		</Button>

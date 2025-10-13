@@ -14,6 +14,7 @@
 	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
+	import { whenInView } from '$lib/utils'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { useSearchParams } from 'runed/kit'
 	import { z } from 'zod'
@@ -107,6 +108,10 @@
 			onclick={() => {
 				query.fetchNextPage()
 			}}
+			{@attach whenInView(() => {
+				if (query.isFetching) return
+				query.fetchNextPage()
+			})}
 		>
 			Load more
 		</Button>

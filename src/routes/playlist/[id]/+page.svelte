@@ -7,40 +7,37 @@
 	import Main from '$lib/components/Main.svelte'
 	import Spinner from '$lib/components/Spinner.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
-	import type { Track } from '$lib/schemas/track'
+	import { whenInView } from '$lib/utils'
+	import { createInfiniteQuery } from '@tanstack/svelte-query'
+	import { IsInViewport, watch } from 'runed'
 
 	const id = Number(page.params!.id)
 
 	const playlist = await getPlaylistById(id)
 
-	let isLoading = $state(false)
+	const query = createInfiniteQuery(() => ({
+		queryKey: ['tracks', playlist.tracks],
+		queryFn: ({ pageParam = 0 }) =>
+			getTracksByIds({
+				ids: playlist.tracks?.map((track) => track.id) ?? [],
+				index: pageParam,
+			}),
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage.hasMore ? allPages.length : undefined,
+	}))
 
-	let tracks = $state<Track[]>([])
+	let loadMoreButton = $state<HTMLElement>()!
+	const inViewport = new IsInViewport(() => loadMoreButton)
 
-	let currentIndex = $state(0)
-
-	let hasMoreTracks = $state(true)
-
-	async function doFetch() {
-		if (!playlist.tracks) {
-			return
-		}
-
-		isLoading = true
-
-		const { tracks: newTracks, hasMore } = await getTracksByIds({
-			ids: playlist.tracks.map(({ id }) => id),
-			index: currentIndex,
-		})
-
-		hasMoreTracks = hasMore
-
-		tracks = [...tracks, ...newTracks]
-
-		isLoading = false
-	}
-
-	doFetch()
+	watch(
+		() => inViewport.current,
+		() => {
+			if (inViewport.current && query.hasNextPage && !query.isFetching) {
+				query.fetchNextPage()
+			}
+		},
+	)
 </script>
 
 <svelte:head>
@@ -59,23 +56,28 @@
 		{playlist.track_count} track{playlist.track_count === 1 ? '' : 's'}
 	</h2>
 
-	{#each tracks as track (track.id)}
-		<TrackListing {track} inAlbum={playlist.is_album} />
+	{#each query.data?.pages as page (page)}
+		{#each page.tracks as track (track.id)}
+			<TrackListing {track} inAlbum={playlist.is_album} />
+		{/each}
 	{:else}
-		{#if !isLoading}
+		{#if !query.isLoading}
 			<span class="mt-4 text-zinc-100/25 text-lg"> Nothing here... </span>
 		{/if}
 	{/each}
 
-	{#if isLoading}
+	{#if query.isLoading}
 		<Spinner />
-	{:else if hasMoreTracks}
+	{:else if query.hasNextPage}
 		<Button
 			class="mt-8 w-full"
 			onclick={() => {
-				currentIndex++
-				doFetch()
+				query.fetchNextPage()
 			}}
+			{@attach whenInView(() => {
+				if (query.isFetching) return
+				query.fetchNextPage()
+			})}
 		>
 			Load more
 		</Button>
