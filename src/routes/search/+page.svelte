@@ -14,25 +14,23 @@
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
 	import { SearchIcon } from '@lucide/svelte'
-	import { parseAsString, useQueryState } from 'nuqs-svelte'
+	import { useSearchParams } from 'runed/kit'
 	import { onMount } from 'svelte'
+	import { z } from 'zod'
 
 	let isLoading = $state(false)
 
 	let results = $state<(Track | Playlist | User)[]>([])
 
-	const query = useQueryState('q', { shallow: false, history: 'push' })
-
-	const selectedKind = useQueryState(
-		'kind',
-		parseAsString.withDefault('tracks').withOptions({
-			shallow: false,
-			history: 'push',
+	const params = useSearchParams(
+		z.object({
+			query: z.string().default(''),
+			kind: z.enum(['tracks', 'playlists', 'users']).default('tracks'),
 		}),
 	)
 
 	onMount(() => {
-		if (query) {
+		if (params.query) {
 			doFetch()
 		}
 	})
@@ -53,16 +51,16 @@
 	let hasMoreResults = $state(false)
 
 	async function doFetch() {
-		if (!query.current) {
+		if (!params.query) {
 			return
 		}
 
 		isLoading = true
 
 		const { results: newResults, hasMore } = await searchFor(
-			selectedKind.current ?? 'tracks',
+			params.kind ?? 'tracks',
 		)({
-			query: query.current,
+			query: params.query,
 			index: currentIndex,
 		})
 
@@ -81,7 +79,7 @@
 </script>
 
 <svelte:head>
-	<title>results for '{query.current}' &bull; sveltrum</title>
+	<title>results for '{params.query}' &bull; sveltrum</title>
 </svelte:head>
 
 <div
@@ -90,7 +88,7 @@
 	<form {onsubmit} class="mx-auto flex w-full max-w-xl gap-2">
 		<input
 			type="text"
-			bind:value={query.current}
+			bind:value={params.query}
 			class="h-10 grow rounded-full bg-zinc-700 px-4"
 			placeholder="Search"
 		/>
@@ -100,13 +98,14 @@
 		</Button>
 	</form>
 	<div class="mx-auto flex w-full max-w-xl gap-2">
-		{#each ['tracks', 'playlists', 'users'] as kind (kind)}
-			{#key selectedKind.current}
+		{#each ['tracks', 'playlists', 'users'] as const as kind (kind)}
+			{#key params.kind}
 				<Button
-					variant={selectedKind.current === kind ? 'primary' : 'secondary'}
+					variant={params.kind === kind ? 'primary' : 'secondary'}
 					class="capitalize"
 					onclick={() => {
-						selectedKind.current = kind
+						params.kind = kind
+						params.update({ kind })
 						results = []
 						currentIndex = 0
 						doFetch()
@@ -122,11 +121,11 @@
 <Main>
 	<div class="flex flex-col gap-4">
 		{#each results as result (result.id)}
-			{#if selectedKind.current === 'tracks'}
+			{#if params.kind === 'tracks'}
 				<TrackListing track={result as Track} />
-			{:else if selectedKind.current === 'playlists'}
+			{:else if params.kind === 'playlists'}
 				<PlaylistListing playlist={result as Playlist} />
-			{:else if selectedKind.current === 'users'}
+			{:else if params.kind === 'users'}
 				<UserListing user={result as User} />
 			{/if}
 		{:else}
@@ -138,7 +137,7 @@
 
 	{#if isLoading}
 		<Spinner />
-	{:else if query && hasMoreResults}
+	{:else if params.query && hasMoreResults}
 		<Button
 			class="mt-8 w-full"
 			onclick={() => {

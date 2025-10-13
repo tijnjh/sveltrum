@@ -20,8 +20,8 @@
 		"cnfn": "^0.0.2",
 		"hls.js": "^1.6.12",
 		"ios-haptics": "^0.1.4",
-		"nuqs-svelte": "^1.2.2",
 		"ofetch": "^1.4.1",
+		"runed": "^0.34.0",
 		"zod": "^4.1.12"
 	},
 	"devDependencies": {

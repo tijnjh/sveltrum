@@ -11,17 +11,16 @@
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
-	import { parseAsString, useQueryState } from 'nuqs-svelte'
+	import { useSearchParams } from 'runed/kit'
+	import { z } from 'zod'
 
 	const id = Number(page.params!.id)
 
 	const user = await getUserById(id)
 
-	const selectedKind = useQueryState(
-		'kind',
-		parseAsString.withDefault('tracks').withOptions({
-			shallow: false,
-			history: 'push',
+	const params = useSearchParams(
+		z.object({
+			kind: z.enum(['tracks', 'playlists']).default('tracks'),
 		}),
 	)
 
@@ -45,7 +44,7 @@
 		isLoading = true
 
 		const { results: newResults, hasMore } = await getUser(
-			selectedKind.current ?? 'tracks',
+			params.kind ?? 'tracks',
 		)({
 			id,
 			index: currentIndex,
@@ -73,12 +72,12 @@
 	/>
 
 	<div class="flex gap-2">
-		{#each ['tracks', 'playlists'] as kind (kind)}
+		{#each ['tracks', 'playlists'] as const as kind (kind)}
 			<Button
-				variant={selectedKind.current === kind ? 'primary' : 'secondary'}
+				variant={params.kind === kind ? 'primary' : 'secondary'}
 				class="capitalize"
 				onclick={() => {
-					selectedKind.current = kind
+					params.kind = kind
 					results = []
 					currentIndex = 0
 					doFetch()
@@ -91,9 +90,9 @@
 
 	<div class="flex flex-col gap-4">
 		{#each results as result (result.id)}
-			{#if selectedKind.current === 'tracks'}
+			{#if params.kind === 'tracks'}
 				<TrackListing track={result as Track} />
-			{:else if selectedKind.current === 'playlists'}
+			{:else if params.kind === 'playlists'}
 				<PlaylistListing playlist={result as Playlist} />
 			{/if}
 		{:else}
