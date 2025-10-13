@@ -1,16 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state'
-	import { getUserById } from '$lib/api/get-by-id.remote'
-	import { getUserPlaylists, getUserTracks } from '$lib/api/user.remote'
+	import {
+		getUserById,
+		getUserPlaylists,
+		getUserTracks,
+	} from '$lib/api/user.remote'
 	import Button from '$lib/components/Button.svelte'
 	import HeroSection from '$lib/components/HeroSection.svelte'
 	import Main from '$lib/components/Main.svelte'
 	import Spinner from '$lib/components/Spinner.svelte'
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
+	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
-	import type { User } from '$lib/schemas/user'
+	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { useSearchParams } from 'runed/kit'
 	import { z } from 'zod'
 
@@ -24,39 +28,32 @@
 		}),
 	)
 
-	let isLoading = $state(false)
+	const query = createInfiniteQuery(() => ({
+		queryKey: ['user', id, params.kind],
+		queryFn: async ({ pageParam = 0 }) => {
+			const data = {
+				id: Number(id),
+				offset: pageParam * paginated_limit,
+				limit: paginated_limit,
+			}
 
-	let results = $state<(Track | Playlist | User)[]>([])
+			let results: (Track | Playlist)[] = []
 
-	function getUser(kind: string) {
-		switch (kind) {
-			case 'playlists':
-				return getUserPlaylists
-			default:
-				return getUserTracks
-		}
-	}
+			switch (params.kind) {
+				case 'playlists':
+					results = await getUserPlaylists(data)
+					break
+				default:
+					results = await getUserTracks(data)
+					break
+			}
 
-	let currentIndex = $state(0)
-	let hasMoreResults = $state(true)
-
-	async function doFetch() {
-		isLoading = true
-
-		const { results: newResults, hasMore } = await getUser(
-			params.kind ?? 'tracks',
-		)({
-			id,
-			index: currentIndex,
-		})
-
-		hasMoreResults = hasMore
-
-		results = [...results, ...newResults]
-		isLoading = false
-	}
-
-	doFetch()
+			return results
+		},
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage.length < paginated_limit ? allPages.length : undefined,
+	}))
 </script>
 
 <svelte:head>
@@ -78,9 +75,7 @@
 				class="capitalize"
 				onclick={() => {
 					params.kind = kind
-					results = []
-					currentIndex = 0
-					doFetch()
+					query.refetch()
 				}}
 			>
 				{kind}
@@ -89,27 +84,28 @@
 	</div>
 
 	<div class="flex flex-col gap-4">
-		{#each results as result (result.id)}
-			{#if params.kind === 'tracks'}
-				<TrackListing track={result as Track} />
-			{:else if params.kind === 'playlists'}
-				<PlaylistListing playlist={result as Playlist} />
-			{/if}
+		{#each query.data?.pages as page (page)}
+			{#each page as result (result.id)}
+				{#if params.kind === 'tracks'}
+					<TrackListing track={result as Track} />
+				{:else if params.kind === 'playlists'}
+					<PlaylistListing playlist={result as Playlist} />
+				{/if}
+			{/each}
 		{:else}
-			{#if !isLoading}
+			{#if !query.isLoading}
 				<span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
 			{/if}
 		{/each}
 	</div>
 
-	{#if isLoading}
+	{#if query.isLoading}
 		<Spinner />
-	{:else if hasMoreResults}
+	{:else if query.hasNextPage}
 		<Button
 			class="mt-8 w-full"
 			onclick={() => {
-				currentIndex++
-				doFetch()
+				query.fetchNextPage()
 			}}
 		>
 			Load more

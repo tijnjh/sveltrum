@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state'
-	import { getPlaylistById, getTracksByIds } from '$lib/api/get-by-id.remote'
+	import { getPlaylistById } from '$lib/api/playlist.remote'
+	import { getTracksByIds } from '$lib/api/tracks.remote'
 	import Button from '$lib/components/Button.svelte'
 	import HeroSection from '$lib/components/HeroSection.svelte'
 	import Main from '$lib/components/Main.svelte'

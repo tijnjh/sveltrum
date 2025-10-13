@@ -1,7 +1,5 @@
 import { query } from '$app/server'
-import { playlistSchema } from '$lib/schemas/playlist'
 import { trackSchema } from '$lib/schemas/track'
-import { userSchema } from '$lib/schemas/user'
 import { $api, chunked } from './utils'
 import { z } from 'zod'
 
@@ -9,20 +7,6 @@ export const getTrackById = query(z.number(), (id) =>
 	$api({
 		path: `/tracks/${id}`,
 		schema: trackSchema,
-	}),
-)
-
-export const getPlaylistById = query(z.number(), (id) =>
-	$api({
-		path: `/playlists/${id}`,
-		schema: playlistSchema,
-	}),
-)
-
-export const getUserById = query(z.number(), (id) =>
-	$api({
-		path: `/users/${id}`,
-		schema: userSchema,
 	}),
 )
 

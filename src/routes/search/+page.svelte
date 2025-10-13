@@ -10,85 +10,76 @@
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
 	import UserListing from '$lib/components/listings/UserListing.svelte'
+	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
 	import { SearchIcon } from '@lucide/svelte'
+	import { createInfiniteQuery } from '@tanstack/svelte-query'
+	import { Debounced } from 'runed'
 	import { useSearchParams } from 'runed/kit'
-	import { onMount } from 'svelte'
 	import { z } from 'zod'
-
-	let isLoading = $state(false)
-
-	let results = $state<(Track | Playlist | User)[]>([])
 
 	const params = useSearchParams(
 		z.object({
-			query: z.string().default(''),
+			q: z.string().default(''),
 			kind: z.enum(['tracks', 'playlists', 'users']).default('tracks'),
 		}),
 	)
 
-	onMount(() => {
-		if (params.query) {
-			doFetch()
-		}
-	})
+	const debouncedQ = new Debounced(() => params.q, 500)
 
-	function searchFor(kind: string) {
-		switch (kind) {
-			case 'playlists':
-				return searchPlaylists
-			case 'users':
-				return searchUsers
-			default:
-				return searchTracks
-		}
-	}
+	const query = createInfiniteQuery(() => ({
+		queryKey: ['search', debouncedQ.current, params.kind],
+		queryFn: async ({ pageParam = 0 }) => {
+			if (!debouncedQ.current) return []
 
-	let currentIndex = $state(0)
+			const data = {
+				query: debouncedQ.current,
+				offset: pageParam * paginated_limit,
+				limit: paginated_limit,
+			}
 
-	let hasMoreResults = $state(false)
+			let results: (Track | Playlist | User)[] = []
 
-	async function doFetch() {
-		if (!params.query) {
-			return
-		}
+			switch (params.kind) {
+				case 'playlists':
+					results = await searchPlaylists(data)
+					break
 
-		isLoading = true
+				case 'users':
+					results = await searchUsers(data)
+					break
+				default:
+					results = await searchTracks(data)
+					break
+			}
 
-		const { results: newResults, hasMore } = await searchFor(
-			params.kind ?? 'tracks',
-		)({
-			query: params.query,
-			index: currentIndex,
-		})
-
-		hasMoreResults = hasMore
-
-		results = [...results, ...newResults]
-		isLoading = false
-	}
-
-	function onsubmit(e: Event) {
-		e.preventDefault()
-		results = []
-		currentIndex = 0
-		doFetch()
-	}
+			return results as (Track | Playlist | User)[]
+		},
+		initialPageParam: 0,
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage.length < paginated_limit ? allPages.length : undefined,
+	}))
 </script>
 
 <svelte:head>
-	<title>results for '{params.query}' &bull; sveltrum</title>
+	<title>results for '{debouncedQ.current}' &bull; sveltrum</title>
 </svelte:head>
 
 <div
 	class="sticky inset-x-0 top-0 z-50 flex w-full flex-col gap-4 bg-zinc-700/75 p-4 backdrop-blur-lg"
 >
-	<form {onsubmit} class="mx-auto flex w-full max-w-xl gap-2">
+	<form
+		onsubmit={(e) => {
+			e.preventDefault()
+			query.refetch()
+		}}
+		class="mx-auto flex w-full max-w-xl gap-2"
+	>
 		<input
 			type="text"
-			bind:value={params.query}
+			bind:value={params.q}
 			class="h-10 grow rounded-full bg-zinc-700 px-4"
 			placeholder="Search"
 		/>
@@ -105,10 +96,7 @@
 					class="capitalize"
 					onclick={() => {
 						params.kind = kind
-						params.update({ kind })
-						results = []
-						currentIndex = 0
-						doFetch()
+						query.refetch()
 					}}
 				>
 					{kind}
@@ -120,29 +108,30 @@
 
 <Main>
 	<div class="flex flex-col gap-4">
-		{#each results as result (result.id)}
-			{#if params.kind === 'tracks'}
-				<TrackListing track={result as Track} />
-			{:else if params.kind === 'playlists'}
-				<PlaylistListing playlist={result as Playlist} />
-			{:else if params.kind === 'users'}
-				<UserListing user={result as User} />
-			{/if}
+		{#each query.data?.pages as page (page)}
+			{#each page as result (result.id)}
+				{#if params.kind === 'tracks'}
+					<TrackListing track={result as Track} />
+				{:else if params.kind === 'playlists'}
+					<PlaylistListing playlist={result as Playlist} />
+				{:else if params.kind === 'users'}
+					<UserListing user={result as User} />
+				{/if}
+			{/each}
 		{:else}
-			{#if !isLoading}
+			{#if !query.isLoading}
 				<span class="mt-4 text-zinc-100/25 text-lg"> Nothing here... </span>
 			{/if}
 		{/each}
 	</div>
 
-	{#if isLoading}
+	{#if query.isLoading}
 		<Spinner />
-	{:else if params.query && hasMoreResults}
+	{:else if debouncedQ.current && query.hasNextPage}
 		<Button
 			class="mt-8 w-full"
 			onclick={() => {
-				currentIndex++
-				doFetch()
+				query.fetchNextPage()
 			}}
 		>
 			Load more

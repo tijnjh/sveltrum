@@ -1,5 +1,5 @@
 import { query } from '$app/server'
-import { getTrackById } from './get-by-id.remote'
+import { getTrackById } from './tracks.remote'
 import { getClientId } from './utils'
 import { ofetch } from 'ofetch'
 import { z } from 'zod'

@@ -2,8 +2,10 @@
 	import { getSelections } from '$lib/api/discovery.remote'
 	import Button from '$lib/components/Button.svelte'
 	import Main from '$lib/components/Main.svelte'
-	import Spinner from '$lib/components/Spinner.svelte'
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
+	import UserListing from '$lib/components/listings/UserListing.svelte'
+
+	const selections = await getSelections()
 </script>
 
 <Main>
@@ -16,15 +18,15 @@
 
 	<h2 class="text-2xl font-medium">Trending playlists</h2>
 
-	{#await getSelections()}
-		<Spinner />
-	{:then selections}
-		{#each selections as selection (selection.items.collection[0].id)}
-			{#each selection.items.collection as playlist (playlist.id)}
-				<PlaylistListing {playlist} />
-			{/each}
-		{:else}
-			<span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
+	{#each selections as selection (selection.items)}
+		{#each selection.items.collection as item (item.id)}
+			{#if item.kind === 'playlist'}
+				<PlaylistListing playlist={item} />
+			{:else if item.kind === 'user'}
+				<UserListing user={item} />
+			{/if}
 		{/each}
-	{/await}
+	{:else}
+		<span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
+	{/each}
 </Main>

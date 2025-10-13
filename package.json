@@ -17,6 +17,7 @@
 		"lint": "prettier --check . && eslint ."
 	},
 	"dependencies": {
+		"@tanstack/svelte-query": "^6.0.0",
 		"cnfn": "^0.0.2",
 		"hls.js": "^1.6.12",
 		"ios-haptics": "^0.1.4",

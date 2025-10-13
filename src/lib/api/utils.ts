@@ -72,20 +72,3 @@ export function chunked<T>(
 	const end = start + size
 	return arr.slice(start, end)
 }
-
-export function withPagination<TArgs extends Record<string, Decodable>, T>(
-	fetcher: (opts: TArgs & { limit: number; offset: number }) => Promise<T[]>,
-) {
-	return async ({
-		limit = 32,
-		index = 0,
-		...rest
-	}: TArgs & { limit?: number; index?: number }) => {
-		const offset = index * limit
-		const results = await fetcher({ ...(rest as TArgs), limit, offset })
-		return {
-			results,
-			hasMore: results.length === limit,
-		}
-	}
-}
