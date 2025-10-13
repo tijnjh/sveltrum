@@ -1,18 +1,17 @@
 import { query } from '$app/server'
-import { playlist } from '$lib/schemas/playlist'
-import { track } from '$lib/schemas/track'
-import { user } from '$lib/schemas/user'
+import { playlistSchema } from '$lib/schemas/playlist'
+import { trackSchema } from '$lib/schemas/track'
+import { userSchema } from '$lib/schemas/user'
 import { $api, withPagination } from './utils'
-import type { Type } from 'arktype'
-import { type } from 'arktype'
+import { z } from 'zod'
 
-const searchSchema = type({
-	query: 'string',
-	limit: 'number?',
-	index: 'number?',
+const searchSchema = z.object({
+	query: z.string(),
+	limit: z.number().optional(),
+	index: z.number().optional(),
 })
 
-function baseSearch<S extends Type<T>, T = type.infer<S>>(
+function baseSearch<S extends z.ZodType<T>, T = z.infer<S>>(
 	kind: string,
 	schema: S,
 ) {
@@ -22,7 +21,7 @@ function baseSearch<S extends Type<T>, T = type.infer<S>>(
 			const res = await $api({
 				path: `/search/${kind}`,
 				params: { q: query, limit, offset },
-				schema: type({
+				schema: z.object({
 					collection: schema.array(),
 				}),
 			})
@@ -31,6 +30,6 @@ function baseSearch<S extends Type<T>, T = type.infer<S>>(
 	)
 }
 
-export const searchTracks = baseSearch('tracks', track)
-export const searchPlaylists = baseSearch('playlists', playlist)
-export const searchUsers = baseSearch('users', user)
+export const searchTracks = baseSearch('tracks', trackSchema)
+export const searchPlaylists = baseSearch('playlists', playlistSchema)
+export const searchUsers = baseSearch('users', userSchema)

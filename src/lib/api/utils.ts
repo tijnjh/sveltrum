@@ -1,6 +1,5 @@
-import type { Type } from 'arktype'
-import { type } from 'arktype'
 import { ofetch } from 'ofetch'
+import { z } from 'zod'
 
 type Decodable =
 	| string
@@ -11,7 +10,7 @@ type Decodable =
 	| Decodable[]
 	| { [key: string]: Decodable }
 
-export async function $api<S extends Type, T = type.infer<S>>({
+export async function $api<S extends z.ZodTypeAny, T = z.infer<S>>({
 	path,
 	params,
 	schema,
@@ -29,10 +28,10 @@ export async function $api<S extends Type, T = type.infer<S>>({
 
 	if (!schema) return response as T
 
-	const out = schema(response)
+	const out = schema.parse(response)
 
-	if (out instanceof type.errors) {
-		console.error(out.summary)
+	if (out instanceof z.ZodError) {
+		console.error(z.prettifyError(out))
 		throw new Error('failed to pass validation')
 	}
 

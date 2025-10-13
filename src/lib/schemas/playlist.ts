@@ -1,45 +1,52 @@
-import { track } from './track'
-import { user } from './user'
-import { type } from 'arktype'
+import { trackSchema } from './track'
+import { userSchema } from './user'
+import { z } from 'zod'
 
-export const playlist = type({
-	'+': 'reject',
-	artwork_url: 'string.url | null',
-	created_at: 'string.date',
-	'description?': 'string | null',
-	duration: 'number',
-	embeddable_by: "'all'| 'none'| 'me'?",
-	genre: 'string?',
-	id: 'number',
-	kind: "'playlist'",
-	'label_name?': 'string | null',
-	last_modified: 'string.date',
-	license: 'string?',
-	likes_count: 'number?',
-	managed_by_feeds: 'boolean',
-	permalink: 'string',
-	permalink_url: 'string.url',
-	public: 'boolean',
-	'purchase_title?': 'string | null | undefined',
-	'purchase_url?': 'string.url | null | undefined',
-	release_date: 'string | null',
-	reposts_count: 'number',
-	secret_token: 'string | null',
-	sharing: "'public' | 'private'",
-	tag_list: 'string?',
-	title: 'string',
-	uri: 'string.url',
-	user_id: 'number',
-	is_album: 'boolean',
-	published_at: 'string.date | null',
-	display_date: 'string.date',
-	user,
-	set_type: 'string',
-	track_count: 'number',
-	tracks: track
-		.or(track.pick('id', 'kind', 'monetization_model', 'policy'))
+export const playlistSchema = z.strictObject({
+	artwork_url: z.string().nullable(),
+	created_at: z.iso.datetime(),
+	description: z.string().nullish(),
+	duration: z.number(),
+	embeddable_by: z.enum(['all', 'none', 'me']).optional(),
+	genre: z.string().nullish(),
+	id: z.number(),
+	kind: z.literal('playlist'),
+	label_name: z.string().nullish(),
+	last_modified: z.iso.datetime(),
+	license: z.string().optional(),
+	likes_count: z.number().nullable(),
+	managed_by_feeds: z.boolean(),
+	permalink: z.string(),
+	permalink_url: z.url(),
+	public: z.boolean(),
+	purchase_title: z.string().nullish(),
+	purchase_url: z.url().nullish(),
+	release_date: z.string().nullable(),
+	reposts_count: z.number(),
+	secret_token: z.string().nullable(),
+	sharing: z.enum(['public', 'private']),
+	tag_list: z.string().optional(),
+	title: z.string(),
+	uri: z.url(),
+	user_id: z.number(),
+	is_album: z.boolean(),
+	published_at: z.iso.datetime().nullable(),
+	display_date: z.iso.datetime(),
+	user: userSchema,
+	set_type: z.string(),
+	track_count: z.number(),
+	tracks: z
+		.union([
+			trackSchema,
+			trackSchema.pick({
+				id: true,
+				kind: true,
+				monetization_model: true,
+				policy: true,
+			}),
+		])
 		.array()
 		.optional(),
 })
 
-export type Playlist = type.infer<typeof playlist>
+export type Playlist = z.output<typeof playlistSchema>

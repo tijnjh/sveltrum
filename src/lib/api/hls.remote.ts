@@ -1,10 +1,10 @@
 import { query } from '$app/server'
 import { getTrackById } from './get-by-id.remote'
 import { getClientId } from './utils'
-import { type } from 'arktype'
 import { ofetch } from 'ofetch'
+import { z } from 'zod'
 
-export const getTrackSource = query(type('number'), async (trackId) => {
+export const getTrackSource = query(z.number(), async (trackId) => {
 	const track = await getTrackById(trackId)
 	const clientId = await getClientId()
 
