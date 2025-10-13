@@ -19,9 +19,9 @@
 	import { useSearchParams } from 'runed/kit'
 	import { z } from 'zod'
 
-	const id = Number(page.params!.id)
+	const userId = z.coerce.number().parse(page.params.id)
 
-	const user = await getUserById(id)
+	const user = await getUserById(userId)
 
 	const params = useSearchParams(
 		z.object({
@@ -30,10 +30,10 @@
 	)
 
 	const query = createInfiniteQuery(() => ({
-		queryKey: ['user', id, params.kind],
+		queryKey: ['user', userId, params.kind],
 		queryFn: async ({ pageParam = 0 }) => {
 			const data = {
-				id: Number(id),
+				id: userId,
 				offset: pageParam * paginated_limit,
 				limit: paginated_limit,
 			}

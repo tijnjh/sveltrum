@@ -9,11 +9,11 @@
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
 	import { whenInView } from '$lib/utils'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
-	import { IsInViewport, watch } from 'runed'
+	import { z } from 'zod'
 
-	const id = Number(page.params!.id)
+	const playlistId = z.coerce.number().parse(page.params.id)
 
-	const playlist = await getPlaylistById(id)
+	const playlist = await getPlaylistById(playlistId)
 
 	const query = createInfiniteQuery(() => ({
 		queryKey: ['tracks', playlist.tracks],
@@ -26,18 +26,6 @@
 		getNextPageParam: (lastPage, allPages) =>
 			lastPage.hasMore ? allPages.length : undefined,
 	}))
-
-	let loadMoreButton = $state<HTMLElement>()!
-	const inViewport = new IsInViewport(() => loadMoreButton)
-
-	watch(
-		() => inViewport.current,
-		() => {
-			if (inViewport.current && query.hasNextPage && !query.isFetching) {
-				query.fetchNextPage()
-			}
-		},
-	)
 </script>
 
 <svelte:head>
