@@ -41,7 +41,7 @@
 		...props
 	}: ButtonProps = $props()
 
-	const classes = buttonVariants({ variant, size })
+	const classes = $derived(buttonVariants({ variant, size }))
 </script>
 
 <Button.Root class={classes.base({ class: cn(className) })} {...props}>
