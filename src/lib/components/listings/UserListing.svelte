@@ -4,7 +4,13 @@
 	import { BadgeCheckIcon } from '@lucide/svelte'
 	import { cn, type ClassValue } from 'cnfn'
 
-	const { user, class: className }: { user: User; class: ClassValue } = $props()
+	const {
+		user,
+		class: className,
+	}: {
+		user: User
+		class?: ClassValue
+	} = $props()
 </script>
 
 <a
