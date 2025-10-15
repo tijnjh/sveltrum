@@ -1,6 +1,7 @@
 import { query } from '$app/server'
+import { paginated_limit } from '$lib/constants'
 import { trackSchema } from '$lib/schemas/track'
-import { $api, chunked, getPermalinkPath } from './utils'
+import { $api, getPermalinkPath } from './utils'
 import { z } from 'zod'
 
 export const resolveTrack = query(
@@ -22,28 +23,13 @@ export const getTrackById = query(z.number(), (id) =>
 	}),
 )
 
-export const getTracksByIds = query(
-	z.object({
-		ids: z.number().array(),
-		size: z.number().optional(),
-		index: z.number().optional(),
+export const getTracksByIds = query(z.array(z.number()), (ids) =>
+	$api({
+		path: `/tracks`,
+		params: {
+			ids: ids.join(','),
+			limit: paginated_limit,
+		},
+		schema: z.array(trackSchema),
 	}),
-	async ({ ids, size = 32, index = 0 }) => {
-		const chunkedIds = chunked(ids, { size, index })
-
-		if (!chunkedIds.length) {
-			return { tracks: [], hasMore: false }
-		}
-
-		const tracks = await $api({
-			path: `/tracks`,
-			params: { ids: chunkedIds.join(',') },
-			schema: z.array(trackSchema),
-		})
-
-		return {
-			tracks,
-			hasMore: (index + 1) * size < ids.length,
-		}
-	},
 )

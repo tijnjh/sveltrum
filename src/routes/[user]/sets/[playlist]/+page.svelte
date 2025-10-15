@@ -3,11 +3,9 @@
 	import { resolvePlaylist } from '$lib/api/playlist.remote'
 	import { getTracksByIds } from '$lib/api/track.remote'
 	import HeroSection from '$lib/components/HeroSection.svelte'
+	import InfiniteQueryView from '$lib/components/InfiniteQueryView.svelte'
 	import Main from '$lib/components/Main.svelte'
-	import Spinner from '$lib/components/Spinner.svelte'
-	import TrackListing from '$lib/components/listings/TrackListing.svelte'
-	import Button from '$lib/components/ui/Button.svelte'
-	import { whenInView } from '$lib/utils'
+	import { paginated_limit } from '$lib/constants'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 
 	const playlist = await resolvePlaylist({
@@ -17,14 +15,23 @@
 
 	const query = createInfiniteQuery(() => ({
 		queryKey: ['playlist-tracks', playlist.id],
-		queryFn: ({ pageParam = 0 }) =>
-			getTracksByIds({
-				ids: playlist.tracks?.map((track) => track.id) ?? [],
-				index: pageParam,
-			}),
+		queryFn: ({ pageParam = 0 }) => {
+			const allIds = playlist.tracks?.map((track) => track.id) ?? []
+
+			const startIdx = pageParam * paginated_limit
+			const endIdx = startIdx + paginated_limit
+			const idsChunk = allIds.slice(startIdx, endIdx)
+
+			return getTracksByIds(idsChunk)
+		},
 		initialPageParam: 0,
-		getNextPageParam: (lastPage, allPages) =>
-			lastPage.hasMore ? allPages.length : undefined,
+		getNextPageParam: (lastPage, allPages) => {
+			// kill me bro
+			const allIds = playlist.tracks?.map((track) => track.id) ?? []
+			const totalChunks = Math.ceil(allIds.length / paginated_limit)
+
+			return allPages.length < totalChunks ? allPages.length : undefined
+		},
 	}))
 </script>
 
@@ -43,35 +50,6 @@
 	{/snippet}
 
 	{#snippet right()}
-		<h2 class="mt-4 text-2xl font-medium">
-			{playlist.track_count} track{playlist.track_count === 1 ? '' : 's'}
-		</h2>
-
-		{#each query.data?.pages as page (page)}
-			{#each page.tracks as track (track.id)}
-				<TrackListing {track} inAlbum={playlist.is_album} />
-			{/each}
-		{:else}
-			{#if !query.isLoading}
-				<span class="mt-4 text-zinc-100/25 text-lg"> Nothing here... </span>
-			{/if}
-		{/each}
-
-		{#if query.isLoading}
-			<Spinner />
-		{:else if query.hasNextPage}
-			<Button
-				class="mt-8 w-full"
-				onclick={() => {
-					query.fetchNextPage()
-				}}
-				{@attach whenInView(() => {
-					if (query.isFetching) return
-					query.fetchNextPage()
-				})}
-			>
-				Load more
-			</Button>
-		{/if}
+		<InfiniteQueryView {query} />
 	{/snippet}
 </Main>

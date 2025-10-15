@@ -4,18 +4,14 @@
 		searchTracks,
 		searchUsers,
 	} from '$lib/api/search.remote'
+	import InfiniteQueryView from '$lib/components/InfiniteQueryView.svelte'
 	import Main from '$lib/components/Main.svelte'
-	import Spinner from '$lib/components/Spinner.svelte'
-	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
-	import TrackListing from '$lib/components/listings/TrackListing.svelte'
-	import UserListing from '$lib/components/listings/UserListing.svelte'
 	import Button from '$lib/components/ui/Button.svelte'
 	import Input from '$lib/components/ui/Input.svelte'
 	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
-	import { whenInView } from '$lib/utils'
 	import { SearchIcon } from '@lucide/svelte'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { Debounced } from 'runed'
@@ -106,39 +102,6 @@
 	{/snippet}
 
 	{#snippet right()}
-		<div class="flex flex-col gap-4">
-			{#each query.data?.pages as page (page)}
-				{#each page as result (result.id)}
-					{#if params.kind === 'tracks'}
-						<TrackListing track={result as Track} />
-					{:else if params.kind === 'playlists'}
-						<PlaylistListing playlist={result as Playlist} />
-					{:else if params.kind === 'users'}
-						<UserListing user={result as User} />
-					{/if}
-				{/each}
-			{:else}
-				{#if !query.isLoading}
-					<span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
-				{/if}
-			{/each}
-		</div>
-
-		{#if query.isLoading}
-			<Spinner />
-		{:else if debouncedQ.current && query.hasNextPage}
-			<Button
-				class="mt-8 w-full"
-				onclick={() => {
-					query.fetchNextPage()
-				}}
-				{@attach whenInView(() => {
-					if (query.isFetching) return
-					query.fetchNextPage()
-				})}
-			>
-				Load more
-			</Button>
-		{/if}
+		<InfiniteQueryView {query} />
 	{/snippet}
 </Main>
