@@ -1,9 +1,17 @@
 import { query } from '$app/server'
+import { collectionSchema } from '$lib/schemas/collection'
 import { playlistSchema } from '$lib/schemas/playlist'
 import { trackSchema } from '$lib/schemas/track'
 import { userSchema } from '$lib/schemas/user'
-import { $api } from './utils'
+import { $api, getPermalinkPath } from './utils'
 import { z } from 'zod'
+
+export const resolveUser = query(z.string(), (user) =>
+	$api({
+		path: getPermalinkPath(user),
+		schema: userSchema,
+	}),
+)
 
 export const getUserById = query(z.number(), (id) =>
 	$api({
@@ -22,9 +30,7 @@ export const getUserTracks = query(
 		const res = await $api({
 			path: `/users/${id}/tracks`,
 			params: { limit, offset },
-			schema: z.object({
-				collection: trackSchema.array(),
-			}),
+			schema: collectionSchema(trackSchema),
 		})
 		return res.collection
 	},
@@ -40,9 +46,7 @@ export const getUserPlaylists = query(
 		const res = await $api({
 			path: `/users/${id}/playlists`,
 			params: { limit, offset },
-			schema: z.object({
-				collection: playlistSchema.array(),
-			}),
+			schema: collectionSchema(playlistSchema),
 		})
 		return res.collection
 	},

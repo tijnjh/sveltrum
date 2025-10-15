@@ -10,7 +10,7 @@ type Decodable =
 	| Decodable[]
 	| { [key: string]: Decodable }
 
-export async function $api<S extends z.ZodTypeAny, T = z.infer<S>>({
+export async function $api<S extends z.ZodType, T = z.infer<S>>({
 	path,
 	params,
 	schema,
@@ -71,4 +71,11 @@ export function chunked<T>(
 	const start = index * size
 	const end = start + size
 	return arr.slice(start, end)
+}
+
+export function getPermalinkPath(...permalinks: string[]) {
+	const permalinkUrl = `https://soundcloud.com/${permalinks.join('/')}`
+	const url = `/resolve?url=${encodeURIComponent(permalinkUrl)}`
+	console.log(url)
+	return url
 }

@@ -1,4 +1,5 @@
 import { query } from '$app/server'
+import { collectionSchema } from '$lib/schemas/collection'
 import { paginatedSchema } from '$lib/schemas/paginated'
 import { playlistSchema } from '$lib/schemas/playlist'
 import { trackSchema } from '$lib/schemas/track'
@@ -14,9 +15,7 @@ export const searchTracks = query(
 		const response = await $api({
 			path: '/search/tracks',
 			params: { q: query, limit, offset },
-			schema: z.object({
-				collection: trackSchema.array(),
-			}),
+			schema: collectionSchema(trackSchema),
 		})
 		return response.collection
 	},
@@ -30,9 +29,7 @@ export const searchPlaylists = query(
 		const response = await $api({
 			path: '/search/playlists',
 			params: { q: query, limit, offset },
-			schema: z.object({
-				collection: playlistSchema.array(),
-			}),
+			schema: collectionSchema(playlistSchema),
 		})
 		return response.collection
 	},
@@ -46,9 +43,7 @@ export const searchUsers = query(
 		const response = await $api({
 			path: '/search/users',
 			params: { q: query, limit, offset },
-			schema: z.object({
-				collection: userSchema.array(),
-			}),
+			schema: collectionSchema(userSchema),
 		})
 		return response.collection
 	},

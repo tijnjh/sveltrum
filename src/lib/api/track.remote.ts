@@ -1,7 +1,19 @@
 import { query } from '$app/server'
 import { trackSchema } from '$lib/schemas/track'
-import { $api, chunked } from './utils'
+import { $api, chunked, getPermalinkPath } from './utils'
 import { z } from 'zod'
+
+export const resolveTrack = query(
+	z.object({
+		user: z.string(),
+		track: z.string(),
+	}),
+	({ user, track }) =>
+		$api({
+			path: getPermalinkPath(user, track),
+			schema: trackSchema,
+		}),
+)
 
 export const getTrackById = query(z.number(), (id) =>
 	$api({
