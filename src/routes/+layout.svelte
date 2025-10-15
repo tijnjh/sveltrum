@@ -7,6 +7,7 @@
 	import '../app.css'
 	import { ChevronLeft } from '@lucide/svelte'
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
+	import { Toaster } from 'svelte-sonner'
 
 	const { children } = $props()
 
@@ -42,3 +43,5 @@
 		{/snippet}
 	</svelte:boundary>
 </QueryClientProvider>
+
+<Toaster richColors />

@@ -24,6 +24,7 @@
 		"ios-haptics": "^0.1.4",
 		"ofetch": "^1.4.1",
 		"runed": "^0.35.1",
+		"svelte-sonner": "^1.0.5",
 		"tailwind-variants": "^3.1.1",
 		"zod": "^4.1.12"
 	},

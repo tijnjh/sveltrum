@@ -1,26 +1,17 @@
-<script module lang="ts">
-	import type { User } from '$lib/schemas/user'
-	import type { ClassValue } from 'cnfn'
-
-	export interface UserListingProps {
-		user: User
-		class?: ClassValue
-	}
-</script>
-
 <script lang="ts">
+	import type { User } from '$lib/schemas/user'
 	import ListingThumbnail from '../ListingThumbnail.svelte'
 	import { BadgeCheckIcon } from '@lucide/svelte'
-	import { cn } from 'cnfn'
+	import { cn, type ClassValue } from 'cnfn'
 
-	const { user, ...props }: UserListingProps = $props()
+	const { user, class: className }: { user: User; class: ClassValue } = $props()
 </script>
 
 <a
 	href="/{user.permalink}"
 	class={cn(
 		'grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50',
-		props.class,
+		className,
 	)}
 >
 	<ListingThumbnail
