@@ -1,52 +1,48 @@
-import { trackSchema } from './track'
-import { userSchema } from './user'
-import { z } from 'zod'
+import { Track } from './track'
+import { User } from './user'
+import * as v from 'valibot'
 
-export const playlistSchema = z.strictObject({
-	artwork_url: z.string().nullable(),
-	created_at: z.iso.datetime(),
-	description: z.string().nullish(),
-	display_date: z.iso.datetime(),
-	duration: z.number(),
-	embeddable_by: z.enum(['all', 'none', 'me']).optional(),
-	genre: z.string().nullish(),
-	id: z.number(),
-	is_album: z.boolean(),
-	kind: z.literal('playlist'),
-	label_name: z.string().nullish(),
-	last_modified: z.iso.datetime(),
-	license: z.string().optional(),
-	likes_count: z.number().nullable(),
-	managed_by_feeds: z.boolean(),
-	permalink: z.string(),
-	permalink_url: z.url(),
-	public: z.boolean(),
-	published_at: z.iso.datetime().nullable(),
-	purchase_title: z.string().nullish(),
-	purchase_url: z.url().nullish(),
-	release_date: z.string().nullable(),
-	reposts_count: z.number(),
-	secret_token: z.string().nullable(),
-	set_type: z.string(),
-	sharing: z.enum(['public', 'private']),
-	tag_list: z.string().optional(),
-	title: z.string(),
-	track_count: z.number(),
-	tracks: z
-		.union([
-			trackSchema,
-			trackSchema.pick({
-				id: true,
-				kind: true,
-				monetization_model: true,
-				policy: true,
-			}),
-		])
-		.array()
-		.optional(),
-	uri: z.url(),
-	user: userSchema,
-	user_id: z.number(),
+export const Playlist = v.object({
+	artwork_url: v.nullable(v.string()),
+	created_at: v.pipe(v.string(), v.isoTimestamp()),
+	description: v.optional(v.nullable(v.string())),
+	display_date: v.pipe(v.string(), v.isoTimestamp()),
+	duration: v.number(),
+	embeddable_by: v.optional(v.picklist(['all', 'none', 'me'])),
+	genre: v.optional(v.nullable(v.string())),
+	id: v.number(),
+	is_album: v.boolean(),
+	kind: v.literal('playlist'),
+	label_name: v.optional(v.nullable(v.string())),
+	last_modified: v.pipe(v.string(), v.isoTimestamp()),
+	license: v.optional(v.string()),
+	likes_count: v.nullable(v.number()),
+	managed_by_feeds: v.boolean(),
+	permalink: v.string(),
+	permalink_url: v.pipe(v.string(), v.url()),
+	public: v.boolean(),
+	published_at: v.nullable(v.pipe(v.string(), v.isoTimestamp())),
+	purchase_title: v.optional(v.nullable(v.string())),
+	purchase_url: v.nullish(v.pipe(v.string(), v.url())),
+	release_date: v.nullable(v.string()),
+	reposts_count: v.number(),
+	secret_token: v.nullable(v.string()),
+	set_type: v.string(),
+	sharing: v.picklist(['public', 'private']),
+	tag_list: v.optional(v.string()),
+	title: v.string(),
+	track_count: v.number(),
+	tracks: v.optional(
+		v.array(
+			v.union([
+				Track,
+				v.pick(Track, ['id', 'kind', 'monetization_model', 'policy']),
+			]),
+		),
+	),
+	uri: v.pipe(v.string(), v.url()),
+	user: User,
+	user_id: v.number(),
 })
 
-export type Playlist = z.output<typeof playlistSchema>
+export type Playlist = v.InferOutput<typeof Playlist>

@@ -1,10 +1,10 @@
-import { z } from 'zod'
+import * as v from 'valibot'
 
-export const collectionSchema = <T extends z.ZodType>(t: T) =>
-	z.strictObject({
-		collection: z.array(t),
-		next_href: z.string().nullish(),
-		query_urn: z.string().nullish(),
-		total_results: z.number().optional(),
-		variant: z.string().optional(),
+export const Collection = <T extends v.GenericSchema>(t: T) =>
+	v.strictObject({
+		collection: v.array(t),
+		next_href: v.nullish(v.string()),
+		query_urn: v.nullish(v.string()),
+		total_results: v.optional(v.number()),
+		variant: v.optional(v.string()),
 	})

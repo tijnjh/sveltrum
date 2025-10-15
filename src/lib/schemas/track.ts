@@ -1,32 +1,32 @@
-import { userSchema } from './user'
-import { z } from 'zod'
+import { User } from './user'
+import * as v from 'valibot'
 
-export const trackSchema = z.strictObject({
-	artwork_url: z.url().nullable(),
-	caption: z.string().nullable(),
-	comment_count: z.number().nullable(),
-	commentable: z.boolean(),
-	created_at: z.iso.datetime(),
-	description: z.string().nullable(),
-	display_date: z.iso.datetime(),
-	download_count: z.number().nullable(),
-	downloadable: z.boolean(),
-	duration: z.number(),
-	embeddable_by: z.enum(['all', 'none', 'me']),
-	full_duration: z.number(),
-	genre: z.string().nullable(),
-	has_downloads_left: z.boolean(),
-	id: z.number(),
-	kind: z.literal('track'),
-	label_name: z.string().nullable(),
-	last_modified: z.iso.datetime(),
-	license: z.string(),
-	likes_count: z.number().nullable(),
-	media: z.strictObject({
-		transcodings: z.array(
-			z.strictObject({
-				url: z.url(),
-				preset: z.enum([
+export const Track = v.strictObject({
+	artwork_url: v.nullable(v.pipe(v.string(), v.url())),
+	caption: v.nullable(v.string()),
+	comment_count: v.nullable(v.number()),
+	commentable: v.boolean(),
+	created_at: v.pipe(v.string(), v.isoTimestamp()),
+	description: v.nullable(v.string()),
+	display_date: v.pipe(v.string(), v.isoTimestamp()),
+	download_count: v.nullable(v.number()),
+	downloadable: v.boolean(),
+	duration: v.number(),
+	embeddable_by: v.picklist(['all', 'none', 'me']),
+	full_duration: v.number(),
+	genre: v.nullable(v.string()),
+	has_downloads_left: v.boolean(),
+	id: v.number(),
+	kind: v.literal('track'),
+	label_name: v.nullable(v.string()),
+	last_modified: v.pipe(v.string(), v.isoTimestamp()),
+	license: v.string(),
+	likes_count: v.nullable(v.number()),
+	media: v.strictObject({
+		transcodings: v.array(
+			v.strictObject({
+				url: v.pipe(v.string(), v.url()),
+				preset: v.picklist([
 					'opus_0_0',
 					'aac_160k',
 					'mp3_0_0',
@@ -35,91 +35,91 @@ export const trackSchema = z.strictObject({
 					'mp3_0_1',
 					'mp3_standard',
 				]),
-				duration: z.number(),
-				snipped: z.boolean(),
-				format: z.strictObject({
-					protocol: z.enum([
+				duration: v.number(),
+				snipped: v.boolean(),
+				format: v.strictObject({
+					protocol: v.picklist([
 						'hls',
 						'progressive',
 						'ctr-encrypted-hls',
 						'cbc-encrypted-hls',
 					]),
-					mime_type: z.enum([
+					mime_type: v.picklist([
 						'audio/mp4; codecs="mp4a.40.2"',
 						'audio/mpegurl',
 						'audio/mpeg',
 						'audio/ogg; codecs="opus"',
 					]),
 				}),
-				quality: z.literal('sq'),
-				is_legacy_transcoding: z.boolean(),
+				quality: v.literal('sq'),
+				is_legacy_transcoding: v.boolean(),
 			}),
 		),
 	}),
-	monetization_model: z.enum([
+	monetization_model: v.picklist([
 		'AD_SUPPORTED',
 		'BLACKBOX',
 		'NOT_APPLICABLE',
 		'SUB_HIGH_TIER',
 	]),
-	permalink: z.string(),
-	permalink_url: z.url(),
-	playback_count: z.number().nullable(),
-	policy: z.enum(['MONETIZE', 'BLOCK', 'SNIP', 'ALLOW']),
-	public: z.boolean(),
-	publisher_metadata: z
-		.strictObject({
-			id: z.number(),
-			urn: z.string(),
-			artist: z.string().optional(),
-			publisher: z.string().optional(),
-			album_title: z.string().optional(),
-			contains_music: z.boolean().optional(),
-			upc_or_ean: z.string().optional(),
-			iswc: z.string().optional(),
-			isrc: z.string().optional(),
-			explicit: z.boolean().optional(),
-			p_line: z.string().optional(),
-			p_line_for_display: z.string().optional(),
-			c_line: z.string().optional(),
-			c_line_for_display: z.string().optional(),
-			writer_composer: z.string().optional(),
-			release_title: z.string().optional(),
-		})
-		.nullable(),
-	purchase_title: z.string().nullable(),
-	purchase_url: z.url().nullable(),
-	release_date: z.string().nullable(),
-	reposts_count: z.number(),
-	secret_token: z.string().nullable(),
-	sharing: z.enum(['public', 'private']),
-	state: z.enum(['finished', 'processing']),
-	station_permalink: z.string(),
-	station_urn: z.string(),
-	streamable: z.boolean(),
-	tag_list: z.string(),
-	title: z.string(),
-	track_authorization: z.string(),
-	uri: z.url(),
-	urn: z.string(),
-	user: userSchema,
-	user_id: z.number(),
-	visuals: z
-		.strictObject({
-			urn: z.string(),
-			enabled: z.boolean(),
-			visuals: z
-				.strictObject({
-					urn: z.string(),
-					entry_time: z.number(),
-					visual_url: z.url(),
-					link: z.url().optional(),
-				})
-				.array(),
-			tracking: z.null(),
-		})
-		.nullable(),
-	waveform_url: z.url(),
+	permalink: v.string(),
+	permalink_url: v.pipe(v.string(), v.url()),
+	playback_count: v.nullable(v.number()),
+	policy: v.picklist(['MONETIZE', 'BLOCK', 'SNIP', 'ALLOW']),
+	public: v.boolean(),
+	publisher_metadata: v.nullable(
+		v.strictObject({
+			id: v.number(),
+			urn: v.string(),
+			artist: v.optional(v.string()),
+			publisher: v.optional(v.string()),
+			album_title: v.optional(v.string()),
+			contains_music: v.optional(v.boolean()),
+			upc_or_ean: v.optional(v.string()),
+			iswc: v.optional(v.string()),
+			isrc: v.optional(v.string()),
+			explicit: v.optional(v.boolean()),
+			p_line: v.optional(v.string()),
+			p_line_for_display: v.optional(v.string()),
+			c_line: v.optional(v.string()),
+			c_line_for_display: v.optional(v.string()),
+			writer_composer: v.optional(v.string()),
+			release_title: v.optional(v.string()),
+		}),
+	),
+	purchase_title: v.nullable(v.string()),
+	purchase_url: v.nullable(v.pipe(v.string(), v.url())),
+	release_date: v.nullable(v.string()),
+	reposts_count: v.number(),
+	secret_token: v.nullable(v.string()),
+	sharing: v.picklist(['public', 'private']),
+	state: v.picklist(['finished', 'processing']),
+	station_permalink: v.string(),
+	station_urn: v.string(),
+	streamable: v.boolean(),
+	tag_list: v.string(),
+	title: v.string(),
+	track_authorization: v.string(),
+	uri: v.pipe(v.string(), v.url()),
+	urn: v.string(),
+	user: User,
+	user_id: v.number(),
+	visuals: v.nullable(
+		v.strictObject({
+			urn: v.string(),
+			enabled: v.boolean(),
+			visuals: v.array(
+				v.strictObject({
+					urn: v.string(),
+					entry_time: v.number(),
+					visual_url: v.pipe(v.string(), v.url()),
+					link: v.optional(v.pipe(v.string(), v.url())),
+				}),
+			),
+			tracking: v.null(),
+		}),
+	),
+	waveform_url: v.pipe(v.string(), v.url()),
 })
 
-export type Track = z.output<typeof trackSchema>
+export type Track = v.InferOutput<typeof Track>

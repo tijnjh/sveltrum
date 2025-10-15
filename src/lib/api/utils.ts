@@ -1,5 +1,5 @@
 import { ofetch } from 'ofetch'
-import { z } from 'zod'
+import * as v from 'valibot'
 
 type Decodable =
 	| string
@@ -10,7 +10,7 @@ type Decodable =
 	| Decodable[]
 	| { [key: string]: Decodable }
 
-export async function $api<S extends z.ZodType, T = z.infer<S>>({
+export async function $api<S extends v.GenericSchema, T = v.InferOutput<S>>({
 	path,
 	params,
 	schema,
@@ -28,16 +28,16 @@ export async function $api<S extends z.ZodType, T = z.infer<S>>({
 
 	if (!schema) return response as T
 
-	const out = schema.parse(response)
+	const out = v.safeParse(schema, response)
 
-	if (out instanceof z.ZodError) {
-		console.error(z.prettifyError(out))
+	if (out.success === false) {
+		console.error(v.summarize(out.issues))
 		throw new Error('failed to pass validation')
 	}
 
 	if (!out) throw new Error('response is nullish')
 
-	return out as T
+	return out.output as T
 }
 
 let clientId: string
@@ -64,18 +64,8 @@ export async function getClientId() {
 	return clientId
 }
 
-export function chunked<T>(
-	arr: T[],
-	{ size = 32, index = 0 }: { size?: number; index?: number },
-) {
-	const start = index * size
-	const end = start + size
-	return arr.slice(start, end)
-}
-
 export function getPermalinkPath(...permalinks: string[]) {
 	const permalinkUrl = `https://soundcloud.com/${permalinks.join('/')}`
 	const url = `/resolve?url=${encodeURIComponent(permalinkUrl)}`
-	console.log(url)
 	return url
 }

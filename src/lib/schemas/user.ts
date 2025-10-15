@@ -1,71 +1,72 @@
-import { z } from 'zod'
+import * as v from 'valibot'
 
-export const userSchema = z.strictObject({
-	avatar_url: z.url(),
-	badges: z.strictObject({
-		pro: z.boolean(),
-		creator_mid_tier: z.boolean(),
-		pro_unlimited: z.boolean(),
-		verified: z.boolean(),
+export const User = v.object({
+	avatar_url: v.pipe(v.string(), v.url()),
+	badges: v.strictObject({
+		pro: v.boolean(),
+		creator_mid_tier: v.boolean(),
+		pro_unlimited: v.boolean(),
+		verified: v.boolean(),
 	}),
-	city: z.string().nullable(),
-	comments_count: z.number().optional(),
-	country_code: z.string().nullable(),
-	created_at: z.iso.datetime().optional(),
-	creator_subscription: z
-		.strictObject({
-			product: z.strictObject({
-				id: z.string(),
+	city: v.nullable(v.string()),
+	comments_count: v.optional(v.number()),
+	country_code: v.nullable(v.string()),
+	created_at: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+	creator_subscription: v.optional(
+		v.strictObject({
+			product: v.strictObject({
+				id: v.string(),
 			}),
-		})
-		.optional(),
-	creator_subscriptions: z
-		.strictObject({
-			product: z.strictObject({
-				id: z.string(),
+		}),
+	),
+	creator_subscriptions: v.optional(
+		v.array(
+			v.strictObject({
+				product: v.strictObject({
+					id: v.string(),
+				}),
 			}),
-		})
-		.array()
-		.optional(),
-	date_of_birth: z.string().nullish(),
-	description: z.string().nullish(),
-	first_name: z.string(),
-	followers_count: z.number(),
-	followings_count: z.number().optional(),
-	full_name: z.string(),
-	groups_count: z.number().optional(),
-	id: z.number(),
-	kind: z.literal('user'),
-	last_modified: z.iso.datetime(),
-	last_name: z.string(),
-	likes_count: z.number().optional(),
-	permalink: z.string(),
-	permalink_url: z.url(),
-	playlist_count: z.number().optional(),
-	playlist_likes_count: z.number().optional(),
-	reposts_count: z.number().nullish(),
-	station_permalink: z.string().optional(),
-	station_urn: z.string().optional(),
-	track_count: z.number().optional(),
-	uri: z.url(),
-	urn: z.string(),
-	username: z.string(),
-	verified: z.boolean(),
-	visuals: z
-		.strictObject({
-			urn: z.string(),
-			enabled: z.boolean(),
-			visuals: z
-				.strictObject({
-					urn: z.string(),
-					entry_time: z.number(),
-					visual_url: z.url(),
-					link: z.url().optional(),
-				})
-				.array(),
-			tracking: z.null(),
-		})
-		.nullish(),
+		),
+	),
+	date_of_birth: v.optional(v.nullable(v.string())),
+	description: v.optional(v.nullable(v.string())),
+	first_name: v.string(),
+	followers_count: v.number(),
+	followings_count: v.optional(v.number()),
+	full_name: v.string(),
+	groups_count: v.optional(v.number()),
+	id: v.number(),
+	kind: v.literal('user'),
+	last_modified: v.pipe(v.string(), v.isoTimestamp()),
+	last_name: v.string(),
+	likes_count: v.optional(v.number()),
+	permalink: v.string(),
+	permalink_url: v.pipe(v.string(), v.url()),
+	playlist_count: v.optional(v.number()),
+	playlist_likes_count: v.optional(v.number()),
+	reposts_count: v.optional(v.nullable(v.number())),
+	station_permalink: v.optional(v.string()),
+	station_urn: v.optional(v.string()),
+	track_count: v.optional(v.number()),
+	uri: v.pipe(v.string(), v.url()),
+	urn: v.string(),
+	username: v.string(),
+	verified: v.boolean(),
+	visuals: v.nullish(
+		v.strictObject({
+			urn: v.string(),
+			enabled: v.boolean(),
+			visuals: v.array(
+				v.strictObject({
+					urn: v.string(),
+					entry_time: v.number(),
+					visual_url: v.pipe(v.string(), v.url()),
+					link: v.optional(v.pipe(v.string(), v.url())),
+				}),
+			),
+			tracking: v.null(),
+		}),
+	),
 })
 
-export type User = z.output<typeof userSchema>
+export type User = v.InferOutput<typeof User>

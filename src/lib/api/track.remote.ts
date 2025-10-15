@@ -1,35 +1,35 @@
 import { query } from '$app/server'
 import { paginated_limit } from '$lib/constants'
-import { trackSchema } from '$lib/schemas/track'
+import { Track } from '$lib/schemas/track'
 import { $api, getPermalinkPath } from './utils'
-import { z } from 'zod'
+import * as v from 'valibot'
 
 export const resolveTrack = query(
-	z.object({
-		user: z.string(),
-		track: z.string(),
+	v.object({
+		user: v.string(),
+		track: v.string(),
 	}),
 	({ user, track }) =>
 		$api({
 			path: getPermalinkPath(user, track),
-			schema: trackSchema,
+			schema: Track,
 		}),
 )
 
-export const getTrackById = query(z.number(), (id) =>
+export const getTrackById = query(v.number(), (id) =>
 	$api({
 		path: `/tracks/${id}`,
-		schema: trackSchema,
+		schema: Track,
 	}),
 )
 
-export const getTracksByIds = query(z.array(z.number()), (ids) =>
+export const getTracksByIds = query(v.array(v.number()), (ids) =>
 	$api({
 		path: `/tracks`,
 		params: {
 			ids: ids.join(','),
 			limit: paginated_limit,
 		},
-		schema: z.array(trackSchema),
+		schema: v.array(Track),
 	}),
 )

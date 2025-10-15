@@ -14,13 +14,13 @@
 	import type { Track } from '$lib/schemas/track'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { useSearchParams } from 'runed/kit'
-	import { z } from 'zod'
+	import * as v from 'valibot'
 
 	const user = await resolveUser(page.params.user!)
 
 	const params = useSearchParams(
-		z.object({
-			kind: z.enum(['tracks', 'playlists']).default('tracks'),
+		v.object({
+			kind: v.optional(v.picklist(['tracks', 'playlists']), 'tracks'),
 		}),
 	)
 
