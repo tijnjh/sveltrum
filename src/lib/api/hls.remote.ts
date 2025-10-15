@@ -2,9 +2,9 @@ import { query } from '$app/server'
 import { getTrackById } from './track.remote'
 import { getClientId } from './utils'
 import { ofetch } from 'ofetch'
-import { z } from 'zod'
+import * as v from 'valibot'
 
-export const getTrackSource = query(z.number(), async (trackId) => {
+export const getTrackSource = query(v.number(), async (trackId) => {
 	const track = await getTrackById(trackId)
 	const clientId = await getClientId()
 

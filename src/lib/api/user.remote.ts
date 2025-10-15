@@ -1,52 +1,52 @@
 import { query } from '$app/server'
-import { collectionSchema } from '$lib/schemas/collection'
-import { playlistSchema } from '$lib/schemas/playlist'
-import { trackSchema } from '$lib/schemas/track'
-import { userSchema } from '$lib/schemas/user'
+import { Collection } from '$lib/schemas/collection'
+import { Playlist } from '$lib/schemas/playlist'
+import { Track } from '$lib/schemas/track'
+import { User } from '$lib/schemas/user'
 import { $api, getPermalinkPath } from './utils'
-import { z } from 'zod'
+import * as v from 'valibot'
 
-export const resolveUser = query(z.string(), (user) =>
+export const resolveUser = query(v.string(), (user) =>
 	$api({
 		path: getPermalinkPath(user),
-		schema: userSchema,
+		schema: User,
 	}),
 )
 
-export const getUserById = query(z.number(), (id) =>
+export const getUserById = query(v.number(), (id) =>
 	$api({
 		path: `/users/${id}`,
-		schema: userSchema,
+		schema: User,
 	}),
 )
 
 export const getUserTracks = query(
-	z.object({
-		id: z.number(),
-		offset: z.number().optional(),
-		limit: z.number().optional(),
+	v.object({
+		id: v.number(),
+		offset: v.optional(v.number()),
+		limit: v.optional(v.number()),
 	}),
 	async ({ id, offset, limit }) => {
 		const res = await $api({
 			path: `/users/${id}/tracks`,
 			params: { limit, offset },
-			schema: collectionSchema(trackSchema),
+			schema: Collection(Track),
 		})
 		return res.collection
 	},
 )
 
 export const getUserPlaylists = query(
-	z.object({
-		id: z.number(),
-		offset: z.number().optional(),
-		limit: z.number().optional(),
+	v.object({
+		id: v.number(),
+		offset: v.optional(v.number()),
+		limit: v.optional(v.number()),
 	}),
 	async ({ id, offset, limit }) => {
 		const res = await $api({
 			path: `/users/${id}/playlists`,
 			params: { limit, offset },
-			schema: collectionSchema(playlistSchema),
+			schema: Collection(Playlist),
 		})
 		return res.collection
 	},

@@ -16,12 +16,12 @@
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { Debounced } from 'runed'
 	import { useSearchParams } from 'runed/kit'
-	import { z } from 'zod'
+	import * as v from 'valibot'
 
 	const params = useSearchParams(
-		z.object({
-			q: z.string().default(''),
-			kind: z.enum(['tracks', 'playlists', 'users']).default('tracks'),
+		v.object({
+			q: v.optional(v.string(), ''),
+			kind: v.optional(v.picklist(['tracks', 'playlists', 'users']), 'tracks'),
 		}),
 	)
 
@@ -44,7 +44,6 @@
 				case 'playlists':
 					results = await searchPlaylists(data)
 					break
-
 				case 'users':
 					results = await searchUsers(data)
 					break

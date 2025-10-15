@@ -1,23 +1,23 @@
 import { query } from '$app/server'
-import { playlistSchema } from '$lib/schemas/playlist'
+import { Playlist } from '$lib/schemas/playlist'
 import { $api, getPermalinkPath } from './utils'
-import { z } from 'zod'
+import * as v from 'valibot'
 
 export const resolvePlaylist = query(
-	z.object({
-		user: z.string(),
-		playlist: z.string(),
+	v.object({
+		user: v.string(),
+		playlist: v.string(),
 	}),
 	({ user, playlist }) =>
 		$api({
 			path: getPermalinkPath(user, 'sets', playlist),
-			schema: playlistSchema,
+			schema: Playlist,
 		}),
 )
 
-export const getPlaylistById = query(z.number(), (id) =>
+export const getPlaylistById = query(v.number(), (id) =>
 	$api({
 		path: `/playlists/${id}`,
-		schema: playlistSchema,
+		schema: Playlist,
 	}),
 )

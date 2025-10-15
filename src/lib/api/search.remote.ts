@@ -1,49 +1,52 @@
 import { query } from '$app/server'
-import { collectionSchema } from '$lib/schemas/collection'
-import { paginatedSchema } from '$lib/schemas/paginated'
-import { playlistSchema } from '$lib/schemas/playlist'
-import { trackSchema } from '$lib/schemas/track'
-import { userSchema } from '$lib/schemas/user'
+import { Collection } from '$lib/schemas/collection'
+import { Paginated } from '$lib/schemas/paginated'
+import { Playlist } from '$lib/schemas/playlist'
+import { Track } from '$lib/schemas/track'
+import { User } from '$lib/schemas/user'
 import { $api } from './utils'
-import { z } from 'zod'
+import * as v from 'valibot'
 
 export const searchTracks = query(
-	paginatedSchema.extend({
-		query: z.string(),
+	v.object({
+		...Paginated.entries,
+		query: v.string(),
 	}),
 	async ({ query, offset, limit }) => {
 		const response = await $api({
 			path: '/search/tracks',
 			params: { q: query, limit, offset },
-			schema: collectionSchema(trackSchema),
+			schema: Collection(Track),
 		})
 		return response.collection
 	},
 )
 
 export const searchPlaylists = query(
-	paginatedSchema.extend({
-		query: z.string(),
+	v.object({
+		...Paginated.entries,
+		query: v.string(),
 	}),
 	async ({ query, offset, limit }) => {
 		const response = await $api({
 			path: '/search/playlists',
 			params: { q: query, limit, offset },
-			schema: collectionSchema(playlistSchema),
+			schema: Collection(Playlist),
 		})
 		return response.collection
 	},
 )
 
 export const searchUsers = query(
-	paginatedSchema.extend({
-		query: z.string(),
+	v.object({
+		...Paginated.entries,
+		query: v.string(),
 	}),
 	async ({ query, offset, limit }) => {
 		const response = await $api({
 			path: '/search/users',
 			params: { q: query, limit, offset },
-			schema: collectionSchema(userSchema),
+			schema: Collection(User),
 		})
 		return response.collection
 	},

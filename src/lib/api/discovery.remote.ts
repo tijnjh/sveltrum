@@ -1,26 +1,24 @@
 import { query } from '$app/server'
-import { collectionSchema } from '$lib/schemas/collection'
-import { playlistSchema } from '$lib/schemas/playlist'
-import { selectionSchema } from '$lib/schemas/selection'
-import { trackSchema } from '$lib/schemas/track'
-import { userSchema } from '$lib/schemas/user'
+import { Collection } from '$lib/schemas/collection'
+import { Playlist } from '$lib/schemas/playlist'
+import { Selection } from '$lib/schemas/selection'
+import { Track } from '$lib/schemas/track'
+import { User } from '$lib/schemas/user'
 import { $api } from './utils'
-import { z } from 'zod'
+import * as v from 'valibot'
 
 export const getSelections = query(async () => {
 	const res = await $api({
 		path: '/mixed-selections',
-		schema: collectionSchema(
-			selectionSchema(z.union([playlistSchema, userSchema])),
-		),
+		schema: Collection(Selection(v.union([Playlist, User]))),
 	})
 
 	return res.collection
 })
 
-export const getRelatedTracks = query(z.number(), (id) =>
+export const getRelatedTracks = query(v.number(), (id) =>
 	$api({
 		path: `/tracks/${id}/related`,
-		schema: collectionSchema(trackSchema),
+		schema: Collection(Track),
 	}),
 )
