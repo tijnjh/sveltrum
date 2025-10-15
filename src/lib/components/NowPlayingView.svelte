@@ -9,7 +9,8 @@
 	import UserListing from './listings/UserListing.svelte'
 	import { ChevronDownIcon } from '@lucide/svelte'
 	import { cn } from 'cnfn'
-	import Hls from 'hls.js'
+	// @ts-expect-error they dont have types (yet)
+	import Hls from 'hls.js/light'
 
 	$effect(() => {
 		if (global.nowPlaying) {
