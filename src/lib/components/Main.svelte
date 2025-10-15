@@ -34,7 +34,7 @@
 	{/if}
 
 	{#if !left && !right && children}
-		<div class=" flex flex-col gap-4 p-4">
+		<div class="mb-64 flex flex-col gap-4 p-4">
 			{@render children()}
 		</div>
 	{/if}
