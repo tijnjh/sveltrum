@@ -10,6 +10,7 @@
 
 <script lang="ts">
 	import ListingThumbnail from '../ListingThumbnail.svelte'
+	import { BadgeCheckIcon } from '@lucide/svelte'
 	import { cn } from 'cnfn'
 
 	const { user, ...props }: UserListingProps = $props()
@@ -28,7 +29,13 @@
 		class="rounded-full"
 	/>
 	<div class="flex w-full min-w-0 flex-col">
-		<h3 class="truncate">{user.username}</h3>
+		<div class="flex w-fit items-center gap-2">
+			<h3 class="truncate">{user.username}</h3>
+			{#if user.verified}
+				<BadgeCheckIcon size={18} />
+			{/if}
+		</div>
+
 		{#if user.full_name !== user.username}
 			<p class="truncate opacity-50">{user.full_name}</p>
 		{/if}
