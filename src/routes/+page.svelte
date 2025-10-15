@@ -8,8 +8,6 @@
 	import { SearchIcon } from '@lucide/svelte'
 
 	const selections = await getSelections()
-
-	console.log(selections)
 </script>
 
 <Main class="mt-16">
