@@ -5,14 +5,14 @@
 	export const buttonVariants = tv({
 		slots: {
 			base: [
-				'flex items-center justify-center gap-2 rounded-full transition-transform ',
+				'flex cursor-pointer items-center justify-center gap-2 rounded-full transition-transform',
 				'active:scale-90 active:opacity-50',
 			],
 		},
 		variants: {
 			variant: {
 				primary: 'bg-white text-zinc-800',
-				secondary: 'bg-zinc-100/10',
+				secondary: 'bg-zinc-700',
 			},
 			size: {
 				default: 'px-4 py-2',
@@ -26,17 +26,22 @@
 	})
 
 	export type ButtonProps = ButtonRootProps &
-		VariantProps<typeof buttonVariants>
+		VariantProps<typeof buttonVariants> & {
+			icon?: Component<IconProps>
+		}
 </script>
 
 <script lang="ts">
+	import type { IconProps } from '@lucide/svelte'
 	import { Button } from 'bits-ui'
 	import { cn } from 'cnfn'
+	import type { Component } from 'svelte'
 
 	const {
 		children,
 		variant,
 		size,
+		icon: Icon,
 		class: className,
 		...props
 	}: ButtonProps = $props()
@@ -45,5 +50,9 @@
 </script>
 
 <Button.Root class={classes.base({ class: cn(className) })} {...props}>
+	{#if Icon}
+		<Icon size={16} strokeWidth={3} class="shrink-0" />
+	{/if}
+
 	{@render children?.()}
 </Button.Root>
