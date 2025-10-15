@@ -4,12 +4,13 @@
 		searchTracks,
 		searchUsers,
 	} from '$lib/api/search.remote'
-	import Button from '$lib/components/Button.svelte'
 	import Main from '$lib/components/Main.svelte'
 	import Spinner from '$lib/components/Spinner.svelte'
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
 	import UserListing from '$lib/components/listings/UserListing.svelte'
+	import Button from '$lib/components/ui/Button.svelte'
+	import Input from '$lib/components/ui/Input.svelte'
 	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
@@ -68,78 +69,76 @@
 	<title>results for '{debouncedQ.current}' &bull; sveltrum</title>
 </svelte:head>
 
-<div
-	class="sticky inset-x-0 top-0 z-50 flex w-full flex-col gap-4 bg-zinc-700/75 p-4 backdrop-blur-lg"
->
-	<form
-		onsubmit={(e) => {
-			e.preventDefault()
-			query.refetch()
-		}}
-		class="mx-auto flex w-full max-w-xl gap-2"
-	>
-		<input
-			type="text"
-			bind:value={params.q}
-			class="h-10 grow rounded-full bg-zinc-700 px-4"
-			placeholder="Search"
-		/>
-
-		<Button type="submit" size="icon">
-			<SearchIcon size={16} strokeWidth={3} />
-		</Button>
-	</form>
-	<div class="mx-auto flex w-full max-w-xl gap-2">
-		{#each ['tracks', 'playlists', 'users'] as const as kind (kind)}
-			{#key params.kind}
-				<Button
-					variant={params.kind === kind ? 'primary' : 'secondary'}
-					class="capitalize"
-					onclick={() => {
-						params.kind = kind
-						query.refetch()
-					}}
-				>
-					{kind}
-				</Button>
-			{/key}
-		{/each}
-	</div>
-</div>
-
 <Main>
-	<div class="flex flex-col gap-4">
-		{#each query.data?.pages as page (page)}
-			{#each page as result (result.id)}
-				{#if params.kind === 'tracks'}
-					<TrackListing track={result as Track} />
-				{:else if params.kind === 'playlists'}
-					<PlaylistListing playlist={result as Playlist} />
-				{:else if params.kind === 'users'}
-					<UserListing user={result as User} />
+	{#snippet left()}
+		<form
+			onsubmit={(e) => {
+				e.preventDefault()
+				query.refetch()
+			}}
+			class="mx-auto flex w-full max-w-xl gap-2"
+		>
+			<Input
+				type="text"
+				bind:value={params.q}
+				class="w-full"
+				placeholder="Search"
+				icon={SearchIcon}
+			/>
+		</form>
+
+		<div class="mx-auto flex w-full max-w-xl gap-2">
+			{#each ['tracks', 'playlists', 'users'] as const as kind (kind)}
+				{#key params.kind}
+					<Button
+						variant={params.kind === kind ? 'primary' : 'secondary'}
+						class="capitalize"
+						onclick={() => {
+							params.kind = kind
+							query.refetch()
+						}}
+					>
+						{kind}
+					</Button>
+				{/key}
+			{/each}
+		</div>
+	{/snippet}
+
+	{#snippet right()}
+		<div class="flex flex-col gap-4">
+			{#each query.data?.pages as page (page)}
+				{#each page as result (result.id)}
+					{#if params.kind === 'tracks'}
+						<TrackListing track={result as Track} />
+					{:else if params.kind === 'playlists'}
+						<PlaylistListing playlist={result as Playlist} />
+					{:else if params.kind === 'users'}
+						<UserListing user={result as User} />
+					{/if}
+				{/each}
+			{:else}
+				{#if !query.isLoading}
+					<span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
 				{/if}
 			{/each}
-		{:else}
-			{#if !query.isLoading}
-				<span class="mt-4 text-zinc-100/25 text-lg"> Nothing here... </span>
-			{/if}
-		{/each}
-	</div>
+		</div>
 
-	{#if query.isLoading}
-		<Spinner />
-	{:else if debouncedQ.current && query.hasNextPage}
-		<Button
-			class="mt-8 w-full"
-			onclick={() => {
-				query.fetchNextPage()
-			}}
-			{@attach whenInView(() => {
-				if (query.isFetching) return
-				query.fetchNextPage()
-			})}
-		>
-			Load more
-		</Button>
-	{/if}
+		{#if query.isLoading}
+			<Spinner />
+		{:else if debouncedQ.current && query.hasNextPage}
+			<Button
+				class="mt-8 w-full"
+				onclick={() => {
+					query.fetchNextPage()
+				}}
+				{@attach whenInView(() => {
+					if (query.isFetching) return
+					query.fetchNextPage()
+				})}
+			>
+				Load more
+			</Button>
+		{/if}
+	{/snippet}
 </Main>

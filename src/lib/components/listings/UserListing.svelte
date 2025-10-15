@@ -16,7 +16,7 @@
 </script>
 
 <a
-	href="/user/{user.id}"
+	href="/{user.permalink}"
 	class={cn(
 		'grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50',
 		props.class,

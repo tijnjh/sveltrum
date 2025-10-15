@@ -10,28 +10,39 @@
 <script lang="ts">
 	import { global } from '$lib/global.svelte'
 	import ListingThumbnail from '../ListingThumbnail.svelte'
+	import { PlayIcon } from '@lucide/svelte'
 
 	const { track, inAlbum = false }: TrackListingProps = $props()
 </script>
 
-<button
-	onclick={() => {
-		global.nowPlaying = track
+<div class="grid grid-cols-[auto_1fr] items-center gap-4">
+	<button
+		onclick={() => {
+			global.nowPlaying = track
 
-		setTimeout(() => {
-			global.isPaused = false
-		}, 50)
-	}}
-	class="grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50"
->
-	{#if !inAlbum}
+			setTimeout(() => {
+				global.isPaused = false
+			}, 50)
+		}}
+		class="group relative cursor-pointer overflow-clip rounded transition-transform active:scale-90 active:opacity-50"
+	>
 		<ListingThumbnail
 			src={track.artwork_url}
 			alt="album cover of {track.title}"
+			class="transition-[filter,scale] group-hover:scale-120 group-hover:blur-xs "
 		/>
-	{/if}
 
-	<div class="flex w-full min-w-0 flex-col">
+		<div
+			class="absolute inset-0 grid scale-90 touch-none place-items-center bg-zinc-800/50 text-white opacity-0 transition-[opacity,scale] group-hover:scale-100 group-hover:opacity-100"
+		>
+			<PlayIcon fill="currentColor" />
+		</div>
+	</button>
+
+	<a
+		href="/{track.user.permalink}/{track.permalink}"
+		class="flex w-full min-w-0 cursor-pointer flex-col text-left transition-transform active:scale-95 active:opacity-50"
+	>
 		<div class="flex gap-2">
 			<h3 class="truncate">{track.title}</h3>
 
@@ -50,5 +61,5 @@
 				{track.user?.username}
 			{/if}
 		</p>
-	</div>
-</button>
+	</a>
+</div>
