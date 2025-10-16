@@ -2,7 +2,7 @@ import { Track } from './track'
 import { User } from './user'
 import * as v from 'valibot'
 
-export const Playlist = v.object({
+export const Playlist = v.strictObject({
 	artwork_url: v.nullable(v.string()),
 	created_at: v.pipe(v.string(), v.isoTimestamp()),
 	description: v.optional(v.nullable(v.string())),

@@ -1,6 +1,6 @@
-import * as v from 'valibot'
+    import * as v from 'valibot'
 
-export const User = v.object({
+export const User = v.strictObject({
 	avatar_url: v.pipe(v.string(), v.url()),
 	badges: v.strictObject({
 		pro: v.boolean(),
