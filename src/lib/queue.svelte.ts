@@ -1,4 +1,4 @@
-import { nowPlaying } from './global.svelte'
+import { global, nowPlaying } from './global.svelte'
 import type { Track } from './schemas/track'
 import { PersistedState } from 'runed'
 
@@ -7,6 +7,9 @@ class Queue {
 
 	next() {
 		nowPlaying.current = this.tracks.current.shift() || null
+		setTimeout(() => {
+			global.isPaused = false
+		}, 100)
 	}
 
 	add(track: Track) {
