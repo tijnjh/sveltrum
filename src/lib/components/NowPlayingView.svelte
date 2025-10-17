@@ -2,7 +2,7 @@
 	import { onNavigate } from '$app/navigation'
 	import { getRelatedTracks } from '$lib/api/discovery.remote'
 	import { getTrackSource } from '$lib/api/hls.remote'
-	import { global, nowPlaying } from '$lib/global.svelte'
+	import { favoriteTrackIds, global, nowPlaying } from '$lib/global.svelte'
 	import { queue } from '$lib/queue.svelte'
 	import type { Track } from '$lib/schemas/track'
 	import Spinner from './Spinner.svelte'
@@ -14,6 +14,7 @@
 	import { cn } from 'cnfn'
 	// @ts-expect-error they dont have types (yet)
 	import Hls from 'hls.js/light'
+	import { toast } from 'svelte-sonner'
 
 	$effect(() => {
 		if (nowPlaying.current) {
@@ -102,13 +103,37 @@
 			></div>
 		{/if}
 
-		<hgroup class="flex flex-col gap-4">
-			<h1 class="text-2xl font-medium">{nowPlaying.current?.title}</h1>
+		{#if nowPlaying.current}
+			<hgroup class="flex flex-col gap-4">
+				<h1 class="text-2xl font-medium">
+					{nowPlaying.current?.title}
+				</h1>
 
-			{#if nowPlaying.current?.user}
+				<Button
+					class="w-fit"
+					onclick={() => {
+						if (!nowPlaying.current) return
+
+						if (favoriteTrackIds.current.includes(nowPlaying.current.id)) {
+							favoriteTrackIds.current = favoriteTrackIds.current.filter(
+								(id) => id !== nowPlaying.current?.id,
+							)
+							toast.success('Removed from favorites')
+							return
+						} else {
+							favoriteTrackIds.current.push(nowPlaying.current.id)
+							toast.success('Added to favorites')
+						}
+					}}
+				>
+					{favoriteTrackIds.current.includes(nowPlaying.current?.id)
+						? 'Unfavorite'
+						: 'Favorite'}
+				</Button>
+
 				<UserListing user={nowPlaying.current.user} />
-			{/if}
-		</hgroup>
+			</hgroup>
+		{/if}
 
 		{#key nowPlaying.current}
 			<audio
@@ -121,11 +146,13 @@
 			</audio>
 		{/key}
 
-		<Button
-			disabled={queue.tracks.current.length === 0}
-			class="w-fit"
-			onclick={() => queue.next()}>Next track</Button
-		>
+		<div class="flex flex-wrap gap-2">
+			<Button
+				disabled={queue.tracks.current.length === 0}
+				class="w-fit"
+				onclick={() => queue.next()}>Next track</Button
+			>
+		</div>
 	</div>
 
 	<div class="mt-8 flex w-full flex-col gap-4 md:h-dvh md:max-w-sm">
