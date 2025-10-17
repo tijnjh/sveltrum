@@ -102,11 +102,11 @@
 			></div>
 		{/if}
 
-		<hgroup>
+		<hgroup class="flex flex-col gap-4">
 			<h1 class="text-2xl font-medium">{nowPlaying.current?.title}</h1>
 
 			{#if nowPlaying.current?.user}
-				<UserListing user={nowPlaying.current.user} class="mt-4" />
+				<UserListing user={nowPlaying.current.user} />
 			{/if}
 		</hgroup>
 

@@ -18,6 +18,7 @@
 	thumbnail={{
 		src: user.avatar_url,
 		alt: `Profile picture of ${user.permalink}`,
+		class: 'rounded-full',
 	}}
 	href={`/${user.permalink}`}
 />

@@ -21,7 +21,7 @@
 
 	$effect(() => {
 		if (!global.showNowPlayingView) {
-			tweenedToasterBottomOffset.set(112) // 7rem
+			tweenedToasterBottomOffset.set(100)
 		} else {
 			tweenedToasterBottomOffset.set(16)
 		}

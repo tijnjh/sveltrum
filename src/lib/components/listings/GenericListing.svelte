@@ -44,7 +44,7 @@
 		{...props}
 		class="flex w-full min-w-0 gap-4 text-left transition-transform active:scale-95 active:opacity-50"
 	>
-		<ListingThumbnail src={thumbnail.src} alt={thumbnail.alt} />
+		<ListingThumbnail {...thumbnail} />
 
 		<div class="flex flex-col truncate">
 			<div class="flex gap-2">
@@ -80,7 +80,7 @@
 						{#if open}
 							<div
 								{...props}
-								class="flex origin-top-left flex-col gap-2 pt-2"
+								class="flex origin-top-right flex-col gap-2 pt-2"
 								transition:scale={{ start: 0.9, duration: 150 }}
 							>
 								{#each actions as action (action.label)}
