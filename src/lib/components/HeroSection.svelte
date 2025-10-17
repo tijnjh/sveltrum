@@ -32,7 +32,9 @@
 	/>
 {/if}
 
-<h1 class="text-2xl font-medium">{title}</h1>
-{#if user}
-	<UserListing {user} class="mt-4" />
-{/if}
+<div class="mb-8 flex flex-col gap-4">
+	<h1 class="text-2xl font-medium">{title}</h1>
+	{#if user}
+		<UserListing {user} />
+	{/if}
+</div>
