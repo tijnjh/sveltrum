@@ -7,12 +7,23 @@
 </script>
 
 <script lang="ts">
-	import ListingThumbnail from '../ListingThumbnail.svelte'
+	import GenericListing from './GenericListing.svelte'
 
 	const { playlist }: PlaylistListingProps = $props()
 </script>
 
-<a
+<GenericListing
+	title={playlist.title}
+	subtitle={playlist.user.username}
+	thumbnail={{
+		src: playlist.artwork_url,
+		alt: `Playlist picture of ${playlist.title}`,
+	}}
+	href={`/${playlist.user.permalink}/sets/${playlist.permalink}`}
+	badges={playlist.is_album ? ['Album'] : []}
+/>
+
+<!-- <a
 	href="/{playlist.user.permalink}/sets/{playlist.permalink}"
 	class="grid grid-cols-[auto_1fr] items-center gap-4 text-left transition-transform active:scale-95 active:opacity-50"
 >
@@ -34,4 +45,4 @@
 		</div>
 		<p class="truncate opacity-50">{playlist.user.username}</p>
 	</div>
-</a>
+</a> -->

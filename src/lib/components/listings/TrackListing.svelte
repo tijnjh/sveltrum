@@ -8,58 +8,58 @@
 </script>
 
 <script lang="ts">
-	import { global } from '$lib/global.svelte'
-	import ListingThumbnail from '../ListingThumbnail.svelte'
-	import { PlayIcon } from '@lucide/svelte'
+	import { favoriteTrackIds, global, nowPlaying } from '$lib/global.svelte'
+	import { queue } from '$lib/queue.svelte'
+	import GenericListing from './GenericListing.svelte'
+	import { toast } from 'svelte-sonner'
 
-	const { track, inAlbum = false }: TrackListingProps = $props()
+	const { track, inAlbum = false, ...props }: TrackListingProps = $props()
 </script>
 
-<div class="grid grid-cols-[auto_1fr] items-center gap-4">
-	<button
-		onclick={() => {
-			global.nowPlaying = track
+<GenericListing
+	{...props}
+	title={track.title}
+	subtitle={inAlbum ? `${track.playback_count} plays` : track.user.username}
+	thumbnail={{
+		src: track.artwork_url,
+		alt: `Album cover of ${track.title}`,
+	}}
+	onclick={() => {
+		nowPlaying.current = track
 
-			setTimeout(() => {
-				global.isPaused = false
-			}, 50)
-		}}
-		class="group relative cursor-pointer overflow-clip rounded transition-transform active:scale-90 active:opacity-50"
-	>
-		<ListingThumbnail
-			src={track.artwork_url}
-			alt="album cover of {track.title}"
-			class="transition-[filter,scale] group-hover:scale-120 group-hover:blur-xs "
-		/>
-
-		<div
-			class="absolute inset-0 grid scale-90 touch-none place-items-center bg-zinc-800/50 text-white opacity-0 transition-[opacity,scale] group-hover:scale-100 group-hover:opacity-100"
-		>
-			<PlayIcon fill="currentColor" />
-		</div>
-	</button>
-
-	<a
-		href="/{track.user.permalink}/{track.permalink}"
-		class="flex w-full min-w-0 cursor-pointer flex-col text-left transition-transform active:scale-95 active:opacity-50"
-	>
-		<div class="flex gap-2">
-			<h3 class="truncate">{track.title}</h3>
-
-			{#if track.policy === 'SNIP'}
-				<div
-					class="rounded-full bg-zinc-700 px-2 py-0.5 text-sm whitespace-nowrap text-zinc-400"
-				>
-					30s only
-				</div>
-			{/if}
-		</div>
-		<p class="truncate opacity-50">
-			{#if inAlbum}
-				{track.playback_count?.toLocaleString()} plays
-			{:else}
-				{track.user?.username}
-			{/if}
-		</p>
-	</a>
-</div>
+		setTimeout(() => {
+			global.isPaused = false
+		}, 50)
+	}}
+	badges={track.policy === 'SNIP' ? ['30s only'] : []}
+	actions={[
+		{
+			label: favoriteTrackIds.current.includes(track.id)
+				? 'Unfavorite'
+				: 'Favorite',
+			onclick: () => {
+				if (favoriteTrackIds.current.includes(track.id)) {
+					favoriteTrackIds.current = favoriteTrackIds.current.filter(
+						(id) => id !== track.id,
+					)
+					toast.success('Removed from favorites')
+					return
+				} else {
+					favoriteTrackIds.current.push(track.id)
+					toast.success('Added to favorites')
+				}
+			},
+		},
+		{
+			label: 'Go to Track',
+			href: `/${track.user.permalink}/${track.permalink}`,
+		},
+		{
+			label: 'Add to queue',
+			onclick: () => {
+				queue.add(track)
+				toast.success('Added to queue')
+			},
+		},
+	]}
+/>
