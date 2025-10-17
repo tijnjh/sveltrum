@@ -1,17 +1,16 @@
-<script module lang="ts">
+<script lang="ts">
+	import { cn } from 'cnfn'
 	import type { ClassValue } from 'cnfn'
 
-	export interface ListingThumbnailProps {
+	const {
+		src,
+		alt,
+		...props
+	}: {
 		src?: string | null
 		alt: string
 		class?: ClassValue
-	}
-</script>
-
-<script lang="ts">
-	import { cn } from 'cnfn'
-
-	const { src, alt, ...props }: ListingThumbnailProps = $props()
+	} = $props()
 
 	let hasFailed = $state(false)
 </script>

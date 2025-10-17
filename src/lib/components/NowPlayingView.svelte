@@ -2,7 +2,7 @@
 	import { onNavigate } from '$app/navigation'
 	import { getRelatedTracks } from '$lib/api/discovery.remote'
 	import { getTrackSource } from '$lib/api/hls.remote'
-	import { global } from '$lib/global.svelte'
+	import { global, queue } from '$lib/global.svelte'
 	import type { Track } from '$lib/schemas/track'
 	import Spinner from './Spinner.svelte'
 	import TrackListing from './listings/TrackListing.svelte'
@@ -63,7 +63,7 @@
 		},
 	}))
 
-	const track = global.nowPlaying
+	const track = $derived(global.nowPlaying)
 
 	let currentView = $state<'related' | 'queue'>('related')
 </script>
@@ -105,6 +105,7 @@
 
 		<hgroup>
 			<h1 class="text-2xl font-medium">{track?.title}</h1>
+
 			{#if track?.user}
 				<UserListing user={track.user} class="mt-4" />
 			{/if}
@@ -117,7 +118,7 @@
 				controls
 				{@attach track && applySource(track)}
 				onended={() => {
-					global.nowPlaying = global.queue.shift() || null
+					global.nowPlaying = queue.current.shift() || null
 				}}
 			>
 			</audio>
@@ -143,16 +144,14 @@
 		</div>
 
 		{#if currentView === 'queue'}
-			{#if global.queue.length === 0}
+			<!-- eslint-disable-next-line svelte/require-each-key -->
+			{#each queue.current as track}
+				<TrackListing {track} />
+			{:else}
 				<span class="text-xl font-medium text-zinc-100/25">
 					Your queue is empty...
 				</span>
-			{:else}
-				<!-- eslint-disable-next-line svelte/require-each-key -->
-				{#each global.queue as track}
-					<TrackListing {track} />
-				{/each}
-			{/if}
+			{/each}
 		{:else if currentView === 'related'}
 			{#if query.isLoading}
 				<Spinner />

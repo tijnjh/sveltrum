@@ -17,7 +17,7 @@
 
 <main
 	class={cn(
-		'mx-auto flex max-w-4xl flex-col md:grid md:grid-cols-2 md:gap-4',
+		'mx-auto mt-16 flex max-w-4xl flex-col md:grid md:grid-cols-2 md:gap-4',
 		className,
 	)}
 >

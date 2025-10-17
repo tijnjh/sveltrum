@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { global } from '$lib/global.svelte'
+	import { favoriteTrackIds, global, queue } from '$lib/global.svelte'
 	import type { Track } from '$lib/schemas/track'
 	import ListingThumbnail from '../ListingThumbnail.svelte'
 	import Button from '../ui/Button.svelte'
 	import { EllipsisIcon } from '@lucide/svelte'
 	import { DropdownMenu } from 'bits-ui'
 	import { toast } from 'svelte-sonner'
+	import { scale } from 'svelte/transition'
 
 	const {
 		track,
@@ -25,16 +26,14 @@
 				global.isPaused = false
 			}, 50)
 		}}
-		class="flex items-center gap-4 truncate text-left transition-transform active:scale-95 active:opacity-50"
+		class="flex cursor-pointer items-center gap-4 truncate text-left transition-transform active:scale-95 active:opacity-50"
 	>
 		<ListingThumbnail
 			src={track.artwork_url}
 			alt="album cover of {track.title}"
 		/>
 
-		<div
-			class="flex w-full min-w-0 cursor-pointer flex-col text-left transition-transform active:scale-95 active:opacity-50"
-		>
+		<div class="flex w-full min-w-0 flex-col text-left">
 			<div class="flex gap-2">
 				<h3 class="truncate">{track.title}</h3>
 
@@ -64,19 +63,50 @@
 				size="icon"
 			/>
 		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="start" class="flex flex-col gap-2">
-			<Button href="/{track.user.permalink}/{track.permalink}">
-				Go to Track
-			</Button>
+		<DropdownMenu.Content align="start" forceMount>
+			{#snippet child({ props, open, wrapperProps })}
+				<div {...wrapperProps}>
+					{#if open}
+						<div
+							{...props}
+							class="flex origin-top-left flex-col gap-2"
+							transition:scale={{ start: 0.9, duration: 150 }}
+						>
+							<Button
+								onclick={() => {
+									if (favoriteTrackIds.current.includes(track.id)) {
+										favoriteTrackIds.current = favoriteTrackIds.current.filter(
+											(id) => id !== track.id,
+										)
+										toast.success('Removed from favorites')
+										return
+									} else {
+										favoriteTrackIds.current.push(track.id)
+										toast.success('Added to favorites')
+									}
+								}}
+							>
+								{favoriteTrackIds.current.includes(track.id)
+									? 'Unfavorite'
+									: 'Favorite'}
+							</Button>
 
-			<Button
-				onclick={() => {
-					global.queue.push(track)
-					toast.success('Added to queue')
-				}}
-			>
-				Play next
-			</Button>
+							<Button href="/{track.user.permalink}/{track.permalink}">
+								Go to Track
+							</Button>
+
+							<Button
+								onclick={() => {
+									queue.current.push(track)
+									toast.success('Added to queue')
+								}}
+							>
+								Play next
+							</Button>
+						</div>
+					{/if}
+				</div>
+			{/snippet}
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
 </div>
