@@ -88,37 +88,6 @@
 										{action.label}
 									</Button>
 								{/each}
-								<!-- <Button
-								onclick={() => {
-									if (favoriteTrackIds.current.includes(track.id)) {
-										favoriteTrackIds.current = favoriteTrackIds.current.filter(
-											(id) => id !== track.id,
-										)
-										toast.success('Removed from favorites')
-										return
-									} else {
-										favoriteTrackIds.current.push(track.id)
-										toast.success('Added to favorites')
-									}
-								}}
-							>
-								{favoriteTrackIds.current.includes(track.id)
-									? 'Unfavorite'
-									: 'Favorite'}
-							</Button>
-
-							<Button href="/{track.user.permalink}/{track.permalink}">
-								Go to Track
-							</Button>
-
-							<Button
-								onclick={() => {
-									queue.current.push(track)
-									toast.success('Added to queue')
-								}}
-							>
-								Play next
-							</Button> -->
 							</div>
 						{/if}
 					</div>
