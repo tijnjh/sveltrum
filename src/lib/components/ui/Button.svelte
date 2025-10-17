@@ -6,7 +6,6 @@
 		slots: {
 			base: [
 				'flex cursor-pointer items-center justify-center gap-2 rounded-full transition-transform',
-				'active:scale-90 active:opacity-50',
 			],
 		},
 		variants: {
@@ -17,6 +16,10 @@
 			size: {
 				default: 'px-4 py-2',
 				icon: 'size-10',
+			},
+			disabled: {
+				true: 'cursor-not-allowed opacity-50',
+				false: 'active:scale-90 active:opacity-50',
 			},
 		},
 		defaultVariants: {
@@ -46,7 +49,9 @@
 		...props
 	}: ButtonProps = $props()
 
-	const classes = $derived(buttonVariants({ variant, size }))
+	const classes = $derived(
+		buttonVariants({ variant, size, disabled: props.disabled }),
+	)
 </script>
 
 <Button.Root class={classes.base({ class: cn(className) })} {...props}>

@@ -120,6 +120,12 @@
 			>
 			</audio>
 		{/key}
+
+		<Button
+			disabled={queue.tracks.current.length === 0}
+			class="w-fit"
+			onclick={() => queue.next()}>Next track</Button
+		>
 	</div>
 
 	<div class="mt-8 flex w-full flex-col gap-4 md:h-dvh md:max-w-sm">
