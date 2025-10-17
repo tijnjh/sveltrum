@@ -16,8 +16,6 @@
 	import HeroSection from '$lib/components/HeroSection.svelte'
 	import Main from '$lib/components/Main.svelte'
 
-	// import Button from '$lib/components/ui/Button.svelte'
-
 	const { children } = $props()
 
 	track = await resolveTrack({
@@ -33,10 +31,6 @@
 			pictureSrc={track.artwork_url}
 			user={track.user}
 		/>
-
-		<!-- <Button href="/{track.user.permalink}/{track.permalink}/sets">
-			In playlists
-		</Button> -->
 	{/snippet}
 
 	{#snippet right()}

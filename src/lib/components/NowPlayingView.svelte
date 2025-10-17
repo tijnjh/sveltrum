@@ -14,6 +14,7 @@
 	import { cn } from 'cnfn'
 	// @ts-expect-error they dont have types (yet)
 	import Hls from 'hls.js/light'
+	import { haptic } from 'ios-haptics'
 	import { toast } from 'svelte-sonner'
 
 	$effect(() => {
@@ -119,10 +120,12 @@
 								(id) => id !== nowPlaying.current?.id,
 							)
 							toast.success('Removed from favorites')
+							haptic.confirm()
 							return
 						} else {
 							favoriteTrackIds.current.push(nowPlaying.current.id)
 							toast.success('Added to favorites')
+							haptic.confirm()
 						}
 					}}
 				>
@@ -150,8 +153,10 @@
 			<Button
 				disabled={queue.tracks.current.length === 0}
 				class="w-fit"
-				onclick={() => queue.next()}>Next track</Button
+				onclick={() => queue.next()}
 			>
+				Next track
+			</Button>
 		</div>
 	</div>
 
@@ -187,7 +192,10 @@
 				<Button
 					variant="secondary"
 					class="mt-4 w-full"
-					onclick={() => queue.clear()}
+					onclick={() => {
+						queue.clear()
+						haptic.confirm()
+					}}
 				>
 					Clear Queue
 				</Button>

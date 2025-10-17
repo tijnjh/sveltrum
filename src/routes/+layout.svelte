@@ -2,7 +2,6 @@
 	import { page } from '$app/state'
 	import NowPlayingBar from '$lib/components/NowPlayingBar.svelte'
 	import NowPlayingView from '$lib/components/NowPlayingView.svelte'
-	import Spinner from '$lib/components/Spinner.svelte'
 	import Button from '$lib/components/ui/Button.svelte'
 	import { global } from '$lib/global.svelte'
 	import '../app.css'
@@ -46,20 +45,12 @@
 	<NowPlayingView />
 	<NowPlayingBar />
 
-	<svelte:boundary>
-		{@render children()}
-
-		{#snippet pending()}
-			<Spinner />
-		{/snippet}
-		{#snippet failed(error)}
-			{error}
-		{/snippet}
-	</svelte:boundary>
+	{@render children()}
 </QueryClientProvider>
 
 <Toaster
 	richColors
+	theme="dark"
 	position="bottom-center"
 	offset={{ bottom: tweenedToasterBottomOffset.current }}
 	mobileOffset={{ bottom: tweenedToasterBottomOffset.current }}

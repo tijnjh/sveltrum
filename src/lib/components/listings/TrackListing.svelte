@@ -11,6 +11,7 @@
 	import { favoriteTrackIds, global, nowPlaying } from '$lib/global.svelte'
 	import { queue } from '$lib/queue.svelte'
 	import GenericListing from './GenericListing.svelte'
+	import { haptic } from 'ios-haptics'
 	import { toast } from 'svelte-sonner'
 
 	const { track, inAlbum = false, ...props }: TrackListingProps = $props()
@@ -43,10 +44,12 @@
 						(id) => id !== track.id,
 					)
 					toast.success('Removed from favorites')
+					haptic.confirm()
 					return
 				} else {
 					favoriteTrackIds.current.push(track.id)
 					toast.success('Added to favorites')
+					haptic.confirm()
 				}
 			},
 		},
@@ -59,6 +62,7 @@
 			onclick: () => {
 				queue.add(track)
 				toast.success('Added to queue')
+				haptic.confirm()
 			},
 		},
 	]}
