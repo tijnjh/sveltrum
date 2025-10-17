@@ -23,13 +23,17 @@ export const getTrackById = query(v.number(), (id) =>
 	}),
 )
 
-export const getTracksByIds = query(v.array(v.number()), (ids) =>
-	$api({
+export const getTracksByIds = query(v.array(v.number()), (ids) => {
+	if (!ids.length) {
+		return []
+	}
+
+	return $api({
 		path: `/tracks`,
 		params: {
 			ids: ids.join(','),
 			limit: paginated_limit,
 		},
 		schema: v.array(Track),
-	}),
-)
+	})
+})

@@ -1,13 +1,15 @@
 import type { Track } from './schemas/track'
+import { PersistedState } from 'runed'
 
-export interface Global {
-	nowPlaying: Track | null
+export const nowPlaying = new PersistedState<Track | null>('now-playing', null)
+export const favoriteTrackIds = new PersistedState<number[]>('favorites', [])
+
+interface Global {
 	showNowPlayingView: boolean
 	isPaused: boolean
 }
 
 export const global = $state<Global>({
-	nowPlaying: null,
 	showNowPlayingView: false,
 	isPaused: true,
 })
