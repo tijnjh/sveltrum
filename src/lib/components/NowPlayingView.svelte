@@ -122,7 +122,7 @@
 		{/key}
 	</div>
 
-	<div class="m mt-8 flex w-full flex-col gap-4 md:h-dvh md:max-w-sm">
+	<div class="mt-8 flex w-full flex-col gap-4 md:h-dvh md:max-w-sm">
 		<div class="mx-auto flex w-full max-w-xl gap-2">
 			{#each ['related', 'queue'] as const as view (view)}
 				{#key currentView}
