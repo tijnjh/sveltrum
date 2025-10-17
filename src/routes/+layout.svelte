@@ -62,4 +62,5 @@
 	richColors
 	position="bottom-center"
 	offset={{ bottom: tweenedToasterBottomOffset.current }}
+	mobileOffset={{ bottom: tweenedToasterBottomOffset.current }}
 />
