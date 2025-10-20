@@ -73,7 +73,7 @@
 						{#if open}
 							<div
 								{...props}
-								class="flex origin-top-right flex-col gap-2 pt-2"
+								class="z-[1000] flex origin-top-right flex-col gap-2 pt-2"
 								transition:scale={{ start: 0.9, duration: 150 }}
 							>
 								{#each actions as action (action.label)}
