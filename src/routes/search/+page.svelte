@@ -61,7 +61,7 @@
 </script>
 
 <svelte:head>
-	<title>results for '{debouncedQ.current}' &bull; sveltrum</title>
+	<title>results for '{debouncedQ.current}' - sveltrum</title>
 </svelte:head>
 
 <Main>
