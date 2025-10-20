@@ -19,7 +19,8 @@ export async function $api<S extends v.GenericSchema, T = v.InferOutput<S>>({
 	params?: Record<string, Decodable>
 	schema?: S
 }): Promise<T> {
-	const response = await ofetch(`https://api-v2.soundcloud.com${path}`, {
+	const response = await ofetch(path, {
+		baseURL: 'https://api-v2.soundcloud.com',
 		params: {
 			...params,
 			client_id: await getClientId(),

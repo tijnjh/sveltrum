@@ -1,5 +1,6 @@
 import { query } from '$app/server'
 import { Collection } from '$lib/schemas/collection'
+import { Paginated } from '$lib/schemas/paginated'
 import { Playlist } from '$lib/schemas/playlist'
 import { Track } from '$lib/schemas/track'
 import { User } from '$lib/schemas/user'
@@ -22,9 +23,8 @@ export const getUserById = query(v.number(), (id) =>
 
 export const getUserTracks = query(
 	v.object({
+		...Paginated.entries,
 		id: v.number(),
-		offset: v.optional(v.number()),
-		limit: v.optional(v.number()),
 	}),
 	async ({ id, offset, limit }) => {
 		const res = await $api({
@@ -38,9 +38,8 @@ export const getUserTracks = query(
 
 export const getUserPlaylists = query(
 	v.object({
+		...Paginated.entries,
 		id: v.number(),
-		offset: v.optional(v.number()),
-		limit: v.optional(v.number()),
 	}),
 	async ({ id, offset, limit }) => {
 		const res = await $api({

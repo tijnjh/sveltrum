@@ -7,7 +7,7 @@
 	import '../app.css'
 	import { ChevronLeft } from '@lucide/svelte'
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
-	import { Toaster } from 'svelte-sonner'
+	import { toast, Toaster } from 'svelte-sonner'
 	import { Tween } from 'svelte/motion'
 
 	const { children } = $props()
@@ -45,7 +45,18 @@
 	<NowPlayingView />
 	<NowPlayingBar />
 
-	{@render children()}
+	<svelte:boundary
+		onerror={(error, reset) =>
+			toast.error('An error occurred', {
+				description: `${error}`,
+				action: {
+					label: 'Retry',
+					onClick: reset,
+				},
+			})}
+	>
+		{@render children()}
+	</svelte:boundary>
 </QueryClientProvider>
 
 <Toaster

@@ -24,6 +24,11 @@
 {#if pictureSrc}
 	<img
 		src={pictureSrc.replace('large', 't500x500')}
+		{@attach (node) => {
+			node.onerror = () => {
+				node.src = pictureSrc
+			}
+		}}
 		class={cn(
 			'mx-auto my-4 aspect-square w-full max-w-xs',
 			roundedPicture ? 'rounded-full' : 'rounded-xl',

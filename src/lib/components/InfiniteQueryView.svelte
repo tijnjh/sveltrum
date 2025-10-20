@@ -15,13 +15,34 @@
 
 	const {
 		query,
+		orderedIds,
 	}: {
 		query: CreateInfiniteQueryResult<InfiniteData<T[], unknown>, Error>
+		orderedIds?: number[]
 	} = $props()
+
+	const sortedPages = $derived.by(() => {
+		if (!orderedIds) {
+			return query.data?.pages ?? []
+		}
+
+		return query.data?.pages.map((page) => {
+			if (orderedIds.length === 0) return page
+
+			return page.sort((a, b) => {
+				const ai = orderedIds.indexOf(a.id)
+				const bi = orderedIds.indexOf(b.id)
+				if (ai === -1 && bi === -1) return 0
+				if (ai === -1) return 1
+				if (bi === -1) return -1
+				return ai - bi
+			})
+		})
+	})
 </script>
 
 <div class="flex flex-col gap-4">
-	{#each query.data?.pages as page (page)}
+	{#each sortedPages as page (page)}
 		{#each page as result (result.id)}
 			{#if result.kind === 'track'}
 				<TrackListing track={result as Track} />

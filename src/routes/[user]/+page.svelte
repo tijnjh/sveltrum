@@ -45,15 +45,16 @@
 		},
 		initialPageParam: 0,
 		getNextPageParam: (lastPage, allPages) =>
-			lastPage.length < paginated_limit ? allPages.length : undefined,
+			lastPage.length === 0 ? undefined : allPages.length,
 	}))
 </script>
 
 <svelte:head>
-	<title>{user?.username} &bull; sveltrum</title>
-	<link rel="icon" href={user?.avatar_url} />
+	<title>{user.username}</title>
+	<meta name="description" content={user.description} />
+	<link rel="icon" href={user.avatar_url} />
+	<meta name="og:image" content={user.avatar_url} />
 </svelte:head>
-
 <Main>
 	{#snippet left()}
 		<HeroSection
