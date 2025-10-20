@@ -30,7 +30,7 @@
 <QueryClientProvider client={queryClient}>
 	{#if page.route.id !== '/'}
 		<div
-			class="fixed inset-x-0 top-0 z-40 mx-auto flex max-w-5xl justify-between bg-gradient-to-b from-zinc-800 to-zinc-700/0 p-4"
+			class="fixed inset-x-0 top-0 z-40 mx-auto flex max-w-5xl justify-between bg-linear-to-b from-zinc-800 to-zinc-700/0 p-4"
 		>
 			<Button
 				variant="secondary"
