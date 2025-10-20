@@ -2,6 +2,7 @@
 	import { getSelections } from '$lib/api/discovery.remote'
 	import { getTracksByIds } from '$lib/api/track.remote'
 	import Main from '$lib/components/Main.svelte'
+	import ViewMore from '$lib/components/ViewMore.svelte'
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
 	import UserListing from '$lib/components/listings/UserListing.svelte'
@@ -42,9 +43,18 @@
 			Your Favorites
 		</h2>
 
-		{#each favorites.toReversed() as favorite (favorite.id)}
+		{#each favorites.toReversed().slice(0, 4) as favorite (favorite.id)}
 			<TrackListing track={favorite} />
 		{/each}
+		<ViewMore
+			label="View all favorites"
+			href="/favorites"
+			class="mt-4"
+			thumbnails={favorites
+				.toReversed()
+				.slice(4, 7)
+				.map((f) => f.artwork_url)}
+		/>
 	{/snippet}
 	{#snippet right()}
 		{#each selections as selection (selection.items)}
