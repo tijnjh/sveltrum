@@ -1,8 +1,7 @@
 <script lang="ts">
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
-	import { getTrack } from './+layout.svelte'
 
-	const track = getTrack()
+	const { data: track } = $props()
 </script>
 
 <TrackListing {track} />

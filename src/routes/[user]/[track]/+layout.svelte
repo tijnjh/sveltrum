@@ -1,27 +1,8 @@
-<script module lang="ts">
-	import type { Track } from '$lib/schemas/track'
-
-	let track = $state<Track>()!
-
-	// theres probably a better way to do this
-
-	export function getTrack() {
-		return track
-	}
-</script>
-
 <script lang="ts">
-	import { page } from '$app/state'
-	import { resolveTrack } from '$lib/api/track.remote'
 	import HeroSection from '$lib/components/HeroSection.svelte'
 	import Main from '$lib/components/Main.svelte'
 
-	const { children } = $props()
-
-	track = await resolveTrack({
-		user: page.params.user!,
-		track: page.params.track!,
-	})
+	const { children, data: track } = $props()
 </script>
 
 <Main>
