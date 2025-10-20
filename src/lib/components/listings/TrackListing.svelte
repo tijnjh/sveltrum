@@ -1,26 +1,17 @@
-<script module lang="ts">
-	import type { Track } from '$lib/schemas/track'
-
-	export interface TrackListingProps {
-		track: Track
-		inAlbum?: boolean
-	}
-</script>
-
 <script lang="ts">
 	import { favoriteTrackIds, global, nowPlaying } from '$lib/global.svelte'
 	import { queue } from '$lib/queue.svelte'
+	import type { Track } from '$lib/schemas/track'
 	import GenericListing from './GenericListing.svelte'
 	import { haptic } from 'ios-haptics'
 	import { toast } from 'svelte-sonner'
 
-	const { track, inAlbum = false, ...props }: TrackListingProps = $props()
+	const { track }: { track: Track } = $props()
 </script>
 
 <GenericListing
-	{...props}
 	title={track.title}
-	subtitle={inAlbum ? `${track.playback_count} plays` : track.user.username}
+	subtitle={track.user.username}
 	thumbnail={{
 		src: track.artwork_url,
 		alt: `Album cover of ${track.title}`,

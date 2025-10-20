@@ -1,15 +1,8 @@
-<script module lang="ts">
-	import type { Playlist } from '$lib/schemas/playlist'
-
-	export interface PlaylistListingProps {
-		playlist: Playlist
-	}
-</script>
-
 <script lang="ts">
+	import type { Playlist } from '$lib/schemas/playlist'
 	import GenericListing from './GenericListing.svelte'
 
-	const { playlist }: PlaylistListingProps = $props()
+	const { playlist }: { playlist: Playlist } = $props()
 </script>
 
 <GenericListing

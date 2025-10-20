@@ -1,15 +1,8 @@
-<script module lang="ts">
-	import type { User } from '$lib/schemas/user'
-
-	export interface UserListingProps {
-		user: User
-	}
-</script>
-
 <script lang="ts">
+	import type { User } from '$lib/schemas/user'
 	import GenericListing from './GenericListing.svelte'
 
-	const { user }: UserListingProps = $props()
+	const { user }: { user: User } = $props()
 </script>
 
 <GenericListing

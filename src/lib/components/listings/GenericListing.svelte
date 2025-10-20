@@ -1,24 +1,17 @@
 <script module lang="ts">
 	import type { ListingThumbnailProps } from '../ListingThumbnail.svelte'
 	import type { ButtonRootProps } from 'bits-ui'
+	import type { MergeExclusive } from 'type-fest'
 
 	export type GenericListingProps = ButtonRootProps & {
 		title: string
 		badges?: string[]
 		subtitle: string
 		thumbnail: ListingThumbnailProps
-		actions?: (
-			| {
-					label: string
-					onclick: VoidFunction
-					href?: never
-			  }
-			| {
-					label: string
-					href: string
-					onclick?: never
-			  }
-		)[]
+		actions?: MergeExclusive<
+			{ label: string; onclick: VoidFunction },
+			{ label: string; href: string }
+		>[]
 	}
 </script>
 
