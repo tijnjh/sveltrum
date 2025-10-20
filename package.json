@@ -6,13 +6,13 @@
 		"node": "22"
 	},
 	"scripts": {
-		"build": "vite build",
+		"build": "bun -b vite build",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"dev": "vite dev",
+		"dev": "bun vite dev",
 		"prepare": "svelte-kit sync || echo ''",
 		"preview": "vite preview",
-		"start": "node ./build",
+		"start": "bun run ./build",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."
 	},
@@ -47,6 +47,7 @@
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.7.1",
 		"svelte": "^5.41.1",
+		"svelte-adapter-bun": "^1.0.0",
 		"svelte-check": "^4.3.3",
 		"tailwindcss": "^4.1.15",
 		"type-fest": "^5.1.0",
