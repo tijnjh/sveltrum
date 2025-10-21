@@ -5,8 +5,8 @@
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
 	import UserListing from '$lib/components/listings/UserListing.svelte'
-	import Button from '$lib/components/ui/Button.svelte'
-	import Input from '$lib/components/ui/Input.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { Input } from '$lib/components/ui/input'
 	import { favoriteTrackIds } from '$lib/global.svelte'
 	import { SearchIcon } from '@lucide/svelte'
 
@@ -19,9 +19,7 @@
 		<div class="flex w-full flex-col items-start gap-4">
 			<div class="flex w-full items-center justify-between">
 				<h1 class="text-3xl font-medium">Sveltrum</h1>
-				<Button variant="secondary" href="https://tijn.dev/sveltrum">
-					View on GitHub
-				</Button>
+				<Button href="https://tijn.dev/sveltrum">View on GitHub</Button>
 			</div>
 
 			<form action="search" class="w-full">
@@ -30,8 +28,9 @@
 					name="q"
 					placeholder="Search for artists, tracks or playlists..."
 					class="w-full"
-					icon={SearchIcon}
-				/>
+				>
+					<SearchIcon />
+				</Input>
 			</form>
 		</div>
 

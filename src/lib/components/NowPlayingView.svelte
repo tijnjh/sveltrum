@@ -2,16 +2,16 @@
 	import { onNavigate } from '$app/navigation'
 	import { getRelatedTracks } from '$lib/api/discovery.remote'
 	import { getTrackSource } from '$lib/api/hls.remote'
+	import { Button } from '$lib/components/ui/button/index.js'
 	import { favoriteTrackIds, global, nowPlaying } from '$lib/global.svelte'
 	import { queue } from '$lib/queue.svelte'
 	import type { Track } from '$lib/schemas/track'
+	import { cn } from '$lib/utils'
 	import Spinner from './Spinner.svelte'
 	import TrackListing from './listings/TrackListing.svelte'
 	import UserListing from './listings/UserListing.svelte'
-	import Button from './ui/Button.svelte'
 	import { ChevronDownIcon } from '@lucide/svelte'
 	import { createQuery } from '@tanstack/svelte-query'
-	import { cn } from 'cnfn'
 	// @ts-expect-error they dont have types (yet)
 	import Hls from 'hls.js/light'
 	import { haptic } from 'ios-haptics'
@@ -81,7 +81,7 @@
 <div
 	class={cn(
 		'fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll bg-zinc-700/75 p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2',
-		global.showNowPlayingView ? 'top-0' : 'top-[100%]',
+		global.showNowPlayingView ? 'top-0' : 'top-full',
 	)}
 >
 	<button
@@ -165,7 +165,7 @@
 			{#each ['related', 'queue'] as const as view (view)}
 				{#key currentView}
 					<Button
-						variant={currentView === view ? 'primary' : 'secondary'}
+						variant={currentView === view ? 'default' : 'secondary'}
 						class="capitalize"
 						onclick={() => {
 							currentView = view
@@ -190,7 +190,6 @@
 
 			{#if queue.tracks.current.length > 0}
 				<Button
-					variant="secondary"
 					class="mt-4 w-full"
 					onclick={() => {
 						queue.clear()

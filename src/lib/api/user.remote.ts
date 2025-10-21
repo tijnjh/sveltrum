@@ -26,14 +26,12 @@ export const getUserTracks = query(
 		...Paginated.entries,
 		id: v.number(),
 	}),
-	async ({ id, offset, limit }) => {
-		const res = await $api({
+	({ id, limit, offset }) =>
+		$api({
 			path: `/users/${id}/tracks`,
 			params: { limit, offset },
 			schema: Collection(Track),
-		})
-		return res.collection
-	},
+		}).then((r) => r.collection),
 )
 
 export const getUserPlaylists = query(
@@ -41,12 +39,10 @@ export const getUserPlaylists = query(
 		...Paginated.entries,
 		id: v.number(),
 	}),
-	async ({ id, offset, limit }) => {
-		const res = await $api({
+	({ id, limit, offset }) =>
+		$api({
 			path: `/users/${id}/playlists`,
 			params: { limit, offset },
 			schema: Collection(Playlist),
-		})
-		return res.collection
-	},
+		}).then((r) => r.collection),
 )

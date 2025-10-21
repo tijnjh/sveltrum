@@ -8,7 +8,7 @@
 	import HeroSection from '$lib/components/HeroSection.svelte'
 	import InfiniteQueryView from '$lib/components/InfiniteQueryView.svelte'
 	import Main from '$lib/components/Main.svelte'
-	import Button from '$lib/components/ui/Button.svelte'
+	import { Button } from '$lib/components/ui/button'
 	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
@@ -68,7 +68,7 @@
 		<div class="flex gap-2">
 			{#each ['tracks', 'playlists'] as const as kind (kind)}
 				<Button
-					variant={params.kind === kind ? 'primary' : 'secondary'}
+					variant={params.kind === kind ? 'default' : 'secondary'}
 					class="capitalize"
 					onclick={() => (params.kind = kind)}
 				>

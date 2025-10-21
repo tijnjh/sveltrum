@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import { favoriteTrackIds, global, nowPlaying } from '$lib/global.svelte'
 	import { queue } from '$lib/queue.svelte'
 	import type { Track } from '$lib/schemas/track'
@@ -46,7 +47,7 @@
 		},
 		{
 			label: 'Go to Track',
-			href: `/${track.user.permalink}/${track.permalink}`,
+			onclick: () => goto(`/${track.user.permalink}/${track.permalink}`),
 		},
 		{
 			label: 'Add to queue',

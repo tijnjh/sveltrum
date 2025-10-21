@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button'
 	import { global, nowPlaying } from '$lib/global.svelte'
 	import ListingThumbnail from './ListingThumbnail.svelte'
-	import Button from './ui/Button.svelte'
 	import { PauseIcon, PlayIcon } from '@lucide/svelte'
 	import { haptic } from 'ios-haptics'
 	import { fly } from 'svelte/transition'
@@ -12,7 +12,7 @@
 {#if !global.showNowPlayingView}
 	<div
 		transition:fly={{ y: 100 }}
-		class="fixed inset-x-2 bottom-2 z-[9999999999] mx-auto rounded-2xl bg-zinc-700/75 backdrop-blur-lg md:inset-x-4 md:bottom-4 md:max-w-xl"
+		class="fixed inset-x-2 bottom-2 z-9999999999 mx-auto rounded-2xl bg-zinc-700/75 backdrop-blur-lg md:inset-x-4 md:bottom-4 md:max-w-xl"
 	>
 		<div class="grid grid-cols-[1fr_auto] items-center gap-4 p-3">
 			<button
@@ -29,7 +29,6 @@
 
 			<Button
 				size="icon"
-				variant="secondary"
 				onclick={() => {
 					haptic()
 					global.isPaused = !global.isPaused

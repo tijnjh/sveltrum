@@ -1,26 +1,23 @@
 <script module lang="ts">
 	import type { ListingThumbnailProps } from '../ListingThumbnail.svelte'
 	import type { ButtonRootProps } from 'bits-ui'
-	import type { MergeExclusive } from 'type-fest'
 
 	export type GenericListingProps = ButtonRootProps & {
 		title: string
 		badges?: string[]
 		subtitle: string
 		thumbnail: ListingThumbnailProps
-		actions?: MergeExclusive<
-			{ label: string; onclick: VoidFunction },
-			{ label: string; href: string }
-		>[]
+		actions?: { label: string; onclick: VoidFunction }[]
 	}
 </script>
 
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import ListingThumbnail from '../ListingThumbnail.svelte'
-	import Button from '../ui/Button.svelte'
+	import { Badge } from '../ui/badge'
 	import { EllipsisIcon } from '@lucide/svelte'
-	import { DropdownMenu, Button as BitsUiButton } from 'bits-ui'
-	import { scale } from 'svelte/transition'
+	import { Button as BitsUiButton } from 'bits-ui'
 
 	const {
 		title,
@@ -44,11 +41,9 @@
 				<h3 class="truncate">{title}</h3>
 
 				{#each badges as badge (badge)}
-					<div
-						class="rounded-full bg-zinc-700 px-2 py-0.5 text-sm whitespace-nowrap text-zinc-400"
-					>
+					<Badge>
 						{badge}
-					</div>
+					</Badge>
 				{/each}
 			</div>
 			<p class="truncate opacity-50">
@@ -60,31 +55,18 @@
 	{#if actions}
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
-				<Button
-					variant="secondary"
-					icon={EllipsisIcon}
-					aria-label="More options"
-					size="icon"
-				/>
+				<Button aria-label="More options" size="icon">
+					<EllipsisIcon />
+				</Button>
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end" forceMount>
-				{#snippet child({ props, open, wrapperProps })}
-					<div {...wrapperProps}>
-						{#if open}
-							<div
-								{...props}
-								class="z-1000 flex origin-top-right flex-col gap-2 pt-2"
-								transition:scale={{ start: 0.9, duration: 150 }}
-							>
-								{#each actions as action (action.label)}
-									<Button href={action.href} onclick={action.onclick}>
-										{action.label}
-									</Button>
-								{/each}
-							</div>
-						{/if}
-					</div>
-				{/snippet}
+			<DropdownMenu.Content>
+				<DropdownMenu.Group>
+					{#each actions as action (action.label)}
+						<DropdownMenu.Item onclick={action.onclick}>
+							{action.label}
+						</DropdownMenu.Item>
+					{/each}
+				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	{/if}

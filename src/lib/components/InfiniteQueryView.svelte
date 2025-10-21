@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends Track | Playlist | User">
+	import { Button } from '$lib/components/ui/button'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
@@ -7,7 +8,6 @@
 	import PlaylistListing from './listings/PlaylistListing.svelte'
 	import TrackListing from './listings/TrackListing.svelte'
 	import UserListing from './listings/UserListing.svelte'
-	import Button from './ui/Button.svelte'
 	import type {
 		CreateInfiniteQueryResult,
 		InfiniteData,

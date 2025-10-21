@@ -6,13 +6,12 @@
 	} from '$lib/api/search.remote'
 	import InfiniteQueryView from '$lib/components/InfiniteQueryView.svelte'
 	import Main from '$lib/components/Main.svelte'
-	import Button from '$lib/components/ui/Button.svelte'
-	import Input from '$lib/components/ui/Input.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { Input } from '$lib/components/ui/input'
 	import { paginated_limit } from '$lib/constants'
 	import type { Playlist } from '$lib/schemas/playlist'
 	import type { Track } from '$lib/schemas/track'
 	import type { User } from '$lib/schemas/user'
-	import { SearchIcon } from '@lucide/svelte'
 	import { createInfiniteQuery } from '@tanstack/svelte-query'
 	import { Debounced } from 'runed'
 	import { useSearchParams } from 'runed/kit'
@@ -78,7 +77,6 @@
 				bind:value={params.q}
 				class="w-full"
 				placeholder="Search"
-				icon={SearchIcon}
 			/>
 		</form>
 
@@ -86,7 +84,7 @@
 			{#each ['tracks', 'playlists', 'users'] as const as kind (kind)}
 				{#key params.kind}
 					<Button
-						variant={params.kind === kind ? 'primary' : 'secondary'}
+						variant={params.kind === kind ? 'default' : 'secondary'}
 						class="capitalize"
 						onclick={() => {
 							params.kind = kind

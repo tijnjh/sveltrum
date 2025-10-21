@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { type ClassValue, cn } from 'cnfn'
+	import { cn } from '$lib/utils'
+	import type { ClassValue } from 'clsx'
 	import type { Snippet } from 'svelte'
 
 	const {

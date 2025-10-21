@@ -1,5 +1,5 @@
 <script module lang="ts">
-	import type { ClassValue } from 'cnfn'
+	import type { ClassValue } from 'clsx'
 
 	export interface ListingThumbnailProps {
 		src?: string | null
@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-	import { cn } from 'cnfn'
+	import { cn } from '$lib/utils'
 
 	const { src, alt, ...props }: ListingThumbnailProps = $props()
 

@@ -10,8 +10,8 @@
 </script>
 
 <script lang="ts">
+	import { cn } from '$lib/utils'
 	import UserListing from './listings/UserListing.svelte'
-	import { cn } from 'cnfn'
 
 	const {
 		pictureSrc,

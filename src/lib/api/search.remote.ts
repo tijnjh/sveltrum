@@ -12,14 +12,12 @@ export const searchTracks = query(
 		...Paginated.entries,
 		query: v.string(),
 	}),
-	async ({ query, offset, limit }) => {
-		const response = await $api({
+	({ query, limit, offset }) =>
+		$api({
 			path: '/search/tracks',
 			params: { q: query, limit, offset },
 			schema: Collection(Track),
-		})
-		return response.collection
-	},
+		}).then((r) => r.collection),
 )
 
 export const searchPlaylists = query(
@@ -27,14 +25,12 @@ export const searchPlaylists = query(
 		...Paginated.entries,
 		query: v.string(),
 	}),
-	async ({ query, offset, limit }) => {
-		const response = await $api({
+	({ query, limit, offset }) =>
+		$api({
 			path: '/search/playlists',
 			params: { q: query, limit, offset },
 			schema: Collection(Playlist),
-		})
-		return response.collection
-	},
+		}).then((r) => r.collection),
 )
 
 export const searchUsers = query(
@@ -42,12 +38,10 @@ export const searchUsers = query(
 		...Paginated.entries,
 		query: v.string(),
 	}),
-	async ({ query, offset, limit }) => {
-		const response = await $api({
+	({ query, limit, offset }) =>
+		$api({
 			path: '/search/users',
 			params: { q: query, limit, offset },
 			schema: Collection(User),
-		})
-		return response.collection
-	},
+		}).then((r) => r.collection),
 )
