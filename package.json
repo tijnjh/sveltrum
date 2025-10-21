@@ -6,13 +6,12 @@
 		"node": "22"
 	},
 	"scripts": {
-		"build": "bun -b vite build",
+		"build": "vite build",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"dev": "bun vite dev",
+		"dev": "vite dev",
 		"prepare": "svelte-kit sync || echo ''",
 		"preview": "vite preview",
-		"start": "bun run ./build",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."
 	},
@@ -34,6 +33,8 @@
 		"@eslint/js": "^9.38.0",
 		"@internationalized/date": "^3.8.1",
 		"@lucide/svelte": "^0.544.0",
+		"@lucide/svelte": "^0.546.0",
+		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/kit": "^2.47.2",
 		"@sveltejs/vite-plugin-svelte": "6.2.1",
 		"@tailwindcss/vite": "^4.1.15",
@@ -48,7 +49,6 @@
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.7.1",
 		"svelte": "^5.41.1",
-		"svelte-adapter-bun": "^1.0.0",
 		"svelte-check": "^4.3.3",
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^4.1.15",
