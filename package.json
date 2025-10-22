@@ -12,6 +12,7 @@
 		"dev": "vite dev",
 		"prepare": "svelte-kit sync || echo ''",
 		"preview": "vite preview",
+		"start": "node ./build",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."
 	},
