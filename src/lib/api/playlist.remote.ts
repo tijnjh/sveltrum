@@ -9,15 +9,13 @@ export const resolvePlaylist = query(
 		playlist: v.string(),
 	}),
 	({ user, playlist }) =>
-		$api({
-			path: getPermalinkPath(user, 'sets', playlist),
+		$api(getPermalinkPath(user, 'sets', playlist), {
 			schema: Playlist,
 		}),
 )
 
 export const getPlaylistById = query(v.number(), (id) =>
-	$api({
-		path: `/playlists/${id}`,
+	$api(`/playlists/${id}`, {
 		schema: Playlist,
 	}),
 )

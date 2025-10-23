@@ -8,8 +8,7 @@ import { $api } from './utils'
 import * as v from 'valibot'
 
 export const getSelections = query(async () => {
-	const res = await $api({
-		path: '/mixed-selections',
+	const res = await $api('/mixed-selections', {
 		schema: Collection(Selection(v.union([Playlist, User]))),
 	})
 
@@ -17,8 +16,7 @@ export const getSelections = query(async () => {
 })
 
 export const getRelatedTracks = query(v.number(), (id) =>
-	$api({
-		path: `/tracks/${id}/related`,
+	$api(`/tracks/${id}/related`, {
 		schema: Collection(Track),
 	}),
 )

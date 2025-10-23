@@ -13,8 +13,7 @@ export const searchTracks = query(
 		query: v.string(),
 	}),
 	async ({ query, offset, limit }) => {
-		const response = await $api({
-			path: '/search/tracks',
+		const response = await $api('/search/tracks', {
 			params: { q: query, limit, offset },
 			schema: Collection(Track),
 		})
@@ -28,8 +27,7 @@ export const searchPlaylists = query(
 		query: v.string(),
 	}),
 	async ({ query, offset, limit }) => {
-		const response = await $api({
-			path: '/search/playlists',
+		const response = await $api('/search/playlists', {
 			params: { q: query, limit, offset },
 			schema: Collection(Playlist),
 		})
@@ -43,8 +41,7 @@ export const searchUsers = query(
 		query: v.string(),
 	}),
 	async ({ query, offset, limit }) => {
-		const response = await $api({
-			path: '/search/users',
+		const response = await $api('/search/users', {
 			params: { q: query, limit, offset },
 			schema: Collection(User),
 		})

@@ -1,7 +1,6 @@
 import { query } from '$app/server'
 import { getTrackById } from './track.remote'
-import { getClientId } from './utils'
-import { ofetch } from 'ofetch'
+import { getClientId, upfetch } from './utils'
 import * as v from 'valibot'
 
 export const getTrackSource = query(v.number(), async (trackId) => {
@@ -20,7 +19,7 @@ export const getTrackSource = query(v.number(), async (trackId) => {
 
 	if (!transcoding) throw new Error('failed to find hls transcoding')
 
-	const { url } = await ofetch(transcoding.url, {
+	const { url } = await upfetch(transcoding.url, {
 		params: {
 			track_authorization: track.track_authorization,
 			client_id: clientId,
