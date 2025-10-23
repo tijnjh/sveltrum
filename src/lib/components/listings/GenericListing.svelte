@@ -67,7 +67,7 @@
 					size="icon"
 				/>
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end" preventScroll={false}>
+			<DropdownMenu.Content align="end" forceMount preventScroll={false}>
 				{#snippet child({ props, open, wrapperProps })}
 					<div {...wrapperProps}>
 						{#if open}
