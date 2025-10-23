@@ -22,6 +22,9 @@
 		v.object({
 			kind: v.optional(v.picklist(['tracks', 'playlists']), 'tracks'),
 		}),
+		{
+			noScroll: true,
+		},
 	)
 
 	const query = createInfiniteQuery(() => ({

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
-		searchPlaylists,
 		searchTracks,
+		searchPlaylists,
 		searchUsers,
 	} from '$lib/api/search.remote'
 	import InfiniteQueryView from '$lib/components/InfiniteQueryView.svelte'
@@ -23,14 +23,19 @@
 			q: v.optional(v.string(), ''),
 			kind: v.optional(v.picklist(['tracks', 'playlists', 'users']), 'tracks'),
 		}),
+		{
+			noScroll: true,
+		},
 	)
 
 	const debouncedQ = new Debounced(() => params.q, 500)
 
+	type Listing = Track | Playlist | User
+
 	const query = createInfiniteQuery(() => ({
 		queryKey: ['search', debouncedQ.current, params.kind],
-		queryFn: async ({ pageParam = 0 }) => {
-			if (!debouncedQ.current) return []
+		queryFn: async ({ pageParam }) => {
+			if (!debouncedQ.current) return [] as Listing[]
 
 			const data = {
 				query: debouncedQ.current,
@@ -38,21 +43,16 @@
 				limit: paginated_limit,
 			}
 
-			let results: (Track | Playlist | User)[] = []
-
 			switch (params.kind) {
+				case 'tracks':
+					return searchTracks(data)
 				case 'playlists':
-					results = await searchPlaylists(data)
-					break
+					return searchPlaylists(data)
 				case 'users':
-					results = await searchUsers(data)
-					break
+					return searchUsers(data)
 				default:
-					results = await searchTracks(data)
-					break
+					return []
 			}
-
-			return results as (Track | Playlist | User)[]
 		},
 		initialPageParam: 0,
 		getNextPageParam: (lastPage, allPages) =>
