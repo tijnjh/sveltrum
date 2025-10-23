@@ -9,9 +9,14 @@
 	import Input from '$lib/components/ui/Input.svelte'
 	import { favoriteTrackIds } from '$lib/global.svelte'
 	import { SearchIcon } from '@lucide/svelte'
+	import { resource } from 'runed'
 
 	const selections = await getSelections()
-	const favorites = await getTracksByIds(favoriteTrackIds.current)
+
+	const favorites = resource(
+		() => favoriteTrackIds.current,
+		() => getTracksByIds(favoriteTrackIds.current),
+	)
 </script>
 
 <Main class="mt-16">
@@ -42,7 +47,7 @@
 			Your Favorites
 		</h2>
 
-		{#each favorites as favorite (favorite.id)}
+		{#each favorites.current as favorite (favorite.id)}
 			<TrackListing track={favorite} />
 		{/each}
 	{/snippet}
