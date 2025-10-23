@@ -2,6 +2,7 @@
 	import { page } from '$app/state'
 	import NowPlayingBar from '$lib/components/NowPlayingBar.svelte'
 	import NowPlayingView from '$lib/components/NowPlayingView.svelte'
+	import Spinner from '$lib/components/Spinner.svelte'
 	import Button from '$lib/components/ui/Button.svelte'
 	import { global } from '$lib/global.svelte'
 	import '../app.css'
@@ -55,7 +56,17 @@
 				},
 			})}
 	>
-		{@render children()}
+		{#snippet pending()}
+			<Spinner />
+		{/snippet}
+
+		{#if $effect.pending()}
+			<Spinner />
+		{/if}
+
+		<div class={$effect.pending() ? 'hidden' : 'contents'}>
+			{@render children()}
+		</div>
 	</svelte:boundary>
 </QueryClientProvider>
 
