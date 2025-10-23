@@ -2,23 +2,16 @@
 	import { getSelections } from '$lib/api/discovery.remote'
 	import { getTracksByIds } from '$lib/api/track.remote'
 	import Main from '$lib/components/Main.svelte'
-	import Spinner from '$lib/components/Spinner.svelte'
 	import PlaylistListing from '$lib/components/listings/PlaylistListing.svelte'
 	import TrackListing from '$lib/components/listings/TrackListing.svelte'
 	import UserListing from '$lib/components/listings/UserListing.svelte'
 	import Button from '$lib/components/ui/Button.svelte'
 	import Input from '$lib/components/ui/Input.svelte'
 	import { favoriteTrackIds } from '$lib/global.svelte'
-	import type { Track } from '$lib/schemas/track'
 	import { SearchIcon } from '@lucide/svelte'
-	import { createQuery } from '@tanstack/svelte-query'
 
 	const selections = await getSelections()
-
-	const favoritesQuery = createQuery<Track[]>(() => ({
-		queryKey: ['favorites', favoriteTrackIds.current],
-		queryFn: () => getTracksByIds(favoriteTrackIds.current),
-	}))
+	const favorites = await getTracksByIds(favoriteTrackIds.current)
 </script>
 
 <Main class="mt-16">
@@ -49,10 +42,7 @@
 			Your Favorites
 		</h2>
 
-		{#if favoritesQuery.isLoading}
-			<Spinner />
-		{/if}
-		{#each favoritesQuery.data as favorite (favorite.id)}
+		{#each favorites as favorite (favorite.id)}
 			<TrackListing track={favorite} />
 		{/each}
 	{/snippet}
