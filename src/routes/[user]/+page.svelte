@@ -58,6 +58,7 @@
 	<link rel="icon" href={user.avatar_url} />
 	<meta name="og:image" content={user.avatar_url} />
 </svelte:head>
+
 <Main>
 	{#snippet left()}
 		<HeroSection
