@@ -57,7 +57,7 @@
 				{selection.title}
 			</h3>
 
-			{#each selection.items.collection as item (item.id)}
+			{#each selection.items.collection as item}
 				{#if item.kind === 'playlist'}
 					<PlaylistListing playlist={item} />
 				{:else if item.kind === 'user'}

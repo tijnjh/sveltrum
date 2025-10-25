@@ -9,7 +9,7 @@
 	import TrackListing from './listings/TrackListing.svelte'
 	import UserListing from './listings/UserListing.svelte'
 	import Button from './ui/Button.svelte'
-	import { ChevronDownIcon } from '@lucide/svelte'
+	import { XIcon } from '@lucide/svelte'
 	import { createQuery } from '@tanstack/svelte-query'
 	import { cn } from 'cnfn'
 	// @ts-expect-error they dont have types (yet)
@@ -84,13 +84,6 @@
 		global.showNowPlayingView ? 'top-0' : 'top-full',
 	)}
 >
-	<button
-		onclick={() => (global.showNowPlayingView = false)}
-		class="absolute top-4 right-4 flex size-10 items-center justify-center rounded-full bg-zinc-100/10 transition-transform active:scale-90 active:opacity-50"
-	>
-		<ChevronDownIcon size={16} strokeWidth={3} />
-	</button>
-
 	<div class="flex w-full flex-col gap-4 max-md:mt-16 md:max-w-sm">
 		{#if nowPlaying.current?.artwork_url}
 			<img
@@ -179,7 +172,6 @@
 		</div>
 
 		{#if currentView === 'queue'}
-			<!-- eslint-disable-next-line svelte/require-each-key -->
 			{#each queue.tracks.current as track}
 				<TrackListing {track} />
 			{:else}
@@ -219,4 +211,11 @@
 			{/if}
 		{/if}
 	</div>
+
+	<Button
+		size="icon"
+		onclick={() => (global.showNowPlayingView = false)}
+		class="sticky bottom-4 max-md:mt-16 md:absolute md:top-4 md:right-4"
+		icon={XIcon}
+	/>
 </div>

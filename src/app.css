@@ -10,3 +10,7 @@ html {
 	scrollbar-gutter: stable;
 	@apply bg-zinc-800;
 }
+
+@view-transition {
+	navigation: auto;
+}
