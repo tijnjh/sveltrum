@@ -5,7 +5,7 @@
 	export const buttonVariants = tv({
 		slots: {
 			base: [
-				'flex cursor-pointer items-center justify-center gap-2 rounded-full transition-transform',
+				'squircle flex cursor-pointer items-center justify-center gap-2 rounded-full transition-transform',
 			],
 		},
 		variants: {

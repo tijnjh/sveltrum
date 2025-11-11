@@ -14,3 +14,7 @@ html {
 @view-transition {
 	navigation: auto;
 }
+
+@utility squircle {
+	corner-shape: squircle;
+}

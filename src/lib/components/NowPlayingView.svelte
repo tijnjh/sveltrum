@@ -12,7 +12,7 @@
 	import { XIcon } from '@lucide/svelte'
 	import { createQuery } from '@tanstack/svelte-query'
 	import { cn } from 'cnfn'
-	// @ts-expect-error they dont have types (yet)
+	// @ts-expect-error they don't have types (yet)
 	import Hls from 'hls.js/light'
 	import { haptic } from 'ios-haptics'
 	import { toast } from 'svelte-sonner'
@@ -88,12 +88,12 @@
 		{#if nowPlaying.current?.artwork_url}
 			<img
 				src={nowPlaying.current.artwork_url.replace('large', 't500x500')}
-				class="mt-12 aspect-square w-full rounded-xl"
+				class="squircle mt-12 aspect-square w-full rounded-xl"
 				alt=""
 			/>
 		{:else}
 			<div
-				class="mt-12 aspect-square w-full rounded-xl bg-zinc-700 md:max-w-md"
+				class="squircle mt-12 aspect-square w-full rounded-xl bg-zinc-700 md:max-w-md"
 			></div>
 		{/if}
 
