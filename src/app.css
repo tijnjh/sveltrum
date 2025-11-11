@@ -1,4 +1,9 @@
+@import url('https://fonts.cdnfonts.com/css/open-runde');
 @import 'tailwindcss';
+
+@theme {
+	--font-sans: 'Open Runde', sans-serif;
+}
 
 * {
 	@apply touch-manipulation;
