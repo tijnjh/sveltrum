@@ -1,12 +1,13 @@
-import { IsInViewport, watch } from 'runed'
+import { IsInViewport, watch } from "runed";
+import type { Attachment } from "svelte/attachments";
 
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
-	ref?: U | null
-}
+  ref?: U | null;
+};
 
-export function whenInView(fn: VoidFunction) {
-	return (node: HTMLElement) => {
-		const inViewport = new IsInViewport(() => node)
-		watch(() => inViewport.current, fn)
-	}
+export function whenInView(fn: VoidFunction): Attachment<HTMLElement> {
+  return (node) => {
+    const inViewport = new IsInViewport(() => node);
+    watch(() => inViewport.current, fn);
+  };
 }

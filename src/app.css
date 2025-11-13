@@ -1,25 +1,25 @@
-@import url('https://fonts.cdnfonts.com/css/open-runde');
-@import 'tailwindcss';
+@import url("https://fonts.cdnfonts.com/css/open-runde");
+@import "tailwindcss";
 
 @theme {
-	--font-sans: 'Open Runde', sans-serif;
+  --font-sans: "Open Runde", sans-serif;
 }
 
 * {
-	@apply touch-manipulation;
+  @apply touch-manipulation;
 }
 
 body,
 html {
-	color-scheme: dark;
-	scrollbar-gutter: stable;
-	@apply bg-zinc-800;
+  color-scheme: dark;
+  scrollbar-gutter: stable;
+  @apply bg-zinc-800;
 }
 
 @view-transition {
-	navigation: auto;
+  navigation: auto;
 }
 
 @utility squircle {
-	corner-shape: squircle;
+  corner-shape: squircle;
 }
