@@ -67,25 +67,27 @@
           size="icon"
         />
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content align="end" forceMount preventScroll={false}>
-        {#snippet child({ props, open, wrapperProps })}
-          <div {...wrapperProps}>
-            {#if open}
-              <div
-                {...props}
-                class="z-1000 flex origin-top-right flex-col gap-2 pt-2"
-                transition:scale={{ start: 0.9, duration: 150 }}
-              >
-                {#each actions as action (action.label)}
-                  <Button href={action.href} onclick={action.onclick}>
-                    {action.label}
-                  </Button>
-                {/each}
-              </div>
-            {/if}
-          </div>
-        {/snippet}
-      </DropdownMenu.Content>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content align="end" forceMount preventScroll={false}>
+          {#snippet child({ props, open, wrapperProps })}
+            <div {...wrapperProps}>
+              {#if open}
+                <div
+                  {...props}
+                  class="z-1000 flex origin-top-right flex-col gap-2 pt-2"
+                  transition:scale={{ start: 0.9, duration: 150 }}
+                >
+                  {#each actions as action (action.label)}
+                    <Button href={action.href} onclick={action.onclick}>
+                      {action.label}
+                    </Button>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          {/snippet}
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
     </DropdownMenu.Root>
   {/if}
 </div>
