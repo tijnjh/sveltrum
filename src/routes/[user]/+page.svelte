@@ -24,6 +24,7 @@
     }),
     {
       noScroll: true,
+      pushHistory: false,
     },
   );
 

@@ -2,30 +2,14 @@
   import { page } from "$app/state";
   import NowPlayingBar from "$lib/components/NowPlayingBar.svelte";
   import NowPlayingView from "$lib/components/NowPlayingView.svelte";
-  import Spinner from "$lib/components/Spinner.svelte";
   import Button from "$lib/components/ui/Button.svelte";
-  import { global } from "$lib/global.svelte";
   import "../app.css";
   import { ChevronLeft } from "@lucide/svelte";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
-  import { toast, Toaster } from "svelte-sonner";
-  import { Tween } from "svelte/motion";
 
   const { children } = $props();
 
   const queryClient = new QueryClient();
-
-  const tweenedToasterBottomOffset = new Tween(0, {
-    duration: 200,
-  });
-
-  $effect(() => {
-    if (!global.showNowPlayingView) {
-      tweenedToasterBottomOffset.set(100);
-    } else {
-      tweenedToasterBottomOffset.set(16);
-    }
-  });
 </script>
 
 <QueryClientProvider client={queryClient}>
@@ -46,34 +30,5 @@
   <NowPlayingView />
   <NowPlayingBar />
 
-  <svelte:boundary
-    onerror={(error, reset) =>
-      toast.error("An error occurred", {
-        description: `${error}`,
-        action: {
-          label: "Retry",
-          onClick: reset,
-        },
-      })}
-  >
-    {#snippet pending()}
-      <Spinner />
-    {/snippet}
-
-    {#if $effect.pending()}
-      <Spinner />
-    {/if}
-
-    <div class={$effect.pending() ? "hidden" : "contents"}>
-      {@render children()}
-    </div>
-  </svelte:boundary>
+  {@render children()}
 </QueryClientProvider>
-
-<Toaster
-  richColors
-  theme="dark"
-  position="bottom-center"
-  offset={{ bottom: tweenedToasterBottomOffset.current }}
-  mobileOffset={{ bottom: tweenedToasterBottomOffset.current }}
-/>

@@ -41,6 +41,10 @@
   });
 </script>
 
+{#if query.isLoading}
+  <Spinner />
+{/if}
+
 <div class="flex flex-col gap-4">
   {#each sortedPages as page (page)}
     {#each page as result (result.id)}
@@ -59,9 +63,7 @@
   {/each}
 </div>
 
-{#if query.isLoading}
-  <Spinner />
-{:else if query.hasNextPage}
+{#if query.hasNextPage}
   <Button
     class="mt-8 w-full"
     onclick={() => {

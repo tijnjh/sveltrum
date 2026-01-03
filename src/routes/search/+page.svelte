@@ -16,6 +16,7 @@
   import { createInfiniteQuery } from "@tanstack/svelte-query";
   import { Debounced } from "runed";
   import { useSearchParams } from "runed/kit";
+  import { match } from "ts-pattern";
   import * as v from "valibot";
 
   const params = useSearchParams(
@@ -25,6 +26,7 @@
     }),
     {
       noScroll: true,
+      pushHistory: false,
     },
   );
 
@@ -37,22 +39,17 @@
     queryFn: async ({ pageParam }) => {
       if (!debouncedQ.current) return [] as Listing[];
 
-      const data = {
+      const searchFn = match(params.kind)
+        .with("tracks", () => searchTracks)
+        .with("playlists", () => searchPlaylists)
+        .with("users", () => searchUsers)
+        .exhaustive();
+
+      return searchFn({
         query: debouncedQ.current,
         offset: pageParam * paginated_limit,
         limit: paginated_limit,
-      };
-
-      switch (params.kind) {
-        case "tracks":
-          return searchTracks(data);
-        case "playlists":
-          return searchPlaylists(data);
-        case "users":
-          return searchUsers(data);
-        default:
-          return [];
-      }
+      });
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) =>

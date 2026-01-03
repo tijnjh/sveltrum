@@ -3,7 +3,6 @@
   import { getRelatedTracks } from "$lib/api/discovery.remote";
   import { getTrackSource } from "$lib/api/hls.remote";
   import { favoriteTrackIds, global, nowPlaying } from "$lib/global.svelte";
-  import { queue } from "$lib/queue.svelte";
   import type { Track } from "$lib/schemas/track";
   import Spinner from "./Spinner.svelte";
   import TrackListing from "./listings/TrackListing.svelte";
@@ -15,7 +14,6 @@
   // @ts-expect-error they don't have types (yet)
   import Hls from "hls.js/light";
   import { haptic } from "ios-haptics";
-  import { toast } from "svelte-sonner";
 
   $effect(() => {
     if (nowPlaying.current) {
@@ -65,8 +63,6 @@
       return relatedTracks.collection;
     },
   }));
-
-  let currentView = $state<"related" | "queue">("related");
 </script>
 
 <svelte:window
@@ -112,12 +108,10 @@
               favoriteTrackIds.current = favoriteTrackIds.current.filter(
                 (id) => id !== nowPlaying.current?.id,
               );
-              toast.success("Removed from favorites");
               haptic.confirm();
               return;
             } else {
               favoriteTrackIds.current.push(nowPlaying.current.id);
-              toast.success("Added to favorites");
               haptic.confirm();
             }
           }}
@@ -137,78 +131,29 @@
         bind:paused={global.isPaused}
         controls
         {@attach nowPlaying.current && applySource(nowPlaying.current)}
-        onended={() => queue.next()}
       >
       </audio>
     {/key}
-
-    <div class="flex flex-wrap gap-2">
-      <Button
-        disabled={queue.tracks.current.length === 0}
-        class="w-fit"
-        onclick={() => queue.next()}
-      >
-        Next track
-      </Button>
-    </div>
   </div>
 
   <div class="mt-8 flex w-full flex-col gap-4 md:h-dvh md:max-w-sm">
-    <div class="mx-auto flex w-full max-w-xl gap-2">
-      {#each ["related", "queue"] as const as view (view)}
-        {#key currentView}
-          <Button
-            variant={currentView === view ? "primary" : "secondary"}
-            class="capitalize"
-            onclick={() => {
-              currentView = view;
-              query.refetch();
-            }}
-          >
-            {view}
-          </Button>
-        {/key}
-      {/each}
-    </div>
+    <h2 class="text-xl font-medium">Related Tracks</h2>
 
-    {#if currentView === "queue"}
-      {#each queue.tracks.current as track}
+    {#if query.isLoading}
+      <Spinner />
+    {/if}
+    {#if query.isError}
+      <span class="text-xl font-medium text-zinc-100/25">
+        Failed to load related tracks...
+      </span>
+    {:else if query.data?.length === 0}
+      <span class="text-xl font-medium text-zinc-100/25">
+        No related tracks found...
+      </span>
+    {:else if query.data}
+      {#each query.data as track (track.id)}
         <TrackListing {track} />
-      {:else}
-        <span class="text-xl font-medium text-zinc-100/25">
-          Your queue is empty...
-        </span>
       {/each}
-
-      {#if queue.tracks.current.length > 0}
-        <Button
-          variant="secondary"
-          class="mt-4 w-full"
-          onclick={() => {
-            queue.clear();
-            haptic.confirm();
-          }}
-        >
-          Clear Queue
-        </Button>
-      {/if}
-    {:else if currentView === "related"}
-      {#if query.isLoading}
-        <Spinner />
-      {/if}
-      {#if query.isError}
-        <span class="text-xl font-medium text-zinc-100/25">
-          Failed to load related tracks...
-        </span>
-      {:else if query.data?.length === 0}
-        <span class="text-xl font-medium text-zinc-100/25">
-          No related tracks found...
-        </span>
-      {:else if query.data}
-        {#each query.data as track (track.id)}
-          <TrackListing {track} />
-        {/each}
-      {/if}
     {/if}
   </div>
 
