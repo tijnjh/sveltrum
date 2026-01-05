@@ -1,0 +1,17 @@
+Index: /@deno/svelte-adapter/dist/index.js
+===================================================================
+--- /@deno/svelte-adapter/dist/index.js
++++ /@deno/svelte-adapter/dist/index.js
+@@ -62,10 +62,10 @@
+             }
+             const svelteMetaPath = path.join(OUT_DIR, "svelte.json");
+             await fsp.writeFile(svelteMetaPath, JSON.stringify(svelteData, null, 2), "utf-8");
+             staticFiles.push({
+-                source: "/_app/:file*",
+-                destination: ".deno-deploy/static/_app/:file*",
++                source: "/_app/immutable/:file*",
++                destination: ".deno-deploy/static/_app/immutable/:file*",
+             });
+             // Collect all remaining asset files
+             const assetDir = builder.config.kit.files.assets;
+             // TODO: What about generated assets
