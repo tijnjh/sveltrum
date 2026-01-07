@@ -27,28 +27,31 @@ export async function getClientId() {
     parseResponse: (r) => r.text(),
   });
 
-  const scriptUrl = html.match(
-    /<script crossorigin src="(https:\/\/a-v2\.sndcdn\.com\/assets\/0-[^"]+\.js)"><\/script>/,
-  )?.[1];
+  const scriptUrls = [
+    ...html.matchAll(
+      /<script crossorigin src="(https:\/\/a-v2\.sndcdn\.com\/assets\/[^"]+\.js)"><\/script>/g,
+    ),
+  ].map((m) => m[1]);
 
-  if (!scriptUrl) {
+  if (scriptUrls.length === 0) {
     throw new Error("script not found");
   }
 
-  const script = await upfetch(scriptUrl, {
-    parseResponse: (r) => r.text(),
-  });
+  for (const scriptUrl of scriptUrls) {
+    const script = await upfetch(scriptUrl, {
+      parseResponse: (r) => r.text(),
+    });
 
-  const id = script.match(/client_id:"([A-Za-z0-9]{32})"/)?.[1];
+    const id = script.match(/client_id:"([A-Za-z0-9]{32})"/)?.[1];
 
-  if (!id) {
-    throw new Error("client id not found");
+    if (id) {
+      clientId = id;
+      clientIdExpiry = Date.now() + 30 * 60 * 1000;
+      return clientId;
+    }
   }
 
-  clientId = id;
-  clientIdExpiry = Date.now() + 30 * 60 * 1000;
-
-  return clientId;
+  throw new Error("client id not found");
 }
 
 export function getPermalinkPath(...permalinks: string[]) {
