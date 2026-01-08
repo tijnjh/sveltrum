@@ -5,7 +5,7 @@
     searchUsers,
   } from "$lib/api/search.remote";
   import InfiniteQueryView from "$lib/components/InfiniteQueryView.svelte";
-  import Main from "$lib/components/Main.svelte";
+  import Shell from "$lib/components/Shell.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import { paginated_limit } from "$lib/constants";
@@ -26,7 +26,6 @@
     }),
     {
       noScroll: true,
-      pushHistory: false,
     },
   );
 
@@ -61,7 +60,7 @@
   <title>results for '{debouncedQ.current}' - sveltrum</title>
 </svelte:head>
 
-<Main>
+<Shell>
   {#snippet left()}
     <form
       onsubmit={(e) => {
@@ -100,4 +99,4 @@
   {#snippet right()}
     <InfiniteQueryView {query} />
   {/snippet}
-</Main>
+</Shell>

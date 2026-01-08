@@ -4,7 +4,7 @@
   import { getTracksByIds } from "$lib/api/track.remote";
   import HeroSection from "$lib/components/HeroSection.svelte";
   import InfiniteQueryView from "$lib/components/InfiniteQueryView.svelte";
-  import Main from "$lib/components/Main.svelte";
+  import Shell from "$lib/components/Shell.svelte";
   import { paginated_limit } from "$lib/constants";
   import { createInfiniteQuery } from "@tanstack/svelte-query";
   import dedent from "dedent";
@@ -49,7 +49,7 @@
   <meta name="og:image" content={playlist.artwork_url} />
 </svelte:head>
 
-<Main>
+<Shell>
   {#snippet left()}
     <HeroSection
       pictureSrc={playlist.artwork_url}
@@ -64,4 +64,4 @@
       orderedIds={playlist.tracks?.map((track) => track.id)}
     />
   {/snippet}
-</Main>
+</Shell>

@@ -2,12 +2,20 @@
   import { favoriteTrackIds, global, nowPlaying } from "$lib/global.svelte";
   import type { Track } from "$lib/schemas/track";
   import GenericListing from "./GenericListing.svelte";
+  import type { ClassValue } from "cnfn";
   import { haptic } from "ios-haptics";
 
-  const { track }: { track: Track } = $props();
+  const {
+    track,
+    class: className,
+  }: {
+    track: Track;
+    class?: ClassValue;
+  } = $props();
 </script>
 
 <GenericListing
+  class={className}
   title={track.title}
   subtitle={track.user.username}
   thumbnail={{

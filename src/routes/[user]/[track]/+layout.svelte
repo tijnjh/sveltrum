@@ -1,11 +1,11 @@
 <script lang="ts">
   import HeroSection from "$lib/components/HeroSection.svelte";
-  import Main from "$lib/components/Main.svelte";
+  import Shell from "$lib/components/Shell.svelte";
 
   const { children, data: track } = $props();
 </script>
 
-<Main>
+<Shell>
   {#snippet left()}
     <HeroSection
       title={track.title}
@@ -17,4 +17,4 @@
   {#snippet right()}
     {@render children()}
   {/snippet}
-</Main>
+</Shell>

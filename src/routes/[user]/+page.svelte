@@ -7,7 +7,7 @@
   } from "$lib/api/user.remote";
   import HeroSection from "$lib/components/HeroSection.svelte";
   import InfiniteQueryView from "$lib/components/InfiniteQueryView.svelte";
-  import Main from "$lib/components/Main.svelte";
+  import Shell from "$lib/components/Shell.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import { paginated_limit } from "$lib/constants";
   import type { Playlist } from "$lib/schemas/playlist";
@@ -16,7 +16,7 @@
   import { useSearchParams } from "runed/kit";
   import * as v from "valibot";
 
-  const user = await resolveUser(page.params.user!);
+  const user = $derived(await resolveUser(page.params.user!));
 
   const params = useSearchParams(
     v.object({
@@ -24,7 +24,6 @@
     }),
     {
       noScroll: true,
-      pushHistory: false,
     },
   );
 
@@ -60,7 +59,7 @@
   <meta name="og:image" content={user.avatar_url} />
 </svelte:head>
 
-<Main>
+<Shell>
   {#snippet left()}
     <HeroSection
       pictureSrc={user.avatar_url}
@@ -84,4 +83,4 @@
 
     <InfiniteQueryView {query} />
   {/snippet}
-</Main>
+</Shell>

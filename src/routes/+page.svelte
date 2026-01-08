@@ -1,14 +1,14 @@
 <script lang="ts">
   import { getSelections } from "$lib/api/discovery.remote";
   import { getTracksByIds } from "$lib/api/track.remote";
-  import Main from "$lib/components/Main.svelte";
+  import Shell from "$lib/components/Shell.svelte";
   import PlaylistListing from "$lib/components/listings/PlaylistListing.svelte";
   import TrackListing from "$lib/components/listings/TrackListing.svelte";
   import UserListing from "$lib/components/listings/UserListing.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import { favoriteTrackIds } from "$lib/global.svelte";
-  import { SearchIcon } from "@lucide/svelte";
+  import { GithubIcon, SearchIcon } from "@lucide/svelte";
   import { resource } from "runed";
 
   const selections = await getSelections();
@@ -19,13 +19,13 @@
   );
 </script>
 
-<Main class="mt-16">
+<Shell>
   {#snippet left()}
     <div class="flex w-full flex-col items-start gap-4">
       <div class="flex w-full items-center justify-between">
         <h1 class="text-3xl font-medium">Sveltrum</h1>
-        <Button variant="secondary" href="https://tijn.dev/sveltrum">
-          View on GitHub
+        <Button href="https://tijn.dev/sveltrum" size="icon">
+          <GithubIcon />
         </Button>
       </div>
 
@@ -33,7 +33,7 @@
         <Input
           type="text"
           name="q"
-          placeholder="Search for artists, tracks or playlists..."
+          placeholder="Search"
           class="w-full"
           icon={SearchIcon}
         />
@@ -69,4 +69,4 @@
       <span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
     {/each}
   {/snippet}
-</Main>
+</Shell>

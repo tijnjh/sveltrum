@@ -1,9 +1,10 @@
 <script module lang="ts">
   import type { ListingThumbnailProps } from "../ListingThumbnail.svelte";
   import type { ButtonRootProps } from "bits-ui";
+  import type { ClassValue } from "cnfn";
   import type { MergeExclusive } from "type-fest";
 
-  export type GenericListingProps = ButtonRootProps & {
+  export type GenericListingProps = Omit<ButtonRootProps, "class"> & {
     title: string;
     badges?: string[];
     subtitle: string;
@@ -12,6 +13,7 @@
       { label: string; onclick: VoidFunction },
       { label: string; href: string }
     >[];
+    class?: ClassValue;
   };
 </script>
 
@@ -20,6 +22,7 @@
   import Button from "../ui/Button.svelte";
   import { EllipsisIcon } from "@lucide/svelte";
   import { DropdownMenu, Button as BitsUiButton } from "bits-ui";
+  import { cn } from "cnfn";
   import { scale } from "svelte/transition";
 
   const {
@@ -28,24 +31,25 @@
     subtitle,
     thumbnail,
     actions,
+    class: className,
     ...props
   }: GenericListingProps = $props();
 </script>
 
-<div class="flex items-center gap-4 text-left">
+<div class={cn("flex items-center gap-4 text-left", className)}>
   <BitsUiButton.Root
     {...props}
-    class="flex w-full min-w-0 gap-4 text-left transition-transform active:scale-95 active:opacity-50"
+    class="grid w-full grid-cols-[auto_1fr_auto] gap-4 text-left transition-transform active:scale-95 active:opacity-50"
   >
     <ListingThumbnail {...thumbnail} />
 
-    <div class="flex flex-col truncate">
+    <div class="flex shrink flex-col truncate">
       <div class="flex gap-2">
         <h3 class="truncate">{title}</h3>
 
         {#each badges as badge (badge)}
           <div
-            class="squircle rounded-full bg-zinc-700 px-2 py-0.5 text-sm whitespace-nowrap text-zinc-400"
+            class="rounded-full bg-zinc-700 px-2 py-0.5 text-sm whitespace-nowrap text-zinc-400"
           >
             {badge}
           </div>

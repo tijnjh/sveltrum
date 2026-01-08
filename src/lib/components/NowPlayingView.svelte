@@ -84,12 +84,12 @@
     {#if nowPlaying.current?.artwork_url}
       <img
         src={nowPlaying.current.artwork_url.replace("large", "t500x500")}
-        class="squircle mt-12 aspect-square w-full rounded-xl"
+        class="mt-12 aspect-square w-full rounded-xl"
         alt=""
       />
     {:else}
       <div
-        class="squircle mt-12 aspect-square w-full rounded-xl bg-zinc-700 md:max-w-md"
+        class="mt-12 aspect-square w-full rounded-xl bg-zinc-700 md:max-w-md"
       ></div>
     {/if}
 

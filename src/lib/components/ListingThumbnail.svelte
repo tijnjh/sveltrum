@@ -20,7 +20,7 @@
   <img
     {src}
     {alt}
-    class={cn("squircle aspect-square size-12 rounded", props.class)}
+    class={cn("aspect-square size-12 rounded", props.class)}
     onerror={() => (hasFailed = true)}
   />
 {:else}
