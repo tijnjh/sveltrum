@@ -27,6 +27,7 @@ export const getUserTracks = query(
   async ({ id, offset, limit }) => {
     const res = await $api(`/users/${id}/tracks`, {
       params: { limit, offset },
+      headers: { "Accept-Language": "en-US,en;q=0.5" },
       schema: Collection(Track),
     });
     return res.collection;
