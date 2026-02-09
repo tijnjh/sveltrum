@@ -23,7 +23,7 @@
         navigator.mediaSession.metadata = new MediaMetadata({
           title: nowPlaying.current.title,
           artist: nowPlaying.current.user.username,
-          album: "Sveltrum",
+          album: "Cloudscape",
           artwork: [
             {
               src:

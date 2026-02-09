@@ -23,8 +23,8 @@
   {#snippet left()}
     <div class="flex w-full flex-col items-start gap-4">
       <div class="flex w-full items-center justify-between">
-        <h1 class="text-3xl font-medium">Sveltrum</h1>
-        <Button variant="secondary" href="https://tijn.dev/sveltrum">
+        <h1 class="text-3xl font-medium">Cloudscape</h1>
+        <Button variant="secondary" href="https://tijn.dev/cloudscape">
           View on GitHub
         </Button>
       </div>

@@ -58,7 +58,7 @@
 </script>
 
 <svelte:head>
-  <title>results for '{debouncedQ.current}' - sveltrum</title>
+  <title>results for '{debouncedQ.current}' - Cloudscape</title>
 </svelte:head>
 
 <Main>
