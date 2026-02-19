@@ -5,13 +5,13 @@
   export const buttonVariants = tv({
     slots: {
       base: [
-        "squircle flex cursor-pointer items-center justify-center gap-2 rounded-full transition-transform",
+        "flex cursor-pointer items-center justify-center gap-2 rounded-full transition-transform",
       ],
     },
     variants: {
       variant: {
-        primary: "bg-white text-zinc-800",
-        secondary: "bg-zinc-700",
+        primary: "bg-white text-mist-800",
+        secondary: "bg-mist-700",
       },
       size: {
         default: "px-4 py-2",

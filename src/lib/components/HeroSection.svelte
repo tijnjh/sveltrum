@@ -31,7 +31,7 @@
     }}
     class={cn(
       "mx-auto my-4 aspect-square w-full max-w-xs",
-      roundedPicture ? "rounded-full" : "squircle rounded-xl",
+      roundedPicture ? "rounded-full" : "rounded-xl",
     )}
     alt={title}
   />

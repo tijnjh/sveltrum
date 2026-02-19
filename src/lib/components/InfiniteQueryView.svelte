@@ -58,7 +58,7 @@
     {/each}
   {:else}
     {#if !query.isLoading}
-      <span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
+      <span class="mt-4 text-mist-100/25 text-lg">Nothing here...</span>
     {/if}
   {/each}
 </div>

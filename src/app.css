@@ -1,8 +1,8 @@
-@import url("https://fonts.cdnfonts.com/css/open-runde");
+@import "@fontsource/atkinson-hyperlegible";
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Open Runde", sans-serif;
+  --font-sans: "Atkinson Hyperlegible", sans-serif;
 }
 
 * {
@@ -13,13 +13,9 @@ body,
 html {
   color-scheme: dark;
   scrollbar-gutter: stable;
-  @apply bg-zinc-800;
+  @apply bg-mist-800;
 }
 
 @view-transition {
   navigation: auto;
-}
-
-@utility squircle {
-  corner-shape: squircle;
 }

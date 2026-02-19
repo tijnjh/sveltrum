@@ -76,7 +76,7 @@
 
 <div
   class={cn(
-    "fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll bg-zinc-700/75 p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2",
+    "fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll bg-mist-700/75 p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2",
     global.showNowPlayingView ? "top-0" : "top-full",
   )}
 >
@@ -84,12 +84,12 @@
     {#if nowPlaying.current?.artwork_url}
       <img
         src={nowPlaying.current.artwork_url.replace("large", "t500x500")}
-        class="squircle mt-12 aspect-square w-full rounded-xl"
+        class="mt-12 aspect-square w-full rounded-xl"
         alt=""
       />
     {:else}
       <div
-        class="squircle mt-12 aspect-square w-full rounded-xl bg-zinc-700 md:max-w-md"
+        class="mt-12 aspect-square w-full rounded-xl bg-mist-700 md:max-w-md"
       ></div>
     {/if}
 
@@ -143,11 +143,11 @@
       <Spinner />
     {/if}
     {#if query.isError}
-      <span class="text-xl font-medium text-zinc-100/25">
+      <span class="text-xl font-medium text-mist-100/25">
         Failed to load related tracks...
       </span>
     {:else if query.data?.length === 0}
-      <span class="text-xl font-medium text-zinc-100/25">
+      <span class="text-xl font-medium text-mist-100/25">
         No related tracks found...
       </span>
     {:else if query.data}

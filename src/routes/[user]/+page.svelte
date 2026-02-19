@@ -36,7 +36,7 @@
         offset: pageParam * paginated_limit,
         limit: paginated_limit,
       };
-      let results: (Track | Playlist)[] = [];
+      let results: (Track | Playlist)[];
       switch (params.kind) {
         case "playlists":
           results = await getUserPlaylists(data);

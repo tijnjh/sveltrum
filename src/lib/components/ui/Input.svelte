@@ -20,7 +20,7 @@
 
 <div
   class={cn(
-    "squircle relative flex h-10 items-center gap-2 overflow-clip rounded-full bg-zinc-700 pl-4 ring-blue-500 focus-within:ring-2",
+    "relative flex h-10 items-center gap-2 overflow-clip rounded-full bg-mist-700 pl-4 ring-blue-500 focus-within:ring-2",
     className,
   )}
 >

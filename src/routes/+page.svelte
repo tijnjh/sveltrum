@@ -66,7 +66,7 @@
       {/each}
       <br />
     {:else}
-      <span class="mt-4 text-zinc-100/25 text-lg">Nothing here...</span>
+      <span class="mt-4 text-mist-100/25 text-lg">Nothing here...</span>
     {/each}
   {/snippet}
 </Main>
