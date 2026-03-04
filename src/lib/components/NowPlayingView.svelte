@@ -2,7 +2,7 @@
   import { onNavigate } from "$app/navigation";
   import { getRelatedTracks } from "$lib/api/discovery.remote";
   import { getTrackSource } from "$lib/api/hls.remote";
-  import { favoriteTrackIds, global, nowPlaying } from "$lib/global.svelte";
+  import { favorites, global, nowPlaying } from "$lib/global.svelte";
   import type { Track } from "$lib/schemas/track";
   import Spinner from "./Spinner.svelte";
   import TrackListing from "./listings/TrackListing.svelte";
@@ -99,27 +99,20 @@
           {nowPlaying.current?.title}
         </h1>
 
-        <Button
-          class="w-fit"
-          onclick={() => {
-            if (!nowPlaying.current) return;
-
-            if (favoriteTrackIds.current.includes(nowPlaying.current.id)) {
-              favoriteTrackIds.current = favoriteTrackIds.current.filter(
-                (id) => id !== nowPlaying.current?.id,
-              );
+        {#if favorites.isSignedIn}
+          <Button
+            class="w-fit"
+            onclick={() => {
+              if (!nowPlaying.current) return;
+              favorites.toggle(nowPlaying.current.id);
               haptic.confirm();
-              return;
-            } else {
-              favoriteTrackIds.current.push(nowPlaying.current.id);
-              haptic.confirm();
-            }
-          }}
-        >
-          {favoriteTrackIds.current.includes(nowPlaying.current?.id)
-            ? "Unfavorite"
-            : "Favorite"}
-        </Button>
+            }}
+          >
+            {favorites.current.includes(nowPlaying.current?.id)
+              ? "Unfavorite"
+              : "Favorite"}
+          </Button>
+        {/if}
 
         <UserListing user={nowPlaying.current.user} />
       </hgroup>

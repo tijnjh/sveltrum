@@ -7,15 +7,15 @@
   import UserListing from "$lib/components/listings/UserListing.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
-  import { favoriteTrackIds } from "$lib/global.svelte";
+  import { favorites } from "$lib/global.svelte";
   import { SearchIcon } from "@lucide/svelte";
   import { resource } from "runed";
 
   const selections = await getSelections();
 
-  const favorites = resource(
-    () => favoriteTrackIds.current,
-    () => getTracksByIds(favoriteTrackIds.current),
+  const favoriteTracks = resource(
+    () => favorites.current,
+    () => getTracksByIds(favorites.current),
   );
 </script>
 
@@ -40,16 +40,19 @@
       </form>
     </div>
 
-    <h2
-      title="These are saved in localstorage"
-      class="mt-8 text-2xl font-medium"
-    >
+    <h2 class="mt-8 text-2xl font-medium">
       Your Favorites
     </h2>
 
-    {#each favorites.current as favorite (favorite.id)}
-      <TrackListing track={favorite} />
-    {/each}
+    {#if !favorites.isSignedIn}
+      <p class="text-mist-400">Sign in to save favorites</p>
+    {:else}
+      {#each favoriteTracks.current as favorite (favorite.id)}
+        <TrackListing track={favorite} />
+      {:else}
+        <p class="text-mist-400">No favorites yet</p>
+      {/each}
+    {/if}
   {/snippet}
   {#snippet right()}
     {#each selections as selection (selection.items)}

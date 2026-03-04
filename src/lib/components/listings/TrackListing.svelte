@@ -1,10 +1,34 @@
 <script lang="ts">
-  import { favoriteTrackIds, global, nowPlaying } from "$lib/global.svelte";
+  import { favorites, global, nowPlaying } from "$lib/global.svelte";
   import type { Track } from "$lib/schemas/track";
+  import type { GenericListingProps } from "./GenericListing.svelte";
   import GenericListing from "./GenericListing.svelte";
   import { haptic } from "ios-haptics";
 
   const { track }: { track: Track } = $props();
+
+  type Action = NonNullable<GenericListingProps["actions"]>[number];
+
+  const actions = $derived.by((): Action[] => {
+    const items: Action[] = [];
+
+    if (favorites.isSignedIn) {
+      items.push({
+        label: favorites.current.includes(track.id) ? "Unfavorite" : "Favorite",
+        onclick: () => {
+          favorites.toggle(track.id);
+          haptic.confirm();
+        },
+      });
+    }
+
+    items.push({
+      label: "Go to Track",
+      href: `/${track.user.permalink}/${track.permalink}`,
+    });
+
+    return items;
+  });
 </script>
 
 <GenericListing
@@ -22,27 +46,5 @@
     }, 50);
   }}
   badges={track.policy === "SNIP" ? ["30s only"] : []}
-  actions={[
-    {
-      label: favoriteTrackIds.current.includes(track.id)
-        ? "Unfavorite"
-        : "Favorite",
-      onclick: () => {
-        if (favoriteTrackIds.current.includes(track.id)) {
-          favoriteTrackIds.current = favoriteTrackIds.current.filter(
-            (id) => id !== track.id,
-          );
-          haptic.confirm();
-          return;
-        } else {
-          favoriteTrackIds.current.push(track.id);
-          haptic.confirm();
-        }
-      },
-    },
-    {
-      label: "Go to Track",
-      href: `/${track.user.permalink}/${track.permalink}`,
-    },
-  ]}
+  {actions}
 />
