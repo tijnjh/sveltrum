@@ -11,7 +11,7 @@ export const User = v.strictObject({
   city: v.nullable(v.string()),
   comments_count: v.optional(v.number()),
   country_code: v.nullable(v.string()),
-  created_at: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+  created_at: v.nullish(v.pipe(v.string(), v.isoTimestamp())),
   creator_subscription: v.optional(
     v.strictObject({
       product: v.strictObject({
