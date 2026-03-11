@@ -11,6 +11,8 @@
   import { favoriteTrackIds } from "$lib/global.svelte";
   import { SearchIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
+  // @ts-expect-error lib author messed up their type declarations
+  import { TextMorph } from "torph/svelte";
 
   const selectionsQuery = createQuery(() => ({
     queryKey: ["selections"],
@@ -62,18 +64,19 @@
     {/if}
   {/snippet}
   {#snippet right()}
+    <h3 class="text-2xl font-medium">
+      <TextMorph
+        text={selectionsQuery.isPending
+          ? "Loading..."
+          : selectionsQuery.data?.[0]?.title || ""}
+      />
+    </h3>
     {#if selectionsQuery.isPending}
-      <h3 class="animate-pulse text-2xl font-medium">Loading</h3>
-
       {#each { length: 20 }}
         <SkeletonListing />
       {/each}
     {:else}
       {#each selectionsQuery.data as selection (selection.items)}
-        <h3 class="text-2xl font-medium">
-          {selection.title}
-        </h3>
-
         {#each selection.items.collection as item}
           {#if item.kind === "playlist"}
             <PlaylistListing playlist={item} />
