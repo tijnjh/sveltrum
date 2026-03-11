@@ -76,7 +76,7 @@
 
 <div
   class={cn(
-    "fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll bg-mist-700/75 p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2",
+    "bg-mist-300-700/75 fixed inset-x-0 z-50 grid h-full grid-cols-1 place-items-center gap-x-8 overflow-y-scroll p-4 backdrop-blur-lg transition-[top] duration-300 md:grid-cols-2",
     global.showNowPlayingView ? "top-0" : "top-full",
   )}
 >
@@ -89,7 +89,7 @@
       />
     {:else}
       <div
-        class="mt-12 aspect-square w-full rounded-xl bg-mist-700 md:max-w-md"
+        class="bg-mist-300-700 mt-12 aspect-square w-full rounded-xl md:max-w-md"
       ></div>
     {/if}
 
@@ -143,11 +143,11 @@
       <Spinner />
     {/if}
     {#if query.isError}
-      <span class="text-xl font-medium text-mist-100/25">
+      <span class="text-mist-900-100/25 text-xl font-medium">
         Failed to load related tracks...
       </span>
     {:else if query.data?.length === 0}
-      <span class="text-xl font-medium text-mist-100/25">
+      <span class="text-mist-900-100/25 text-xl font-medium">
         No related tracks found...
       </span>
     {:else if query.data}

@@ -1,5 +1,6 @@
 @import "@fontsource/atkinson-hyperlegible";
 @import "tailwindcss";
+@import "tailwind-color-pairings";
 
 @theme {
   --font-sans: "Atkinson Hyperlegible", sans-serif;
@@ -11,9 +12,9 @@
 
 body,
 html {
-  color-scheme: dark;
+  color-scheme: light dark;
   scrollbar-gutter: stable;
-  @apply bg-mist-800;
+  @apply bg-mist-200-800;
 }
 
 @view-transition {

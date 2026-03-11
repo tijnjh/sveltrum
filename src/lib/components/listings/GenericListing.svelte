@@ -45,7 +45,7 @@
 
         {#each badges as badge (badge)}
           <div
-            class="rounded-full bg-mist-700 px-2 py-0.5 text-sm whitespace-nowrap text-mist-400"
+            class="bg-mist-300-700 text-mist-600-400 rounded-full px-2 py-0.5 text-sm whitespace-nowrap"
           >
             {badge}
           </div>

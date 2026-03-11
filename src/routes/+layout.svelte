@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import NowPlayingBar from "$lib/components/NowPlayingBar.svelte";
   import NowPlayingView from "$lib/components/NowPlayingView.svelte";
@@ -10,12 +11,23 @@
   const { children } = $props();
 
   const queryClient = new QueryClient();
+
+  onNavigate((navigation) => {
+    if (!document.startViewTransition) return;
+
+    return new Promise((resolve) => {
+      document.startViewTransition(async () => {
+        resolve();
+        await navigation.complete;
+      });
+    });
+  });
 </script>
 
 <QueryClientProvider client={queryClient}>
   {#if page.route.id !== "/"}
     <div
-      class="fixed inset-x-0 top-0 z-40 mx-auto flex max-w-5xl justify-between bg-linear-to-b from-mist-800 to-mist-700/0 p-4"
+      class="from-mist-200-800 to-mist-300-700/0 fixed inset-x-0 top-0 z-40 mx-auto flex max-w-5xl justify-between bg-linear-to-b p-4"
     >
       <Button
         variant="secondary"
