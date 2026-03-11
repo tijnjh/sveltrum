@@ -11,7 +11,7 @@
 
 {#if !global.showNowPlayingView}
   <div
-    transition:fly={{ y: 100 }}
+    in:fly={{ y: 100 }}
     class="bg-mist-300-700/75 fixed inset-x-2 bottom-2 z-9999999999 mx-auto rounded-2xl backdrop-blur-lg md:inset-x-4 md:bottom-4 md:max-w-xl"
   >
     <div class="grid grid-cols-[1fr_auto] items-center gap-4 p-3">

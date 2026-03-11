@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import NowPlayingBar from "$lib/components/NowPlayingBar.svelte";
   import NowPlayingView from "$lib/components/NowPlayingView.svelte";
@@ -11,17 +10,6 @@
   const { children } = $props();
 
   const queryClient = new QueryClient();
-
-  onNavigate((navigation) => {
-    if (!document.startViewTransition) return;
-
-    return new Promise((resolve) => {
-      document.startViewTransition(async () => {
-        resolve();
-        await navigation.complete;
-      });
-    });
-  });
 </script>
 
 <QueryClientProvider client={queryClient}>

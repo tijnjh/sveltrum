@@ -2,10 +2,10 @@
   import { page } from "$app/state";
   import { resolvePlaylist } from "$lib/api/playlist.remote";
   import { getTracksByIds } from "$lib/api/track.remote";
+  import AsyncView from "$lib/components/AsyncView.svelte";
   import HeroSection from "$lib/components/HeroSection.svelte";
   import InfiniteQueryView from "$lib/components/InfiniteQueryView.svelte";
   import Main from "$lib/components/Main.svelte";
-  import SkeletonListing from "$lib/components/listings/SkeletonListing.svelte";
   import { paginated_limit } from "$lib/constants";
   import { createInfiniteQuery, createQuery } from "@tanstack/svelte-query";
   import dedent from "dedent";
@@ -56,31 +56,21 @@
 
 <Main>
   {#snippet left()}
-    {#if playlistQuery.isPending}
-      <HeroSection title="loading..." />
-    {:else if playlistQuery.isError}
-      <p>Error loading playlist.</p>
-    {:else}
-      <HeroSection
-        pictureSrc={playlistQuery.data.artwork_url}
-        title={playlistQuery.data.title}
-        user={playlistQuery.data.user}
-      />
-    {/if}
+    <AsyncView data={playlistQuery.data} isLoading={playlistQuery.isPending}>
+      {#snippet content(playlist)}
+        <HeroSection
+          pictureSrc={playlist!.artwork_url}
+          title={playlist!.title}
+          user={playlist!.user}
+        />
+      {/snippet}
+    </AsyncView>
   {/snippet}
 
   {#snippet right()}
-    {#if playlistQuery.isPending}
-      {#each { length: 20 }}
-        <SkeletonListing />
-      {/each}
-    {:else if playlistQuery.isError}
-      <p>Error loading playlist.</p>
-    {:else}
-      <InfiniteQueryView
-        {query}
-        orderedIds={playlistQuery.data?.tracks?.map((track) => track.id)}
-      />
-    {/if}
+    <InfiniteQueryView
+      {query}
+      orderedIds={playlistQuery.data?.tracks?.map((track) => track.id)}
+    />
   {/snippet}
 </Main>

@@ -5,6 +5,7 @@
     getUserTracks,
     resolveUser,
   } from "$lib/api/user.remote";
+  import AsyncView from "$lib/components/AsyncView.svelte";
   import HeroSection from "$lib/components/HeroSection.svelte";
   import InfiniteQueryView from "$lib/components/InfiniteQueryView.svelte";
   import Main from "$lib/components/Main.svelte";
@@ -66,17 +67,16 @@
 
 <Main>
   {#snippet left()}
-    {#if userQuery.isPending}
-      <HeroSection title="loading..." />
-    {:else if userQuery.isError}
-      <p>Error loading user.</p>
-    {:else}
-      <HeroSection
-        pictureSrc={userQuery.data?.avatar_url}
-        title={userQuery.data?.username}
-        roundedPicture
-      />
-    {/if}
+    <AsyncView data={userQuery.data} isLoading={userQuery.isPending}>
+      {#snippet content(user)}
+        <HeroSection
+          pictureSrc={user!.avatar_url}
+          title={user!.username}
+          user={user!}
+          roundedPicture
+        />
+      {/snippet}
+    </AsyncView>
   {/snippet}
 
   {#snippet right()}

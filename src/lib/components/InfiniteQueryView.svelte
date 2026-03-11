@@ -3,8 +3,8 @@
   import type { Track } from "$lib/schemas/track";
   import type { User } from "$lib/schemas/user";
   import { whenInView } from "$lib/utils";
+  import AsyncView from "./AsyncView.svelte";
   import PlaylistListing from "./listings/PlaylistListing.svelte";
-  import SkeletonListing from "./listings/SkeletonListing.svelte";
   import TrackListing from "./listings/TrackListing.svelte";
   import UserListing from "./listings/UserListing.svelte";
   import Button from "./ui/Button.svelte";
@@ -41,29 +41,25 @@
   });
 </script>
 
-{#if query.isLoading}
-  {#each { length: 20 }}
-    <SkeletonListing />
-  {/each}
-{/if}
-
-<div class="flex flex-col gap-4">
-  {#each sortedPages as page (page)}
-    {#each page as result (result.id)}
-      {#if result.kind === "track"}
-        <TrackListing track={result as Track} />
-      {:else if result.kind === "playlist"}
-        <PlaylistListing playlist={result as Playlist} />
-      {:else if result.kind === "user"}
-        <UserListing user={result as User} />
+<AsyncView isLoading={query.isLoading} data={sortedPages}>
+  {#snippet content(data)}
+    {#each data as page (page)}
+      {#each page as result (result.id)}
+        {#if result.kind === "track"}
+          <TrackListing track={result as Track} />
+        {:else if result.kind === "playlist"}
+          <PlaylistListing playlist={result as Playlist} />
+        {:else if result.kind === "user"}
+          <UserListing user={result as User} />
+        {/if}
+      {/each}
+    {:else}
+      {#if !query.isLoading}
+        <span class="mt-4 text-mist-100-900/25 text-lg">Nothing here...</span>
       {/if}
     {/each}
-  {:else}
-    {#if !query.isLoading}
-      <span class="mt-4 text-mist-100-900/25 text-lg">Nothing here...</span>
-    {/if}
-  {/each}
-</div>
+  {/snippet}
+</AsyncView>
 
 {#if query.hasNextPage}
   <Button

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { getSelections } from "$lib/api/discovery.remote";
   import { getTracksByIds } from "$lib/api/track.remote";
+  import AsyncView from "$lib/components/AsyncView.svelte";
   import Main from "$lib/components/Main.svelte";
   import PlaylistListing from "$lib/components/listings/PlaylistListing.svelte";
-  import SkeletonListing from "$lib/components/listings/SkeletonListing.svelte";
   import TrackListing from "$lib/components/listings/TrackListing.svelte";
   import UserListing from "$lib/components/listings/UserListing.svelte";
   import Button from "$lib/components/ui/Button.svelte";
@@ -11,8 +11,6 @@
   import { favoriteTrackIds } from "$lib/global.svelte";
   import { SearchIcon } from "@lucide/svelte";
   import { createQuery } from "@tanstack/svelte-query";
-  // @ts-expect-error lib author messed up their type declarations
-  import { TextMorph } from "torph/svelte";
 
   const selectionsQuery = createQuery(() => ({
     queryKey: ["selections"],
@@ -53,41 +51,36 @@
       Your Favorites
     </h2>
 
-    {#if favoritesQuery.isPending}
-      {#each { length: favoriteTrackIds.current.length }}
-        <SkeletonListing />
-      {/each}
-    {:else}
-      {#each favoritesQuery.data as favorite (favorite.id)}
-        <TrackListing track={favorite} />
-      {/each}
-    {/if}
+    <AsyncView data={favoritesQuery.data} isLoading={favoritesQuery.isPending}>
+      {#snippet content(data)}
+        {#each data as favorite (favorite.id)}
+          <TrackListing track={favorite} />
+        {/each}
+      {/snippet}
+    </AsyncView>
   {/snippet}
   {#snippet right()}
-    <h3 class="text-2xl font-medium">
-      <TextMorph
-        text={selectionsQuery.isPending
-          ? "Loading..."
-          : selectionsQuery.data?.[0]?.title || ""}
-      />
-    </h3>
-    {#if selectionsQuery.isPending}
-      {#each { length: 20 }}
-        <SkeletonListing />
-      {/each}
-    {:else}
-      {#each selectionsQuery.data as selection (selection.items)}
-        {#each selection.items.collection as item}
-          {#if item.kind === "playlist"}
-            <PlaylistListing playlist={item} />
-          {:else if item.kind === "user"}
-            <UserListing user={item} />
-          {/if}
+    <AsyncView
+      data={selectionsQuery.data}
+      isLoading={selectionsQuery.isPending}
+    >
+      {#snippet content(data)}
+        {#each data as selection (selection.items)}
+          <h3 class="text-2xl font-medium">
+            {selection.title}
+          </h3>
+          {#each selection.items.collection as item}
+            {#if item.kind === "playlist"}
+              <PlaylistListing playlist={item} />
+            {:else if item.kind === "user"}
+              <UserListing user={item} />
+            {/if}
+          {/each}
+          <br />
+        {:else}
+          <span class="mt-4 text-mist-900-100/25 text-lg">Nothing here...</span>
         {/each}
-        <br />
-      {:else}
-        <span class="mt-4 text-mist-900-100/25 text-lg">Nothing here...</span>
-      {/each}
-    {/if}
+      {/snippet}
+    </AsyncView>
   {/snippet}
 </Main>

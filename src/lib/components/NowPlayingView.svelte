@@ -4,7 +4,7 @@
   import { getTrackSource } from "$lib/api/hls.remote";
   import { favoriteTrackIds, global, nowPlaying } from "$lib/global.svelte";
   import type { Track } from "$lib/schemas/track";
-  import Spinner from "./Spinner.svelte";
+  import AsyncView from "./AsyncView.svelte";
   import TrackListing from "./listings/TrackListing.svelte";
   import UserListing from "./listings/UserListing.svelte";
   import Button from "./ui/Button.svelte";
@@ -139,22 +139,19 @@
   <div class="mt-8 flex w-full flex-col gap-4 md:h-dvh md:max-w-sm">
     <h2 class="text-xl font-medium">Related Tracks</h2>
 
-    {#if query.isLoading}
-      <Spinner />
-    {/if}
-    {#if query.isError}
-      <span class="text-mist-900-100/25 text-xl font-medium">
-        Failed to load related tracks...
-      </span>
-    {:else if query.data?.length === 0}
-      <span class="text-mist-900-100/25 text-xl font-medium">
-        No related tracks found...
-      </span>
-    {:else if query.data}
-      {#each query.data as track (track.id)}
-        <TrackListing {track} />
-      {/each}
-    {/if}
+    <AsyncView isLoading={query.isLoading} data={query.data}>
+      {#snippet content(data)}
+        {#if data?.length === 0}
+          <span class="text-mist-900-100/25 text-xl font-medium">
+            No related tracks found...
+          </span>
+        {:else if data}
+          {#each data as track (track.id)}
+            <TrackListing {track} />
+          {/each}
+        {/if}
+      {/snippet}
+    </AsyncView>
   </div>
 
   <Button

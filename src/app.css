@@ -16,7 +16,3 @@ html {
   scrollbar-gutter: stable;
   @apply bg-mist-200-800;
 }
-
-@view-transition {
-  navigation: auto;
-}
