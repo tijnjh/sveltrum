@@ -3,8 +3,8 @@
   import type { Track } from "$lib/schemas/track";
   import type { User } from "$lib/schemas/user";
   import { whenInView } from "$lib/utils";
-  import Spinner from "./Spinner.svelte";
   import PlaylistListing from "./listings/PlaylistListing.svelte";
+  import SkeletonListing from "./listings/SkeletonListing.svelte";
   import TrackListing from "./listings/TrackListing.svelte";
   import UserListing from "./listings/UserListing.svelte";
   import Button from "./ui/Button.svelte";
@@ -42,7 +42,9 @@
 </script>
 
 {#if query.isLoading}
-  <Spinner />
+  {#each { length: 20 }}
+    <SkeletonListing />
+  {/each}
 {/if}
 
 <div class="flex flex-col gap-4">

@@ -12,11 +12,15 @@
   import { paginated_limit } from "$lib/constants";
   import type { Playlist } from "$lib/schemas/playlist";
   import type { Track } from "$lib/schemas/track";
-  import { createInfiniteQuery } from "@tanstack/svelte-query";
+  import { createInfiniteQuery, createQuery } from "@tanstack/svelte-query";
   import { useSearchParams } from "runed/kit";
   import * as v from "valibot";
 
-  const user = await resolveUser(page.params.user!);
+  const userQuery = createQuery(() => ({
+    queryKey: ["user", page.params.user],
+    queryFn: () => resolveUser(page.params.user!),
+    enabled: !!page.params.user,
+  }));
 
   const params = useSearchParams(
     v.object({
@@ -29,10 +33,10 @@
   );
 
   const query = createInfiniteQuery(() => ({
-    queryKey: ["user", user.id, params.kind],
+    queryKey: ["user", userQuery.data?.id, params.kind],
     queryFn: async ({ pageParam = 0 }) => {
       const data = {
-        id: user.id,
+        id: userQuery.data!.id,
         offset: pageParam * paginated_limit,
         limit: paginated_limit,
       };
@@ -54,19 +58,25 @@
 </script>
 
 <svelte:head>
-  <title>{user.username}</title>
-  <meta name="description" content={user.description} />
-  <link rel="icon" href={user.avatar_url} />
-  <meta name="og:image" content={user.avatar_url} />
+  <title>{userQuery.data?.username}</title>
+  <meta name="description" content={userQuery.data?.description} />
+  <link rel="icon" href={userQuery.data?.avatar_url} />
+  <meta name="og:image" content={userQuery.data?.avatar_url} />
 </svelte:head>
 
 <Main>
   {#snippet left()}
-    <HeroSection
-      pictureSrc={user.avatar_url}
-      title={user.username}
-      roundedPicture
-    />
+    {#if userQuery.isPending}
+      <HeroSection title="loading..." />
+    {:else if userQuery.isError}
+      <p>Error loading user.</p>
+    {:else}
+      <HeroSection
+        pictureSrc={userQuery.data?.avatar_url}
+        title={userQuery.data?.username}
+        roundedPicture
+      />
+    {/if}
   {/snippet}
 
   {#snippet right()}

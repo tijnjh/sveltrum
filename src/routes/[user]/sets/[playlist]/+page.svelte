@@ -5,19 +5,24 @@
   import HeroSection from "$lib/components/HeroSection.svelte";
   import InfiniteQueryView from "$lib/components/InfiniteQueryView.svelte";
   import Main from "$lib/components/Main.svelte";
+  import SkeletonListing from "$lib/components/listings/SkeletonListing.svelte";
   import { paginated_limit } from "$lib/constants";
-  import { createInfiniteQuery } from "@tanstack/svelte-query";
+  import { createInfiniteQuery, createQuery } from "@tanstack/svelte-query";
   import dedent from "dedent";
 
-  const playlist = await resolvePlaylist({
-    user: page.params.user!,
-    playlist: page.params.playlist!,
-  });
+  const playlistQuery = createQuery(() => ({
+    queryKey: ["playlist", page.params.user, page.params.playlist],
+    queryFn: () =>
+      resolvePlaylist({
+        user: page.params.user!,
+        playlist: page.params.playlist!,
+      }),
+  }));
 
   const query = createInfiniteQuery(() => ({
-    queryKey: ["playlist-tracks", playlist.id],
+    queryKey: ["playlist-tracks", playlistQuery.data?.id],
     queryFn: ({ pageParam = 0 }) => {
-      const allIds = playlist.tracks?.map((track) => track.id) ?? [];
+      const allIds = playlistQuery.data?.tracks?.map((track) => track.id) ?? [];
 
       const startIdx = pageParam * paginated_limit;
       const endIdx = startIdx + paginated_limit;
@@ -27,7 +32,7 @@
     },
     initialPageParam: 0,
     getNextPageParam: (_, allPages) => {
-      const allIds = playlist.tracks?.map((track) => track.id) ?? [];
+      const allIds = playlistQuery.data?.tracks?.map((track) => track.id) ?? [];
       const totalChunks = Math.ceil(allIds.length / paginated_limit);
 
       return allPages.length < totalChunks ? allPages.length : undefined;
@@ -36,32 +41,46 @@
 </script>
 
 <svelte:head>
-  <title>{playlist.title}</title>
+  <title>{playlistQuery.data?.title}</title>
   <meta
     name="description"
-    content={dedent`${playlist.user.username}
-               ${playlist.track_count} tracks
-               ${playlist.created_at}
+    content={dedent`${playlistQuery.data?.user.username}
+               ${playlistQuery.data?.track_count} tracks
+               ${playlistQuery.data?.created_at}
            `}
   />
 
-  <link rel="icon" href={playlist.artwork_url} />
-  <meta name="og:image" content={playlist.artwork_url} />
+  <link rel="icon" href={playlistQuery.data?.artwork_url} />
+  <meta name="og:image" content={playlistQuery.data?.artwork_url} />
 </svelte:head>
 
 <Main>
   {#snippet left()}
-    <HeroSection
-      pictureSrc={playlist.artwork_url}
-      title={playlist.title}
-      user={playlist.user}
-    />
+    {#if playlistQuery.isPending}
+      <HeroSection title="loading..." />
+    {:else if playlistQuery.isError}
+      <p>Error loading playlist.</p>
+    {:else}
+      <HeroSection
+        pictureSrc={playlistQuery.data.artwork_url}
+        title={playlistQuery.data.title}
+        user={playlistQuery.data.user}
+      />
+    {/if}
   {/snippet}
 
   {#snippet right()}
-    <InfiniteQueryView
-      {query}
-      orderedIds={playlist.tracks?.map((track) => track.id)}
-    />
+    {#if playlistQuery.isPending}
+      {#each { length: 20 }}
+        <SkeletonListing />
+      {/each}
+    {:else if playlistQuery.isError}
+      <p>Error loading playlist.</p>
+    {:else}
+      <InfiniteQueryView
+        {query}
+        orderedIds={playlistQuery.data?.tracks?.map((track) => track.id)}
+      />
+    {/if}
   {/snippet}
 </Main>

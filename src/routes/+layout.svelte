@@ -1,6 +1,5 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import NavigationProgress from "$lib/components/NavigationProgress.svelte";
   import NowPlayingBar from "$lib/components/NowPlayingBar.svelte";
   import NowPlayingView from "$lib/components/NowPlayingView.svelte";
   import Button from "$lib/components/ui/Button.svelte";
@@ -12,8 +11,6 @@
 
   const queryClient = new QueryClient();
 </script>
-
-<NavigationProgress />
 
 <QueryClientProvider client={queryClient}>
   {#if page.route.id !== "/"}
