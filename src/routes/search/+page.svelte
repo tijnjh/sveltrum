@@ -30,7 +30,7 @@
     },
   );
 
-  const debouncedQ = new Debounced(() => params.q, 500);
+  const debouncedQ = new Debounced(() => params.q);
 
   type Listing = Track | Playlist | User;
 
