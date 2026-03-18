@@ -72,7 +72,6 @@
         <HeroSection
           pictureSrc={user!.avatar_url}
           title={user!.username}
-          user={user!}
           roundedPicture
         />
       {/snippet}
