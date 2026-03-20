@@ -44,20 +44,25 @@
       </form>
     </div>
 
-    <h2
-      title="These are saved in localstorage"
-      class="mt-8 text-2xl font-medium"
-    >
-      Your Favorites
-    </h2>
+    {#if favoriteTrackIds.current.length > 0}
+      <h2
+        title="These are saved in localstorage"
+        class="mt-8 text-2xl font-medium"
+      >
+        Your Favorites
+      </h2>
 
-    <AsyncView data={favoritesQuery.data} isLoading={favoritesQuery.isPending}>
-      {#snippet content(data)}
-        {#each data as favorite (favorite.id)}
-          <TrackListing track={favorite} />
-        {/each}
-      {/snippet}
-    </AsyncView>
+      <AsyncView
+        data={favoritesQuery.data}
+        isLoading={favoritesQuery.isPending}
+      >
+        {#snippet content(data)}
+          {#each data as favorite (favorite.id)}
+            <TrackListing track={favorite} />
+          {/each}
+        {/snippet}
+      </AsyncView>
+    {/if}
   {/snippet}
   {#snippet right()}
     <AsyncView
