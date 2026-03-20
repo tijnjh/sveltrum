@@ -14,5 +14,10 @@ body,
 html {
   color-scheme: light dark;
   scrollbar-gutter: stable;
-  @apply bg-mist-200-800;
+  background-color: var(--lightMuted, var(--color-mist-200-800));
+  transition: background-color 0.3s;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--darkMuted, var(--color-mist-800-200));
+  }
 }

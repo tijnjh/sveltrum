@@ -37,7 +37,7 @@
   />
 {/if}
 
-<h1 class="text-2xl font-medium">{title}</h1>
+<h1 class="text-2xl font-medium text-(--vibrant)">{title}</h1>
 
 {#if user}
   <div class="mb-8 flex flex-col gap-4">
